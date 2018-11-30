@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import {Home, SignInUp} from './pages'
+import {Home, SignInUp, ErrorPage} from './pages'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faHome } from '@fortawesome/free-solid-svg-icons'
+library.add(faHome)
 
 class App extends Component {
   render() {
@@ -12,6 +15,7 @@ class App extends Component {
             <Redirect from='/home' to='/' />
             <Route exact path='/' component={Home} />
             <Route exact path='/login' component={SignInUp} />
+            <Route component={ErrorPage} />
           </Switch>
         </div>
       </Router>

@@ -7,8 +7,9 @@
     border: 1px solid transparent;
     background: white !important;
     .navbar-brand{
+      padding: 0 !important;
       img{
-        width: 55%;
+        width: 100px;
       }
     }
     .navbar-toggler{
