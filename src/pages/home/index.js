@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import './index.scss';
+import {Layout} from '../../components'
 
 class Home extends Component {
   render() {
     return (
-      <div className="App">
-        
-      </div>
+      <Layout>
+
+      </Layout>
     );
   }
 }

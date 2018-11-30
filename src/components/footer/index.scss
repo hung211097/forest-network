@@ -1,0 +1,11 @@
+@import "../../styles/variables.scss";
+
+:local(.footer){
+  width: 100%;
+  background-color: #fff;
+  display: inline-block;
+  .text-muted {
+    margin: 15px 0;
+    color: #777777;
+  }
+}

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800,800i&amp;subset=vietnamese');
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+@import "./styles/animate.scss";
+@import "./styles/variables.scss";
 
 body {
   margin: 0;
@@ -9,9 +11,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-name: fadeIn;
+  background: $body-color !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+img{
+  max-width: 100%;
+}
+
+a{
+  text-decoration: none;
+  cursor: pointer;
 }

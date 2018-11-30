@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import './index.scss';
+import styles from './index.scss';
 
 class Footer extends Component {
   render() {
     return (
-      <div className="header">
-
-      </div>
+      <footer className={styles.footer}>
+        <div className="container">
+          <p className="text-muted"> Copyright © eSocial - All rights reserved </p>
+        </div>
+      </footer>
     );
   }
 }
