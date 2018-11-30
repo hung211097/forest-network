@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import {Header, Footer} from './components'
-import {Home} from './pages'
+import {Home, SignInUp} from './pages'
 
 class App extends Component {
   render() {
     return (
       <Router>
         <div>
-          <Header />
           <Switch>
             <Redirect from='/home' to='/' />
             <Route exact path='/' component={Home} />
+            <Route exact path='/login' component={SignInUp} />
           </Switch>
-          <Footer />
         </div>
       </Router>
     );
