@@ -13,7 +13,7 @@ class ErrorPage extends Component {
             <h1 className="animated fadeInDown">404</h1>
             <div className="error-divider animated fadeInUp">
               <h2>PAGE NOT FOUND.</h2>
-              <p className="description">We Couldn't Find This Page</p>
+              <p className="description">We Couldn&apos;t Find This Page</p>
             </div>
             <Link to="/" className="return-btn">
               <FontAwesomeIcon icon="home" />
