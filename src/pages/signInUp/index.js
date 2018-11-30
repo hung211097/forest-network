@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
 import {Footer} from '../../components'
+import { Link } from 'react-router-dom'
 
 class SignInUp extends Component {
   render() {
@@ -29,7 +30,8 @@ class SignInUp extends Component {
                         <div className="clearfix" />
                       </div>
                       <div className="center">
-                        <button type="submit" className="btn btn-azure">Login</button>
+                        {/*<button type="submit" className="btn btn-azure">Login</button>*/}
+                        <Link to="/" className="btn btn-azure">Login</Link>
                       </div>
                     </form>
                   </div>
