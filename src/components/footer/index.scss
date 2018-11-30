@@ -1,11 +1,9 @@
 @import "../../styles/variables.scss";
 
 :local(.footer){
-  position: absolute;
-  bottom: 0;
   width: 100%;
-  height: 60px;
   background-color: #fff;
+  display: inline-block;
   .text-muted {
     margin: 15px 0;
     color: #777777;
