@@ -25,8 +25,8 @@ class FriendActivity extends Component {
                         </div>
                       </div>
                       <div className="col-9 fs-13">
-                        <b><a href="#">Hillary Markston</a></b> shared a&nbsp;
-                        <b><a href="#">publication</a></b>.
+                        <b><a href="null">Hillary Markston</a></b> shared a&nbsp;
+                        <b><a href="null">publication</a></b>.
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
@@ -39,8 +39,8 @@ class FriendActivity extends Component {
                         </div>
                       </div>
                       <div className="col-9 fs-13">
-                        <b><a href="#">Leidy marshel</a></b> shared a&nbsp;
-                        <b><a href="#">publication</a></b>.
+                        <b><a href="null">Leidy marshel</a></b> shared a&nbsp;
+                        <b><a href="null">publication</a></b>.
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
@@ -53,8 +53,8 @@ class FriendActivity extends Component {
                         </div>
                       </div>
                       <div className="col-9 fs-13">
-                        <b><a href="#">Presilla bo</a></b> shared a&nbsp;
-                        <b><a href="#">publication</a></b>.
+                        <b><a href="null">Presilla bo</a></b> shared a&nbsp;
+                        <b><a href="null">publication</a></b>.
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
@@ -67,8 +67,8 @@ class FriendActivity extends Component {
                         </div>
                       </div>
                       <div className="col-9 fs-13">
-                        <b><a href="#">Martha markguy</a></b> shared a&nbsp;
-                        <b><a href="#">publication</a></b>.
+                        <b><a href="null">Martha markguy</a></b> shared a&nbsp;
+                        <b><a href="null">publication</a></b>.
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
