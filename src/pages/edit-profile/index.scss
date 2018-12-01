@@ -1,0 +1,135 @@
+@import "../../styles/variables.scss";
+
+:local(.editProfile){
+  .page-content {
+    margin-top: 90px;
+    margin-bottom: 30px;
+    .nav {
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+      background: white;
+      &.nav-tabs {
+        border-bottom: 1px solid #ddd;
+        li{
+          float: left;
+          margin-bottom: -1px;
+          position: relative;
+          display: block;
+          &.active{
+            span{
+              background-color: #3ecdf1;
+              color: #fff;
+              cursor: pointer;
+              border: 1px solid #ddd;
+              border-bottom-color: transparent;
+            }
+          }
+          span{
+            cursor: pointer;
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            transition: 0.2s ease-in-out;
+          }
+        }
+      }
+    }
+    .tab-content {
+      background: white;
+      &.profile-page{
+        padding: 35px 15px;
+      }
+      .tab-pane {
+        display: none;
+        &.active{
+          display: block;
+        }
+        .user-info-left {
+          text-align: center;
+          h2{
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+          }
+          img{
+            border: 3px solid #fff;
+          }
+          .btn{
+            border-radius: 0px !important;
+            position: relative;
+            &.btn-file{
+              input{
+                position: absolute;
+                top: 0;
+                right: 0;
+                min-width: 100%;
+                min-height: 100%;
+                font-size: 0px;
+                text-align: right;
+                filter: alpha(opacity=0);
+                opacity: 0;
+                outline: none;
+                background: #fff;
+                cursor: inherit;
+                display: block;
+              }
+            }
+          }
+        }
+        .user-info-right {
+          border-left: 1px solid #ddd;
+          padding-left: 30px;
+          h3{
+            font-size: 20px;
+          }
+          .data-name {
+            width: 12em;
+            color: #fff;
+            background-color: #3ecdf1;
+            border-color: #3ecdf1;
+            font-size: 0.9em;
+            vertical-align: top;
+          }
+          .basic-info{
+            .input-group{
+              &:first-of-type{
+                margin-top: 20px;
+              }
+              &:last-of-type{
+                margin-bottom: 40px;
+              }
+            }
+          }
+          .contact_info{
+            .input-group{
+              &:first-of-type{
+                margin-top: 20px;
+              }
+              &:last-of-type{
+                margin-bottom: 40px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .profile .user-info-left, .profile .user-info-right {
+    padding: 10px 0;
+  }
+  .data-row .data-name, .data-row .data-value {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 5px;
+  }
+  .input-group-text{
+    background: $main-color-2 !important;
+    border-color: $main-color-2 !important;
+    color: white !important;
+  }
+}

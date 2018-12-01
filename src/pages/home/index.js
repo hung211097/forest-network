@@ -103,7 +103,7 @@ class Home extends Component {
                               switch(key){
                                 case 0:
                                   return(
-                                    <div className="animated fadeIn">
+                                    <div className="animated fadeIn" key={key}>
                                       <PostBox />
                                       {!!this.props.posts.length && this.props.posts.map((item) => {
                                           return(
@@ -115,13 +115,13 @@ class Home extends Component {
                                   )
                                 case 1:
                                   return(
-                                    <div className="animated fadeIn">
+                                    <div className="animated fadeIn" key={key}>
                                       <Calendar />
                                     </div>
                                   )
                                 case 2:
                                   return(
-                                    <ListUser />
+                                    <ListUser key={key}/>
                                   )
                                 default: return null
                               }
