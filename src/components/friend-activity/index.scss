@@ -1,0 +1,73 @@
+@import "../../styles/variables.scss";
+
+:local(.activity){
+  .widget-activity{
+    padding: 0;
+    box-shadow: none;
+    margin: 0 0 30px 0;
+    .widget-header {
+      position: relative;
+      min-height: 35px;
+      background: #fff;
+      color: #555;
+      padding-left: 12px;
+      text-align: right;
+      .widget-caption {
+        line-height: 34px;
+        padding: 0;
+        margin: 0;
+        float: left;
+        text-align: left;
+        font-weight: 400 !important;
+        font-size: 13px;
+      }
+    }
+    .widget-body{
+      background-color: #fbfbfb;
+      padding: 12px;
+      &.bordered-top {
+        border-top: 3px solid #fff;
+      }
+      &.bordered-sky {
+        border-color: $main-color-2 !important;
+      }
+      .card-activity{
+        border-radius: 6px;
+        background-color: #FFFFFF;
+        color: #252422;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+        .content{
+          padding: 15px 15px 10px 15px;
+          ul{
+            li {
+              padding: 10px 0px;
+              border-bottom: 1px solid #F1EAE0;
+              &:last-child{
+                border: 0;
+              }
+              .avatar {
+                width: 50px;
+                height: 50px;
+                overflow: hidden;
+                border-radius: 50%;
+                margin-right: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .list-unstyled {
+    padding-left: 0;
+    list-style: none;
+  }
+  .fs-13{
+    font-size: 13px;
+    a{
+      color: $main-color-3;
+    }
+  }
+}

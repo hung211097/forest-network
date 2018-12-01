@@ -1,16 +1,16 @@
-import {actionTypes} from '../constants/actionType'
+// import {actionTypes} from '../constants/actionType';
+import avatar from '../images/guy-3.jpg';
 
 const initialState = {
-  infoUser: null
+  info: {
+    fullname: "John Breakgrow",
+    username: "John Breakgrow jr.",
+    avatar: avatar
+  }
 }
 
 export default (state = initialState, action) => {
   switch(action.type){
-    case actionTypes.INFO_CHAT_USER:
-      return{
-        ...state,
-        infoUser: action.info
-      }
     default:
       return state
   }

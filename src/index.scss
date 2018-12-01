@@ -24,9 +24,10 @@ code {
 
 img{
   max-width: 100%;
+  height: auto;
 }
 
 a{
-  text-decoration: none;
+  text-decoration: none !important;
   cursor: pointer;
 }

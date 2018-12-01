@@ -1,12 +1,12 @@
 import {combineReducers} from 'redux'
 import profileReducer from './profile'
-import userReducer from './user'
-import postReducer from './post'
+import usersReducer from './user'
+import postsReducer from './post'
 
 const rootReducer = combineReducers({
-  profile: profileReducer,
-  users: userReducer,
-  post: postReducer
+  profileReducer,
+  usersReducer,
+  postsReducer
 })
 
 export default rootReducer;
