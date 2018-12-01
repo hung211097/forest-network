@@ -44,7 +44,10 @@ class Home extends Component {
                         <p>@username</p>
                       </div>
                       <ul className="nav nav-pills nav-stacked">
-                        <li className="active"><a href="null" className="tabMenu"><i><FontAwesomeIcon icon="newspaper"/></i> News feed</a>
+                        <li className="active">
+                          <span href="null" className="tabMenu" onClick={(e) => {e.preventDefault()}}>
+                            <i><FontAwesomeIcon icon="newspaper"/></i> News feed
+                          </span>
                         </li>
                         {/*<li>
                           <a href="#">
@@ -52,8 +55,16 @@ class Home extends Component {
                             <span className="label label-info pull-right r-activity">9</span>
                           </a>
                         </li>*/}
-                        <li><a href="null" className="tabMenu"> <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar</a></li>
-                        <li><a href="null" className="tabMenu"> <i><FontAwesomeIcon icon="users"/></i> Users</a></li>
+                        <li>
+                          <span className="tabMenu" onClick={(e) => {e.preventDefault()}}>
+                            <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar
+                          </span>
+                        </li>
+                        <li>
+                          <span className="tabMenu" onClick={(e) => {e.preventDefault()}}>
+                            <i><FontAwesomeIcon icon="users"/></i> Users
+                          </span>
+                        </li>
                       </ul>
                     </div>
                   </div>

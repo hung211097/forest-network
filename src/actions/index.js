@@ -12,3 +12,18 @@ export const likePost = (id) => {
     idPost: id
   }
 }
+
+export const createPost = (post) => {
+  return{
+    type: actionTypes.NEW_POST,
+    post: post
+  }
+}
+
+export const createComment = (comment, id) => {
+  return{
+    type: actionTypes.NEW_COMMENT,
+    comment: comment,
+    idPost: id
+  }
+}

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { Link } from 'react-router-dom';
 import avatar1 from '../../images/woman-2.jpg';
 import avatar2 from '../../images/woman-3.jpg';
 import avatar3 from '../../images/woman-4.jpg';
@@ -26,7 +25,7 @@ class FriendActivity extends Component {
                       </div>
                       <div className="col-9 fs-13">
                         <b><a href="null">Hillary Markston</a></b> shared a&nbsp;
-                        <b><a href="null">publication</a></b>.
+                        <b><a href="null">publication</a></b>.&nbsp;
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
@@ -40,7 +39,7 @@ class FriendActivity extends Component {
                       </div>
                       <div className="col-9 fs-13">
                         <b><a href="null">Leidy marshel</a></b> shared a&nbsp;
-                        <b><a href="null">publication</a></b>.
+                        <b><a href="null">publication</a></b>.&nbsp;
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
@@ -54,7 +53,7 @@ class FriendActivity extends Component {
                       </div>
                       <div className="col-9 fs-13">
                         <b><a href="null">Presilla bo</a></b> shared a&nbsp;
-                        <b><a href="null">publication</a></b>.
+                        <b><a href="null">publication</a></b>.&nbsp;
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>
@@ -68,7 +67,7 @@ class FriendActivity extends Component {
                       </div>
                       <div className="col-9 fs-13">
                         <b><a href="null">Martha markguy</a></b> shared a&nbsp;
-                        <b><a href="null">publication</a></b>.
+                        <b><a href="null">publication</a></b>.&nbsp;
                         <span className="timeago">5 min ago</span>
                       </div>
                     </div>

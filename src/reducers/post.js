@@ -68,7 +68,6 @@ export default (state = initialState, action) => {
           else{
             item.likes = item.likes - 1
           }
-          return item
         }
         return item
       })
@@ -76,8 +75,23 @@ export default (state = initialState, action) => {
         ...state,
         posts: temp
       }
+    case actionTypes.NEW_POST:
+      return{
+        ...state,
+        posts: [action.post, ...state.posts]
+      }
+    case actionTypes.NEW_COMMENT:
+      temp = state.posts.map((item) => {
+        if(item.id === action.idPost){
+          item.comments = [...item.comments, action.comment]
+        }
+        return item
+      })
+      return{
+        ...state,
+        posts: temp
+      }
     default:
       return state
   }
-
 }

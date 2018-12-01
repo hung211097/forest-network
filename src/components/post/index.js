@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {fromNowDate} from '../../services/utils.service';
 import { connect } from 'react-redux'
-import {likePost} from '../../actions'
+import {likePost, createComment} from '../../actions'
+import ReactEmoji from 'react-emoji'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    likePost: (id) => {dispatch(likePost(id))}
+    likePost: (id) => {dispatch(likePost(id))},
+    createComment: (comment, id) => {dispatch(createComment(comment, id))}
   }
 }
 
@@ -23,14 +24,16 @@ class Post extends Component {
   constructor(props){
     super(props)
     this.state = {
-      post: this.props.post
+      post: this.props.post,
+      content: ''
     }
   }
 
   static propTypes = {
     post: PropTypes.object,
     profile: PropTypes.object,
-    likePost: PropTypes.func
+    likePost: PropTypes.func,
+    createComment: PropTypes.func,
   }
 
   onLike(id){
@@ -50,6 +53,50 @@ class Post extends Component {
     })
   }
 
+  handleContentChange(e) {
+    this.setState({
+      content: e.target.value
+    });
+  }
+
+  handleOnSubmit(){
+    let {post, profile} = this.props
+    if(this.state.content){
+      this.props.createComment && this.props.createComment({
+        avatar: profile.avatar,
+        username: profile.username,
+        content: this.state.content,
+        created_on: new Date().toString()
+      }, post.id)
+      this.setState({
+        content: ''
+      })
+    }
+  }
+
+  handleKeyPress(event){
+    if(event.key === 'Enter' && !event.altKey){
+      event.preventDefault();
+      event.target.value = ""
+      this.handleOnSubmit()
+    } else if (event.key === 'Enter' && !event.altKey){
+      event.preventDefault();
+      event.target.value = ""
+    }
+    else if(event.key === 'Enter' && event.altKey){
+      let textarea = event.target
+      let pos = textarea.selectionStart
+      let first = textarea.value.substring(0, pos) + "\n"
+      let rest = textarea.value.substring(pos)
+      this.setState({
+        content: first + rest
+      }, () => {
+        textarea.selectionStart = pos + 1
+        textarea.selectionEnd = pos + 1
+      })
+    }
+  }
+
   render() {
     let {post} = this.state
     let {profile} = this.props
@@ -64,7 +111,10 @@ class Post extends Component {
             </div>
           </div>
           <div className="box-body">
-            <p dangerouslySetInnerHTML={{ __html: post.content }}></p>
+            {post.content.split('\n').map((itemChild, key) => {
+                return <p key={key}>{ReactEmoji.emojify(itemChild, {emojiType: "emojione"})}</p>
+              })
+            }
             <button type="button" className={post.isLike ? "btn btn-default btn-xs active" : "btn btn-default btn-xs"} onClick={this.onLike.bind(this, post.id)}>
               <i><FontAwesomeIcon icon="thumbs-up"/></i> Like
             </button>
@@ -83,7 +133,10 @@ class Post extends Component {
                         {item.username}
                         <span className="text-muted float-right">{fromNowDate(item.created_on)}</span>
                       </span>
-                      {item.content}
+                      {item.content.split('\n').map((itemChild, key) => {
+                          return <span key={key}>{ReactEmoji.emojify(itemChild, {emojiType: "emojione"})}<br/></span>
+                        })
+                      }
                     </div>
                   </div>
                 )
@@ -94,7 +147,10 @@ class Post extends Component {
             <form action="#" method="post">
               <img className="img-responsive img-circle img-sm" src={profile.avatar} alt="Alt Text" />
               <div className="img-push">
-                <input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />
+                <textarea className="form-control input-sm" rows="2" placeholder="Type here for your comment"
+                  value={this.state.content} onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleContentChange.bind(this)}>
+                </textarea>
+                {/*<input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />*/}
               </div>
             </form>
           </div>

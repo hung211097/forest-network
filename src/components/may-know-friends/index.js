@@ -29,7 +29,7 @@ class MayKnowFriends extends Component {
                         Carlos marthur
                       </div>
                       <div className="col-3 text-right">
-                        <btn className="btn btn-sm btn-azure btn-icon" data-tip="Follow"><i><FontAwesomeIcon icon="user-plus"/></i></btn>
+                        <span className="btn btn-sm btn-azure btn-icon" data-tip="Follow"><i><FontAwesomeIcon icon="user-plus"/></i></span>
                       </div>
                     </div>
                   </li>
@@ -44,7 +44,7 @@ class MayKnowFriends extends Component {
                         Maria gustami
                       </div>
                       <div className="col-3 text-right">
-                        <btn className="btn btn-sm btn-azure btn-icon" data-tip="Follow"><i><FontAwesomeIcon icon="user-plus"/></i></btn>
+                        <span className="btn btn-sm btn-azure btn-icon" data-tip="Follow"><i><FontAwesomeIcon icon="user-plus"/></i></span>
                       </div>
                     </div>
                   </li>
@@ -59,7 +59,7 @@ class MayKnowFriends extends Component {
                         Angellina mcblown
                       </div>
                       <div className="col-3 text-right">
-                        <btn className="btn btn-sm btn-azure btn-icon" data-tip="Follow"><i><FontAwesomeIcon icon="user-plus"/></i></btn>
+                        <span className="btn btn-sm btn-azure btn-icon" data-tip="Follow"><i><FontAwesomeIcon icon="user-plus"/></i></span>
                       </div>
                     </div>
                   </li>

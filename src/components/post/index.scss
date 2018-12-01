@@ -68,6 +68,12 @@
             margin-left: 0;
           }
         }
+        p{
+          margin-bottom: 2px;
+          &:last-of-type{
+            margin-bottom: 1rem;
+          }
+        }
       }
       .box-footer {
         border-top-left-radius: 0;
