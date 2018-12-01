@@ -1,11 +1,30 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components'
-import avatar from '../../images/guy-3.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PostBox, Post } from '../../components'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+
+  }
+}
+
+const mapStateToProps = (state) => {
+  return{
+    profile: state.profileReducer.info,
+    posts: state.postReducer.posts
+  }
+}
 
 class Home extends Component {
+  static propTypes = {
+    profile: PropTypes.object,
+    posts: PropTypes.array
+  }
+
   render() {
     return (
       <Layout>
@@ -18,14 +37,14 @@ class Home extends Component {
                   <div className="widget">
                     <div className="widget-body">
                       <div className="user-heading round">
-                        <a href="#">
-                          <img src={avatar} alt="avatar" />
+                        <a href="null">
+                          <img src={this.props.profile.avatar} alt="avatar" />
                         </a>
-                        <h1>John Breakgrow</h1>
+                        <h1>{this.props.profile.fullname}</h1>
                         <p>@username</p>
                       </div>
                       <ul className="nav nav-pills nav-stacked">
-                        <li className="active"><a href="#">
+                        <li className="active"><a href="null">
                           <i><FontAwesomeIcon icon="newspaper"/></i> News feed</a>
                         </li>
                         {/*<li>
@@ -34,8 +53,8 @@ class Home extends Component {
                             <span className="label label-info pull-right r-activity">9</span>
                           </a>
                         </li>*/}
-                        <li><a href="#"> <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar</a></li>
-                        <li><a href="#"> <i><FontAwesomeIcon icon="users"/></i> Users</a></li>
+                        <li><a href="null"> <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar</a></li>
+                        <li><a href="null"> <i><FontAwesomeIcon icon="users"/></i> Users</a></li>
                       </ul>
                     </div>
                   </div>
@@ -50,223 +69,12 @@ class Home extends Component {
                     <div className="row">
                       <div className="col-md-12">
                         <PostBox />
-                        <Post />
-                        {/*<div className="box box-widget">
-                          <div className="box-header with-border">
-                            <div className="user-block">
-                              <img className="img-circle" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <span className="username"><a href="#">John Breakgrow jr.</a></span>
-                              <span className="description">Shared publicly - 7:30 PM Today</span>
-                            </div>
-                          </div>
-                          <div className="box-body" style={{display: 'block'}}>
-                            <img className="img-responsive show-in-modal" src="img/Post/young-couple-in-love.jpg" alt="Photo" />
-                            <p>I took this photo this morning. What do you guys think?</p>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-share" /> Share</button>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-thumbs-o-up" /> Like</button>
-                            <span className="pull-right text-muted">127 likes - 3 comments</span>
-                          </div>
-                          <div className="box-footer box-comments" style={{display: 'block'}}>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-2.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Maria Gonzales
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Luna Stark
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                          </div>
-                          <div className="box-footer" style={{display: 'block'}}>
-                            <form action="#" method="post">
-                              <img className="img-responsive img-circle img-sm" src="img/Friends/guy-3.jpg" alt="Alt Text" />
-                              <div className="img-push">
-                                <input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                        <div className="box box-widget">
-                          <div className="box-header with-border">
-                            <div className="user-block">
-                              <img className="img-circle" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <span className="username"><a href="#">Jonathan Burke Jr.</a></span>
-                              <span className="description">Shared publicly - 7:30 PM Today</span>
-                            </div>
-                            <div className="box-tools">
-                              <button type="button" className="btn btn-box-tool" data-toggle="tooltip" title data-original-title="Mark as read">
-                                <i className="fa fa-circle-o" /></button>
-                              <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" /></button>
-                              <button type="button" className="btn btn-box-tool" data-widget="remove"><i className="fa fa-times" /></button>
-                            </div>
-                          </div>
-                          <div className="box-body">
-                            <p>Far far away, behind the word mountains, far from the
-                              countries Vokalia and Consonantia, there live the blind
-                              texts. Separated they live in Bookmarksgrove right at</p>
-                            <p>the coast of the Semantics, a large language ocean.
-                              A small river named Duden flows by their place and supplies
-                              it with the necessary regelialia. It is a paradisematic
-                              country, in which roasted parts of sentences fly into
-                              your mouth.</p>
-                            <div className="attachment-block clearfix">
-                              <img className="attachment-img" src="img/Photos/2.jpg" alt="Attachment Image" />
-                              <div className="attachment-pushed">
-                                <h4 className="attachment-heading"><a href="http://www.bootdey.com/">Lorem ipsum text generator</a></h4>
-                                <div className="attachment-text">
-                                  Description about the attachment can be placed here.
-                                  Lorem Ipsum is simply dummy text of the printing and typesetting industry... <a href="#">more</a>
-                                </div>
-                              </div>
-                            </div>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-share" /> Share</button>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-thumbs-o-up" /> Like</button>
-                            <span className="pull-right text-muted">45 likes - 2 comments</span>
-                          </div>
-                          <div className="box-footer box-comments">
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-5.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Maria Gonzales
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-6.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Nora Havisham
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                The point of using Lorem Ipsum is that it has a more-or-less
-                                normal distribution of letters, as opposed to using
-                                'Content here, content here', making it look like readable English.
-                              </div>
-                            </div>
-                          </div>
-                          <div className="box-footer">
-                            <form action="#" method="post">
-                              <img className="img-responsive img-circle img-sm" src="img/Friends/guy-3.jpg" alt="Alt Text" />
-                              <div className="img-push">
-                                <input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                        <div className="box box-widget">
-                          <div className="box-header with-border">
-                            <div className="user-block">
-                              <img className="img-circle" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <span className="username"><a href="#">John Breakgrow jr.</a></span>
-                              <span className="description">Shared publicly - 7:30 PM Today</span>
-                            </div>
-                          </div>
-                          <div className="box-body" style={{display: 'block'}}>
-                            <p>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac iaculis ligula, eget efficitur nisi. In vel rutrum orci. Etiam ut orci volutpat, maximus quam vel, euismod orci. Nunc in urna non lectus malesuada aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam dignissim mi ac metus consequat, a pharetra neque molestie. Maecenas condimentum lorem quis vulputate volutpat. Etiam sapien diam
-                            </p>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-share" /> Share</button>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-thumbs-o-up" /> Like</button>
-                            <span className="pull-right text-muted">127 likes - 3 comments</span>
-                          </div>
-                          <div className="box-footer box-comments" style={{display: 'block'}}>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-2.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Maria Gonzales
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Luna Stark
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                          </div>
-                          <div className="box-footer" style={{display: 'block'}}>
-                            <form action="#" method="post">
-                              <img className="img-responsive img-circle img-sm" src="img/Friends/guy-3.jpg" alt="Alt Text" />
-                              <div className="img-push">
-                                <input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                        <div className="box box-widget">
-                          <div className="box-header with-border">
-                            <div className="user-block">
-                              <img className="img-circle" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <span className="username"><a href="#">John Breakgrow jr.</a></span>
-                              <span className="description">Shared publicly - 7:30 PM Today</span>
-                            </div>
-                          </div>
-                          <div className="box-body" style={{display: 'block'}}>
-                            <img className="img-responsive pad" src="img/Photos/3.jpg" alt="Photo" />
-                            <p>I took this photo this morning. What do you guys think?</p>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-share" /> Share</button>
-                            <button type="button" className="btn btn-default btn-xs"><i className="fa fa-thumbs-o-up" /> Like</button>
-                            <span className="pull-right text-muted">127 likes - 3 comments</span>
-                          </div>
-                          <div className="box-footer box-comments" style={{display: 'block'}}>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-2.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Maria Gonzales
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                            <div className="box-comment">
-                              <img className="img-circle img-sm" src="img/Friends/guy-3.jpg" alt="User Image" />
-                              <div className="comment-text">
-                                <span className="username">
-                                  Luna Stark
-                                  <span className="text-muted pull-right">8:03 PM Today</span>
-                                </span>
-                                It is a long established fact that a reader will be distracted
-                                by the readable content of a page when looking at its layout.
-                              </div>
-                            </div>
-                          </div>
-                          <div className="box-footer" style={{display: 'block'}}>
-                            <form action="#" method="post">
-                              <img className="img-responsive img-circle img-sm" src="img/Friends/guy-3.jpg" alt="Alt Text" />
-                              <div className="img-push">
-                                <input type="text" className="form-control input-sm" placeholder="Press enter to post comment" />
-                              </div>
-                            </form>
-                          </div>
-                        </div>*/}
+                        {!!this.props.posts.length && this.props.posts.map((item) => {
+                            return(
+                              <Post key={item.id} post={item}/>
+                            )
+                          })
+                        }
                       </div>
                     </div>
                   </div>
@@ -417,4 +225,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

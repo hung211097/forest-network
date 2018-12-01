@@ -4,9 +4,9 @@ import userReducer from './user'
 import postReducer from './post'
 
 const rootReducer = combineReducers({
-  profile: profileReducer,
-  users: userReducer,
-  post: postReducer
+  profileReducer,
+  userReducer,
+  postReducer
 })
 
 export default rootReducer;

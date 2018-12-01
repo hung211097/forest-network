@@ -49,7 +49,7 @@
           font-size: 14px;
         }
         .btn-default{
-          .active{
+          &.active{
             background: white;
             color: $main-color;
           }

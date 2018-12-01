@@ -19,7 +19,7 @@ class PostBox extends Component {
           <div className="box-footer box-form">
             <button type="button" className="btn btn-azure float-right">Post</button>
             <ul className="nav nav-pills">
-              <li><a href="#"><i><FontAwesomeIcon icon="image"/></i></a></li>
+              <li><a href="null"><i><FontAwesomeIcon icon="image"/></i></a></li>
             </ul>
           </div>
         </div>
