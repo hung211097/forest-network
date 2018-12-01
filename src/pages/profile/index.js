@@ -3,6 +3,8 @@ import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { Layout } from '../../components'
+import avatar from '../../images/guy-3.jpg'
+import cover from '../../images/game.jpg'
 
 class Profile extends Component {
   render() {
@@ -13,13 +15,13 @@ class Profile extends Component {
 						<div className="col-md-10 offset-md-1">
 							<div className="user-profile">
 								<div className="profile-header-background">
-									<img src="http://demos.bootdey.com/dayday/img/Cover/game.jpg" alt="Profile Header Background" />
+                  <img src={cover} alt="Profile Header Background" />
 								</div>
 								<div className="row">
 									<div className="col-md-4">
 										<div className="profile-info-left">
 											<div className="text-center">
-												<img src="http://demos.bootdey.com/dayday/img/Friends/guy-3.jpg" alt="Avatar" className="avatar img-circle" />
+                        <img src={avatar} alt="Avatar" className="avatar img-circle" />
 												<h2>John Breakgrow jr.</h2>
 											</div>
 											<div className="action-buttons">
