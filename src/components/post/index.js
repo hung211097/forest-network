@@ -36,7 +36,7 @@ class Post extends Component {
     createComment: PropTypes.func,
   }
 
-  onLike(id){
+  handleLike(id){
     let temp = Object.assign({}, this.state.post)
     temp.isLike = !temp.isLike
     if(temp.isLike){
@@ -115,7 +115,7 @@ class Post extends Component {
                 return <p key={key}>{ReactEmoji.emojify(itemChild, {emojiType: "emojione"})}</p>
               })
             }
-            <button type="button" className={post.isLike ? "btn btn-default btn-xs active" : "btn btn-default btn-xs"} onClick={this.onLike.bind(this, post.id)}>
+            <button type="button" className={post.isLike ? "btn btn-default btn-xs active" : "btn btn-default btn-xs"} onClick={this.handleLike.bind(this, post.id)}>
               <i><FontAwesomeIcon icon="thumbs-up"/></i> Like
             </button>
             <button type="button" className="btn btn-default btn-xs">

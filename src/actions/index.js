@@ -27,3 +27,10 @@ export const createComment = (comment, id) => {
     idPost: id
   }
 }
+
+export const followUser = (id) => {
+  return{
+    type: actionTypes.FOLLOW_USER,
+    idUser: id
+  }
+}

@@ -1,0 +1,50 @@
+@import "../../styles/variables.scss";
+
+:local(.userCard){
+  .contact-box {
+    background-color: #ffffff;
+    border: 1px solid #e7eaec;
+    padding: 20px;
+    margin-bottom: 20px;
+    &.center-version{
+      border: 1px solid #e7eaec;
+      padding: 0;
+      a{
+        display: block;
+        background-color: #ffffff;
+        padding: 20px;
+        text-align: center;
+        color: black;
+        img{
+          width: 80px;
+          height: 80px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
+      }
+      h3{
+        font-size: 20px;
+      }
+    }
+    .contact-box-footer {
+      text-align: center;
+      background-color: #ffffff;
+      border-top: 1px solid #e7eaec;
+      padding: 15px 20px;
+      .btn-white{
+        border: 1px solid;
+        font-size: 14px !important;
+        padding: 5px 25px !important;
+        background: white;
+        &:active, &:focus{
+          box-shadow: none
+        }
+        &:hover{
+          background: black;
+          color: white;
+          border-color: black;
+        }
+      }
+    }
+  }
+}

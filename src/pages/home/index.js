@@ -2,20 +2,14 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar } from '../../components'
+import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar, ListUser } from '../../components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-
-const mapDispatchToProps = (dispatch) => {
-  return{
-
-  }
-}
 
 const mapStateToProps = (state) => {
   return{
     profile: state.profileReducer.info,
-    posts: state.postReducer.posts
+    posts: state.postsReducer.posts
   }
 }
 
@@ -108,23 +102,27 @@ class Home extends Component {
                             if(item.isSelect){
                               switch(key){
                                 case 0:
-                                return(
-                                  <div className="animated fadeIn">
-                                    <PostBox />
-                                    {!!this.props.posts.length && this.props.posts.map((item) => {
-                                        return(
-                                          <Post key={item.id} post={item}/>
-                                        )
-                                      })
-                                    }
-                                  </div>
-                                )
+                                  return(
+                                    <div className="animated fadeIn">
+                                      <PostBox />
+                                      {!!this.props.posts.length && this.props.posts.map((item) => {
+                                          return(
+                                            <Post key={item.id} post={item}/>
+                                          )
+                                        })
+                                      }
+                                    </div>
+                                  )
                                 case 1:
-                                return(
-                                  <div className="animated fadeIn">
-                                    <Calendar />
-                                  </div>
-                                )
+                                  return(
+                                    <div className="animated fadeIn">
+                                      <Calendar />
+                                    </div>
+                                  )
+                                case 2:
+                                  return(
+                                    <ListUser />
+                                  )
                                 default: return null
                               }
                             }
@@ -157,4 +155,4 @@ class Home extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps)(Home);
