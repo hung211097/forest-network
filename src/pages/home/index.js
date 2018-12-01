@@ -3,7 +3,7 @@ import styles from './index.scss';
 import { Layout } from '../../components'
 import avatar from '../../images/guy-3.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox } from '../../components'
+import { PostBox, Post } from '../../components'
 
 class Home extends Component {
   render() {
@@ -50,6 +50,7 @@ class Home extends Component {
                     <div className="row">
                       <div className="col-md-12">
                         <PostBox />
+                        <Post />
                         {/*<div className="box box-widget">
                           <div className="box-header with-border">
                             <div className="user-block">

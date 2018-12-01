@@ -24,9 +24,19 @@ code {
 
 img{
   max-width: 100%;
+  height: auto;
 }
 
 a{
   text-decoration: none !important;
   cursor: pointer;
+}
+
+.btn-xs {
+  font-size: 12px !important;
+  padding: 2px 7px !important;
+}
+
+.text-muted {
+  color: #777777;
 }
