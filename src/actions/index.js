@@ -34,3 +34,10 @@ export const followUser = (id) => {
     idUser: id
   }
 }
+
+export const updateProfile = (info) => {
+  return{
+    type: actionTypes.UPDATE_PROFILE,
+    info: info
+  }
+}
