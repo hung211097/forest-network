@@ -3,7 +3,7 @@ import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Layout } from '../../components'
 import avatar from '../../images/guy-3.jpg'
-import { InputGroup, InputGroupAddon, InputGroupText, Input } from 'reactstrap';
+import { InputGroup, InputGroupAddon, InputGroupText, Input, FormGroup, FormFeedback } from 'reactstrap';
 
 class EditProfile extends Component {
   constructor(props){
@@ -75,37 +75,51 @@ class EditProfile extends Component {
                         <div className="user-info-right">
                           <div className="basic-info">
                             <h3><i><FontAwesomeIcon icon="square"/></i> Basic Information</h3>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">Username</InputGroupAddon>
-                              <Input placeholder="username" value="John Breakgrow jr." name="username" disabled/>
-                            </InputGroup>
-                            <br/>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">Birth Date</InputGroupAddon>
-                              <Input placeholder="username" value="Nov 20, 1988" name="birthday"/>
-                            </InputGroup>
-                            <br/>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">Gender</InputGroupAddon>
-                              <Input placeholder="username" value="Male" name="gender"/>
-                            </InputGroup>
+                            <FormGroup>
+                              <InputGroup>
+                                <InputGroupAddon addonType="prepend">Username</InputGroupAddon>
+                                <Input placeholder="username" value="John Breakgrow jr." name="username" invalid/>
+                              </InputGroup>
+                              <FormFeedback invalid className="d-block">Sweet! that name is available</FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                              <InputGroup>
+                                <InputGroupAddon addonType="prepend">Birth Date</InputGroupAddon>
+                                <Input placeholder="username" value="Nov 20, 1988" name="birthday" type="date"/>
+                              </InputGroup>
+                              <FormFeedback invalid>Sweet! that name is available</FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                              <InputGroup>
+                                <InputGroupAddon addonType="prepend">Gender</InputGroupAddon>
+                                <Input placeholder="username" value="Male" name="gender"/>
+                              </InputGroup>
+                              <FormFeedback invalid>Sweet! that name is available</FormFeedback>
+                            </FormGroup>
                           </div>
                           <div className="contact_info">
                             <h3><i><FontAwesomeIcon icon="square"/></i> Contact Information</h3>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">Email</InputGroupAddon>
-                              <Input placeholder="username" value="me@jonasmith.com" name="email"/>
-                            </InputGroup>
-                            <br/>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">Phone</InputGroupAddon>
-                              <Input placeholder="username" value="(1800) 221 - 876543" name="phone"/>
-                            </InputGroup>
-                            <br/>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">Address</InputGroupAddon>
-                              <Input placeholder="username" value="Riverside City 66, 80123 Denver, Colorado" name="address"/>
-                            </InputGroup>
+                            <FormGroup>
+                              <InputGroup>
+                                <InputGroupAddon addonType="prepend">Email</InputGroupAddon>
+                                <Input placeholder="username" value="me@jonasmith.com" name="email"/>
+                              </InputGroup>
+                              <FormFeedback invalid>Sweet! that name is available</FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                              <InputGroup>
+                                <InputGroupAddon addonType="prepend">Phone</InputGroupAddon>
+                                <Input placeholder="username" value="(1800) 221 - 876543" name="phone"/>
+                              </InputGroup>
+                              <FormFeedback invalid>Sweet! that name is available</FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                              <InputGroup>
+                                <InputGroupAddon addonType="prepend">Address</InputGroupAddon>
+                                <Input placeholder="username" value="Riverside City 66, 80123 Denver, Colorado" name="address"/>
+                              </InputGroup>
+                              <FormFeedback invalid>Sweet! that name is available</FormFeedback>
+                            </FormGroup>
                           </div>
                           <div className="about">
                             <h3><i><FontAwesomeIcon icon="square"/></i> About Me</h3>
