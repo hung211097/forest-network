@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox, Post, FriendActivity, MayKnowFriends } from '../../components'
+import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar } from '../../components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -20,9 +20,46 @@ const mapStateToProps = (state) => {
 }
 
 class Home extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      sideMenu: [
+        {
+          title: "News feed",
+          isSelect: true,
+          icon:"newspaper"
+        },
+        {
+          title: "Calendar",
+          isSelect: false,
+          icon: "calendar-alt"
+        },
+        {
+          title: "Users",
+          isSelect: false,
+          icon: "users"
+        }
+      ]
+    }
+  }
+
   static propTypes = {
     profile: PropTypes.object,
     posts: PropTypes.array
+  }
+
+  handleSelectMenu(index){
+    let temp = this.state.sideMenu.concat()
+    temp = temp.map((item, key) => {
+      item.isSelect = false
+      if(key === index){
+        item.isSelect = true
+      }
+      return item
+    })
+    this.setState({
+      sideMenu: temp
+    })
   }
 
   render() {
@@ -44,27 +81,16 @@ class Home extends Component {
                         <p>@username</p>
                       </div>
                       <ul className="nav nav-pills nav-stacked">
-                        <li className="active">
-                          <span href="null" className="tabMenu" onClick={(e) => {e.preventDefault()}}>
-                            <i><FontAwesomeIcon icon="newspaper"/></i> News feed
-                          </span>
-                        </li>
-                        {/*<li>
-                          <a href="#">
-                            <i className="fa fa-envelope" /> Messages
-                            <span className="label label-info pull-right r-activity">9</span>
-                          </a>
-                        </li>*/}
-                        <li>
-                          <span className="tabMenu" onClick={(e) => {e.preventDefault()}}>
-                            <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar
-                          </span>
-                        </li>
-                        <li>
-                          <span className="tabMenu" onClick={(e) => {e.preventDefault()}}>
-                            <i><FontAwesomeIcon icon="users"/></i> Users
-                          </span>
-                        </li>
+                        {!!this.state.sideMenu.length && this.state.sideMenu.map((item, key) => {
+                            return(
+                              <li className={item.isSelect ? "active" : ""} key={key}>
+                                <span className="tabMenu" onClick={this.handleSelectMenu.bind(this, key)}>
+                                  <i><FontAwesomeIcon icon={item.icon}/></i> {item.title}
+                                </span>
+                              </li>
+                            )
+                          })
+                        }
                       </ul>
                     </div>
                   </div>
@@ -78,11 +104,31 @@ class Home extends Component {
                   <div className="col-md-12">
                     <div className="row">
                       <div className="col-md-12">
-                        <PostBox />
-                        {!!this.props.posts.length && this.props.posts.map((item) => {
-                            return(
-                              <Post key={item.id} post={item}/>
-                            )
+                        {!!this.state.sideMenu.length && this.state.sideMenu.map((item, key) => {
+                            if(item.isSelect){
+                              switch(key){
+                                case 0:
+                                return(
+                                  <div className="animated fadeIn">
+                                    <PostBox />
+                                    {!!this.props.posts.length && this.props.posts.map((item) => {
+                                        return(
+                                          <Post key={item.id} post={item}/>
+                                        )
+                                      })
+                                    }
+                                  </div>
+                                )
+                                case 1:
+                                return(
+                                  <div className="animated fadeIn">
+                                    <Calendar />
+                                  </div>
+                                )
+                                default: return null
+                              }
+                            }
+                            return null
                           })
                         }
                       </div>

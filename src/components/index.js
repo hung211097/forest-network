@@ -5,6 +5,7 @@ import PostBox from './post-box'
 import Post from './post'
 import FriendActivity from './friend-activity'
 import MayKnowFriends from './may-know-friends'
+import Calendar from './calendar'
 
 export {
   Header,
@@ -13,5 +14,6 @@ export {
   PostBox,
   Post,
   FriendActivity,
-  MayKnowFriends
+  MayKnowFriends,
+  Calendar
 }
