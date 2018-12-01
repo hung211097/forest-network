@@ -257,3 +257,38 @@ a {
 		margin-left: 0;
 	}
 }
+
+.nav {
+	padding-left: 0;
+	margin-bottom: 0;
+	list-style: none;
+	> li {
+		position: relative;
+		display: block;
+		> a {
+			position: relative;
+			display: block;
+			padding: 10px 15px;
+		}
+	}
+}
+ol {
+	margin-top: 0;
+	margin-bottom: 10px;
+}
+ul {
+	margin-top: 0;
+	margin-bottom: 10px;
+}
+.nav-pills > li {
+	float: left;
+}
+
+.col-xs-6 {
+    width: 50%;
+		position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+		float: left;
+}
