@@ -3,8 +3,8 @@ import './App.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import {Home, SignInUp, ErrorPage, EditProfile} from './pages'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faSignOutAlt, faUserFriends, faUsers, faNewspaper, faCalendarAlt, faImage, faThumbsUp, faShare, faUserPlus, faCheck, faSquare, faUser, faCog } from '@fortawesome/free-solid-svg-icons'
-library.add(faHome, faSignOutAlt, faUserFriends, faUsers, faUser, faNewspaper, faCalendarAlt, faImage, faThumbsUp, faShare, faUserPlus, faCheck, faSquare, faCog)
+import { faHome, faSignOutAlt, faUserFriends, faUsers, faNewspaper, faCalendarAlt, faImage, faThumbsUp, faShare, faUserPlus, faCheck, faSquare, faUser, faCog, faSave, faEdit } from '@fortawesome/free-solid-svg-icons'
+library.add(faHome, faSignOutAlt, faUserFriends, faUsers, faUser, faNewspaper, faCalendarAlt, faImage, faThumbsUp, faShare, faUserPlus, faCheck, faSquare, faCog, faSave, faEdit)
 
 class App extends Component {
   render() {
