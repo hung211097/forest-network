@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox, Post } from '../../components'
+import { PostBox, Post, FriendActivity } from '../../components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -44,8 +44,7 @@ class Home extends Component {
                         <p>@username</p>
                       </div>
                       <ul className="nav nav-pills nav-stacked">
-                        <li className="active"><a href="null">
-                          <i><FontAwesomeIcon icon="newspaper"/></i> News feed</a>
+                        <li className="active"><a href="null" className="tabMenu"><i><FontAwesomeIcon icon="newspaper"/></i> News feed</a>
                         </li>
                         {/*<li>
                           <a href="#">
@@ -53,8 +52,8 @@ class Home extends Component {
                             <span className="label label-info pull-right r-activity">9</span>
                           </a>
                         </li>*/}
-                        <li><a href="null"> <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar</a></li>
-                        <li><a href="null"> <i><FontAwesomeIcon icon="users"/></i> Users</a></li>
+                        <li><a href="null" className="tabMenu"> <i><FontAwesomeIcon icon="calendar-alt"/></i> Calendar</a></li>
+                        <li><a href="null" className="tabMenu"> <i><FontAwesomeIcon icon="users"/></i> Users</a></li>
                       </ul>
                     </div>
                   </div>
@@ -83,77 +82,9 @@ class Home extends Component {
               {/* end  center posts */}
 
               {/* right posts */}
-              {/*<div className="col-md-3">*/}
+              <div className="col-md-3">
                 {/* Friends activity */}
-                {/*<div className="widget">
-                  <div className="widget-header">
-                    <h3 className="widget-caption">Friends activity</h3>
-                  </div>
-                  <div className="widget-body bordered-top bordered-sky">
-                    <div className="card">
-                      <div className="content">
-                        <ul className="list-unstyled team-members">
-                          <li>
-                            <div className="row">
-                              <div className="col-xs-3">
-                                <div className="avatar">
-                                  <img src="img/Friends/woman-2.jpg" alt="img" className="img-circle img-no-padding img-responsive" />
-                                </div>
-                              </div>
-                              <div className="col-xs-9">
-                                <b><a href="#">Hillary Markston</a></b> shared a
-                                <b><a href="#">publication</a></b>.
-                                <span className="timeago">5 min ago</span>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="row">
-                              <div className="col-xs-3">
-                                <div className="avatar">
-                                  <img src="img/Friends/woman-3.jpg" alt="Circle Image" className="img-circle img-no-padding img-responsive" />
-                                </div>
-                              </div>
-                              <div className="col-xs-9">
-                                <b><a href="#">Leidy marshel</a></b> shared a
-                                <b><a href="#">publication</a></b>.
-                                <span className="timeago">5 min ago</span>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="row">
-                              <div className="col-xs-3">
-                                <div className="avatar">
-                                  <img src="img/Friends/woman-4.jpg" alt="Circle Image" className="img-circle img-no-padding img-responsive" />
-                                </div>
-                              </div>
-                              <div className="col-xs-9">
-                                <b><a href="#">Presilla bo</a></b> shared a
-                                <b><a href="#">publication</a></b>.
-                                <span className="timeago">5 min ago</span>
-                              </div>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="row">
-                              <div className="col-xs-3">
-                                <div className="avatar">
-                                  <img src="img/Friends/woman-4.jpg" alt="Circle Image" className="img-circle img-no-padding img-responsive" />
-                                </div>
-                              </div>
-                              <div className="col-xs-9">
-                                <b><a href="#">Martha markguy</a></b> shared a
-                                <b><a href="#">publication</a></b>.
-                                <span className="timeago">5 min ago</span>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>*/}
+                <FriendActivity />
                 {/* End Friends activity */}
                 {/* People You May Know */}
                 {/*<div className="widget">
@@ -215,7 +146,7 @@ class Home extends Component {
                   </div>
                 </div>*/}
                 {/* End people yout may know */}
-              {/*</div>*/}
+              </div>
               {/* end right posts */}
             </div>
           </div>

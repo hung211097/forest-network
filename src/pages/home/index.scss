@@ -3,7 +3,7 @@
 :local(.home){
   .page-content {
     margin-top: 90px;
-    margin-bottom: 70px;
+    margin-bottom: 30px;
     .widget {
       padding: 0;
       box-shadow: none;
@@ -53,13 +53,13 @@
               border-bottom: none;
             }
             &.active, &:hover{
-              a{
+              .tabMenu{
                 background: $grey !important;
                 border-left: 5px solid $main-color-2;
                 color: $grey-bolder !important;
               }
             }
-            a{
+            .tabMenu{
               border-radius: 0;
               color: $grey-bolder;
               border-left: 5px solid #fff;
