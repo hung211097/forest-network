@@ -8,6 +8,7 @@ import MayKnowFriends from './may-know-friends'
 import Calendar from './calendar'
 import UserCard from './user-card'
 import ListUser from './list-user'
+import Timeline from './timeline'
 
 export {
   Header,
@@ -19,5 +20,6 @@ export {
   MayKnowFriends,
   Calendar,
   UserCard,
-  ListUser
+  ListUser,
+  Timeline
 }
