@@ -34,3 +34,10 @@ export const followUser = (id) => {
     idUser: id
   }
 }
+
+export const chooseTagProfile = (num) => {
+  return{
+    type: actionTypes.CHOOSE_TAG_PROFILE,
+    status: num
+  }
+}

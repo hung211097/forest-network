@@ -202,7 +202,7 @@ a {
 .nav-pills-custom-minimal {
 	border-bottom: 1px solid #ccc;
 	> li {
-		> a {
+		> .nav-tag {
 			//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 			border-radius: 0;
 			padding: 10px;
@@ -220,7 +220,7 @@ a {
 		+ li {
 			margin-left: 30px;
 		}
-		&.active > a {
+		&.active > .nav-tag {
 			background-color: transparent;
 			border-top-color: #2dc3e8;
 			color: #696565;
@@ -241,7 +241,7 @@ a {
 			border-top: none;
 			border-bottom: 4px solid transparent;
 		}
-		&.active > a {
+		&.active > .nav-tag {
 			border-bottom-color: #2dc3e8;
 			&:hover {
 				border-bottom-color: #2dc3e8;

@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import styles from './index.scss';
+import './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
 import { Layout } from '../../components'
 import avatar from '../../images/guy-3.jpg'
 import cover from '../../images/game.jpg'
+import { ListFollowers, ListFollowing } from '../../components'
+import { connect } from 'react-redux'
 
-class Profile extends Component {
+const mapStateToProps = (state) => {
+  return{
+    status: state.profileReducer.status
+  }
+}
+
+class Profile extends Component {	
   render() {
     return (
 			<Layout>
@@ -60,14 +67,8 @@ class Profile extends Component {
 											</div>
 										</div>
 									</div>
-									<div className="col-md-8">
-										<div className="profile-info-right">
-											<ul className="nav nav-pills nav-pills-custom-minimal custom-minimal-bottom">
-												<li className="active"><a href="" data-toggle="tab">Timeline</a></li>
-												<li><a href="" data-toggle="tab">Followers</a></li>
-												<li><a href="" data-toggle="tab">Following</a></li>
-											</ul>
-										</div>
+									<div className="col-md-8">										
+											{(this.props.status===2) ? <ListFollowers /> : (this.props.status===3) ? <ListFollowing /> : ''}
 									</div>
 								</div>
 							</div>
@@ -79,4 +80,4 @@ class Profile extends Component {
   }
 };
 
-export default Profile;
+export default connect(mapStateToProps)(Profile);
