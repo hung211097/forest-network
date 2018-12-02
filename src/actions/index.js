@@ -20,7 +20,7 @@ export const createPost = (post) => {
   }
 }
 
-export const createComment = (comment, id) => {
+export const createComment = (comment, id) => { 
   return{
     type: actionTypes.NEW_COMMENT,
     comment: comment,
