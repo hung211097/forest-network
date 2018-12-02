@@ -1,0 +1,210 @@
+@import "../../styles/variables.scss";
+
+:local(.editProfile){
+  .page-content {
+    margin-top: 90px;
+    margin-bottom: 30px;
+    .nav {
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+      background: white;
+      &.nav-tabs {
+        border-bottom: 1px solid #ddd;
+        li{
+          float: left;
+          margin-bottom: -1px;
+          position: relative;
+          display: block;
+          &.active{
+            span{
+              background-color: #3ecdf1;
+              color: #fff;
+              cursor: pointer;
+              border: 1px solid #ddd;
+              border-bottom-color: transparent;
+            }
+          }
+          span{
+            cursor: pointer;
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            transition: 0.2s ease-in-out;
+          }
+        }
+      }
+    }
+    .tab-content {
+      background: white;
+      &.profile-page{
+        padding: 35px 15px;
+      }
+      .tab-pane {
+        display: none;
+        &.active{
+          display: block;
+        }
+        .user-info-left {
+          text-align: center;
+          h2{
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+          }
+          img{
+            border: 3px solid black;
+          }
+          .btn{
+            border-radius: 0px !important;
+            position: relative;
+            &.btn-file{
+              input{
+                position: absolute;
+                top: 0;
+                right: 0;
+                min-width: 100%;
+                min-height: 100%;
+                font-size: 0px;
+                text-align: right;
+                filter: alpha(opacity=0);
+                opacity: 0;
+                outline: none;
+                background: #fff;
+                cursor: inherit;
+                display: block;
+              }
+            }
+          }
+        }
+        .user-info-right {
+          border-left: 1px solid #ddd;
+          padding-left: 30px;
+          h3{
+            font-size: 20px;
+          }
+          input{
+            &:focus{
+              box-shadow: none;
+            }
+          }
+          .data-name {
+            width: 12em;
+            color: #fff;
+            background-color: #3ecdf1;
+            border-color: #3ecdf1;
+            font-size: 0.9em;
+            vertical-align: top;
+          }
+          .basic-info{
+            .form-group{
+              margin-bottom: 1.5rem;
+              &:first-of-type{
+                margin-top: 20px;
+              }
+              &:last-of-type{
+                margin-bottom: 40px;
+              }
+            }
+          }
+          .contact_info{
+            .form-group{
+              margin-bottom: 1.5rem;
+              &:first-of-type{
+                margin-top: 20px;
+              }
+              &:last-of-type{
+                margin-bottom: 40px;
+              }
+            }
+          }
+        }
+        &.settings {
+          h3{
+            font-size: 20px;
+            margin-bottom: 1rem;
+          }
+          .form-group{
+            .control-label {
+              text-align: left;
+              @media screen and (min-width: 768px){
+                padding-top: 7px;
+                margin-bottom: 0;
+              }
+            }
+            .form-control{
+              font-size: 13px;
+              padding: 6px 12px;
+              transition: box-shadow .45s, border-color .45s ease-in-out;
+              box-shadow: none;
+              border-radius: 0 !important;
+              background-clip: padding-box !important;
+              color: #858585;
+              background-color: #fbfbfb;
+              border: 1px solid #d5d5d5;
+              font-family: inherit;
+            }
+          }
+          p{
+            span{
+              border: 1px solid;
+              margin-top: 2rem;
+              transition: 0.2s ease-in-out;
+              &:hover{
+                background: black;
+                color: white;
+                border-color: black;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .profile .user-info-left, .profile .user-info-right {
+    padding: 10px 0;
+  }
+  .data-row .data-name, .data-row .data-value {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 5px;
+  }
+  .input-group-text{
+    background: $main-color-2 !important;
+    border-color: $main-color-2 !important;
+    color: white !important;
+  }
+  .write, .save {
+    color: white;
+    text-align: center;
+    position: fixed;
+    z-index: 99;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 5px #d8d8d8;
+    background: #39bee8 no-repeat 50% 50%;
+    i{
+      font-size: 23px;
+      line-height: 1.9;
+      padding-left: 4px;
+    }
+  }
+  .write{
+    right: 10%;
+    bottom: 60%;
+  }
+  .save{
+    right: 10%;
+    bottom: 50%;
+    i{
+      padding-left: 2px;
+      line-height: 2;
+    }
+  }
+}
