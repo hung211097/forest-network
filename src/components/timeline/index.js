@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 
 const mapStateToProps = (state) => {
   return{
-    profile: PropTypes.object,
     posts: state.postsReducer.posts
   }
 }
