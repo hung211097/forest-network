@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Layout } from '../../components'
-import avatar from '../../images/guy-3.jpg'
 import { InputGroup, InputGroupAddon, Input, FormGroup, FormFeedback } from 'reactstrap';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { updateProfile } from '../../actions'
+import { updateProfile, updatePost } from '../../actions'
 import { validateEmail, validatePhoneNumber, ConvertHTML2TextNewLine, ConvertText2HTMLNewLine } from '../../services/utils.service'
 import ReactTooltip from 'react-tooltip';
 
@@ -18,14 +17,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    updateProfile: (info) => {dispatch(updateProfile(info))}
+    updateProfile: (info) => {dispatch(updateProfile(info))},
+    updatePost: (user) => {dispatch(updatePost(user))}
   }
 }
 
 class EditProfile extends Component {
   static propTypes = {
       profile: PropTypes.object,
-      updateProfile: PropTypes.func
+      updateProfile: PropTypes.func,
+      updatePost: PropTypes.func
   }
 
   constructor(props){
@@ -38,11 +39,28 @@ class EditProfile extends Component {
       ...this.props.profile
     }
   }
+
+  componentWillUnmount(){
+    this.toggleAbsoluteFooter(false)
+  }
+
+  toggleAbsoluteFooter(isAbsolute){
+    if(isAbsolute){
+      document.getElementsByClassName('footer')[0].style.position = 'absolute'
+      document.getElementsByClassName('footer')[0].style.bottom = '0';
+    }
+    else{
+      document.getElementsByClassName('footer')[0].style.position = 'unset'
+      document.getElementsByClassName('footer')[0].style.bottom = 'unset';
+    }
+  }
+
   handleTabProfile(){
     this.setState({
       tabProfile: true,
       tabSetting: false
     })
+    this.toggleAbsoluteFooter(false)
   }
 
   handleTabSetting(){
@@ -50,6 +68,7 @@ class EditProfile extends Component {
       tabProfile: false,
       tabSetting: true
     })
+    this.toggleAbsoluteFooter(true)
   }
 
   handleChangeUsername(e){
@@ -121,6 +140,12 @@ class EditProfile extends Component {
       address: this.state.address,
       about: ConvertText2HTMLNewLine(this.state.about),
     })
+    
+    this.props.updatePost && this.props.updatePost({
+      id: this.props.profile.userID,
+      username: this.state.username
+    })
+
     this.setState({
       lockEdit: true,
       about: ConvertText2HTMLNewLine(this.state.about)
@@ -153,6 +178,7 @@ class EditProfile extends Component {
   }
 
   render() {
+    let {profile} = this.props
     return (
       <Layout>
         <div className={styles.editProfile}>
@@ -175,8 +201,8 @@ class EditProfile extends Component {
                     <div className="row">
                       <div className="col-md-3">
                         <div className="user-info-left">
-                          <img src={avatar} alt="avatar" />
-                          <h2>John Breakgrow jr.</h2>
+                          <img src={profile.avatar} alt="avatar" />
+                          <h2>{profile.username}</h2>
                           <div className="contact">
                             <p>
                               <span className="file-input btn btn-azure btn-file">

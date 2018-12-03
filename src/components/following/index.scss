@@ -1,75 +1,86 @@
-:local(.following){
-.tab-content {
-    padding: 30px 15px 15px 15px;
+:local(.following) {
+  .tab-content {
+    padding: 30px 15px 15px;
     background-color: #fff;
-}
+  }
 
-.fade {
-	opacity: 0;
-	transition: opacity .15s linear;
-	&.in {
-		opacity: 1;
-	}
-}
+  .fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
 
-.user-following {
-	position: relative;
-	margin-bottom: 40px;
-	img {
-		border-radius: 2px;
-		width: 40px;
-	}
-	a {
-		font-size: 1.1em;
-		line-height: 1;
-	}
-	.username {
-		font-size: 0.9em;
-		line-height: 1.5;
-	}
-	.btn {
-		position: absolute;
-		top: 0;
-		right: 0;
-		min-width: 92px;
-	}
-}
+    &.in {
+      opacity: 1;
+    }
+  }
 
-.text-muted {
+  .user-following {
+    position: relative;
+    margin-bottom: 40px;
+
+    img {
+      border-radius: 2px;
+      width: 55px;
+      float: left;
+    }
+
+    a {
+      font-size: 1.1em;
+      line-height: 1;
+      color: black;
+    }
+
+    .username {
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+
+    .btn {
+      position: absolute;
+      top: 10px;
+      right: 0;
+      min-width: 92px;
+    }
+  }
+
+  .text-muted {
     color: #777777;
-}
+  }
 
-.media-left, .media>.pull-left {
+  .media > .pull-left,
+  .media-left {
     padding-right: 10px;
-}
+  }
 
-.media-body {
-	display: table-cell;
-	vertical-align: top;
-	width: 10000px;
-	overflow: hidden;
-	zoom: 1;
-}
-.media-left {
-	display: table-cell;
-	vertical-align: top;
-}
-.media-right {
-	display: table-cell;
-	vertical-align: top;
-}
-.media {
-	overflow: hidden;
-	zoom: 1;
-}
+  .media-body {
+    vertical-align: top;
+    overflow: hidden;
+    float: left;
+    zoom: 1;
+  }
 
-.pull-right {
+  .media-left {
+    display: table-cell;
+    vertical-align: top;
+  }
+
+  .media-right {
+    display: table-cell;
+    vertical-align: top;
+  }
+
+  .media {
+    overflow: hidden;
+    zoom: 1;
+    display: block;
+  }
+
+  .pull-right {
     float: right!important;
-}
+  }
 
-.btn-sm {
-	font-size: 12px;
-	padding: 4px 9px;
-	line-height: 1.39;
-}
+  .btn-sm {
+    font-size: 12px;
+    padding: 4px 9px;
+    line-height: 1.39;
+  }
 }

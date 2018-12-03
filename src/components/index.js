@@ -11,7 +11,7 @@ import ListUser from './list-user'
 import ListFollowers from './followers'
 import ListFollowing from './following'
 import Timeline from './timeline'
-
+import ScrollToTop from './scroll-to-top'
 
 export {
   Header,
@@ -26,5 +26,6 @@ export {
   ListUser,
   ListFollowers,
   ListFollowing,
-  Timeline
+  Timeline,
+  ScrollToTop
 }

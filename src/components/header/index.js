@@ -9,7 +9,6 @@ import {
   NavbarToggler,
   Nav,
   NavItem,
-  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -57,12 +56,12 @@ class Header extends Component {
                       Update profile
                     </Link>
                   </NavItem>
-                  <NavItem>
+                  {/*<NavItem>
                     <NavLink>Followers</NavLink>
                   </NavItem>
                   <NavItem>
                     <NavLink>Following</NavLink>
-                  </NavItem>
+                  </NavItem>*/}
                 </div>
                 <UncontrolledDropdown nav inNavbar className="d-sm-block d-none">
                   <DropdownToggle nav caret>
@@ -71,12 +70,12 @@ class Header extends Component {
                     <Link to="/edit-profile" className="dropdown-item">
                       Update profile
                     </Link>
-                    <Link to="/follower" className="dropdown-item">
+                    {/*<Link to="/follower" className="dropdown-item">
                       Followers
                     </Link>
                     <Link to="/following" className="dropdown-item">
                       Following
-                    </Link>
+                    </Link>*/}
                     <DropdownItem divider />
                     <Link to="/login" className="dropdown-item">
                       <i><FontAwesomeIcon icon="sign-out-alt"/></i> Logout
