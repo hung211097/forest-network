@@ -1,3 +1,18 @@
+:local(.timeline){
 .n-border-top {
     border-top: none !important;
+}
+
+.tab-content {
+    padding: 30px 15px 15px 15px;
+    background-color: #fff;
+}
+
+.fade {
+	opacity: 0;
+	transition: opacity .15s linear;
+	&.in {
+		opacity: 1;
+	}
+}
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import './index.scss';
-import { Link } from 'react-router-dom'
+import  styles from './index.scss';
 import { chooseTagProfile, changeFollowingUser } from '../../actions';
 
 const mapDispatchToProps = (dispatch) => {
@@ -18,19 +17,6 @@ const mapStateToProps = (state) => {
 }
 
 class ListFollowing extends Component {	
-	handleTimeline() {
-		this.props.chooseTagProfile(1);
-	}
-	
-	handleFollowers() {
-		this.props.chooseTagProfile(2);
-		console.log('change')
-	}
-	
-	handleFollowing() {
-		this.props.chooseTagProfile(3);
-	}
-		
 	handleChangeFollow(contact) {
 		this.props.changeFollowingUser(contact);
 	}
@@ -49,20 +35,13 @@ class ListFollowing extends Component {
 			)
 		});
     return (
-			<div className="profile-info-right">
-				<ul className="nav nav-pills nav-pills-custom-minimal custom-minimal-bottom">
-					<li><Link to="/profile" className="nav-tag" onClick={this.handleTimeline.bind(this)}>Timeline</Link></li>
-					<li><Link to="/profile" className="nav-tag" onClick={this.handleFollowers.bind(this)}>Followers</Link></li>
-					<li className="active"><Link to="/profile" className="nav-tag" onClick={this.handleFollowing.bind(this)}>Following</Link></li>
-				</ul>
-				<div className="tab-content">
-					{/* following */}
-					<div className="tab-pane fade active in" id="following">
-						{listUser}          
-					</div>
-					{/* end following */}
-				</div>
+		<div className={styles.following}>
+			{/* following */}
+			<div className="tab-pane fade active in" id="following">
+				{listUser}          
 			</div>
+			{/* end following */}
+		</div>
     );
   }
 }

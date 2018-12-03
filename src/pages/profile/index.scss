@@ -1,4 +1,5 @@
-.page-content {
+:local(.profile){
+	.page-content {
 	margin-top: 90px;
 	margin-bottom: 70px;
 }
@@ -153,26 +154,6 @@ a {
 	}
 }
 
-.btn {
-	cursor: pointer;
-	vertical-align: middle;
-	margin: 0;
-	position: relative;
-	display: inline-block;
-	color: #fff;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, .05);
-	transition: all .15s ease;
-	border-radius: 2px;
-	background-clip: padding-box;
-	font-size: 13px;
-	&:hover {
-		color: #fff;
-	}
-	&:focus {
-		color: #fff;
-	}
-}
-
 .badge {
     display: inline-block;
     min-width: 10px;
@@ -291,4 +272,5 @@ ul {
     padding-right: 15px;
     padding-left: 15px;
 		float: left;
+}
 }
