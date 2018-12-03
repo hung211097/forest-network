@@ -12,8 +12,8 @@ import {
   NavLink,
   UncontrolledDropdown,
   DropdownToggle,
-  DropdownItem,
-  DropdownMenu
+  DropdownMenu,
+  DropdownItem
  } from 'reactstrap';
 
 class Header extends Component {
@@ -42,14 +42,20 @@ class Header extends Component {
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
                 <NavItem>
-                  <NavLink>Profile</NavLink>
+                  <Link to="/profile" className="nav-link">
+                    Profile
+                  </Link>
                 </NavItem>
                 <NavItem>
-                  <NavLink>Home</NavLink>
+                  <Link to="/" className="nav-link">
+                    Home
+                  </Link>
                 </NavItem>
                 <div className="d-sm-none d-block">
                   <NavItem>
-                    <NavLink>Update profile</NavLink>
+                    <Link to="/edit-profile" className="nav-link">
+                      Update profile
+                    </Link>
                   </NavItem>
                   <NavItem>
                     <NavLink>Followers</NavLink>
@@ -62,15 +68,15 @@ class Header extends Component {
                   <DropdownToggle nav caret>
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem>
+                    <Link to="/edit-profile" className="dropdown-item">
                       Update profile
-                    </DropdownItem>
-                    <DropdownItem>
+                    </Link>
+                    <Link to="/follower" className="dropdown-item">
                       Followers
-                    </DropdownItem>
-                    <DropdownItem>
+                    </Link>
+                    <Link to="/following" className="dropdown-item">
                       Following
-                    </DropdownItem>
+                    </Link>
                     <DropdownItem divider />
                     <Link to="/login" className="dropdown-item">
                       <i><FontAwesomeIcon icon="sign-out-alt"/></i> Logout

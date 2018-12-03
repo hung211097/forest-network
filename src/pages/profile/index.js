@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Layout } from '../../components'
 import avatar from '../../images/guy-3.jpg'
 import cover from '../../images/game.jpg'
-import { ListFollowers, ListFollowing } from '../../components'
+import { ListFollowers, ListFollowing, Timeline } from '../../components'
 import { connect } from 'react-redux'
 
 const mapStateToProps = (state) => {
@@ -65,7 +65,7 @@ class Profile extends Component {
 										</div>
 									</div>
 									<div className="col-md-8">										
-											{(this.props.status===2) ? <ListFollowers /> : (this.props.status===3) ? <ListFollowing /> : ''}
+											{(this.props.status===1) ? <Timeline /> : (this.props.status===2) ? <ListFollowers /> : (this.props.status===3) ? <ListFollowing /> : ''}
 									</div>
 								</div>
 							</div>
@@ -73,8 +73,8 @@ class Profile extends Component {
 					</div>
 				</div>
 			</Layout>
-    );
-  }
+		);
+	}
 };
 
 export default connect(mapStateToProps)(Profile);

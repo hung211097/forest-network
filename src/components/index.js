@@ -10,6 +10,8 @@ import UserCard from './user-card'
 import ListUser from './list-user'
 import ListFollowers from './followers'
 import ListFollowing from './following'
+import Timeline from './timeline'
+
 
 export {
   Header,
@@ -22,6 +24,7 @@ export {
   Calendar,
   UserCard,
   ListUser,
-	ListFollowers,
-	ListFollowing,
+  ListFollowers,
+  ListFollowing,
+  Timeline
 }
