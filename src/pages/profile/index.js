@@ -40,7 +40,7 @@ class Profile extends Component {
 			sideMenu: temp
 		})
 	}
-	
+
 	render() {
 		return (
 			<Layout>
@@ -100,7 +100,9 @@ class Profile extends Component {
 												<ul className="nav nav-pills nav-pills-custom-minimal custom-minimal-bottom">
 													{!!this.state.sideTab.length && this.state.sideTab.map((item, key) => {
 														return (
-															<li className={item.isSelect ? "active" : ""}> <span onClick={this.handleSelectTab.bind(this, key)}>{item.title}</span></li>
+															<li className={item.isSelect ? "active" : ""} key={key}>
+																<span onClick={this.handleSelectTab.bind(this, key)}>{item.title}</span>
+															 </li>
 														)
 													})
 													}
