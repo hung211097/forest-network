@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import { PostBox, Post } from '../../components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { chooseTagProfile } from '../../actions';
 import styles from './index.scss';
-
-const mapDispatchToProps = (dispatch) => {
-  return{
-    chooseTagProfile: (num) => {dispatch(chooseTagProfile(num))}
-  }
-}
 
 const mapStateToProps = (state) => {
   return{
@@ -41,4 +34,4 @@ class Timeline extends Component {
     }
   }
   
-  export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
+  export default connect(mapStateToProps)(Timeline);

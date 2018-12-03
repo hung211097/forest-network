@@ -20,7 +20,6 @@ const initialState = {
     about: `Dramatically facilitate proactive solutions whereas professional intellectual capital. Holisticly utilize competitive e-markets through intermandated meta-services. Objectively.<br/><br/>Monotonectally foster future-proof infomediaries before principle-centered interfaces.Assertively recaptiualize cutting-edge web services rather than emerging "outside the box" thinking. Phosfluorescently cultivate resource maximizing technologies and user-centric convergence. Completely underwhelm
 cross functional innovation vis-a-vis.`
   },
-	status: 1,
 	numFollowers: 5,
 	usersFollow: [
     {
@@ -83,12 +82,7 @@ cross functional innovation vis-a-vis.`
 }
 
 export default (state = initialState, action) => {
-  switch(action.type){
-		case actionTypes.CHOOSE_TAG_PROFILE:
-			return {
-			...state,
-			status: action.status
-			};			
+  switch(action.type){	
 		case actionTypes.CHANGE_FOLLOWING_USER:
 			let numFollowingTemp = state.numFollowing;
 			let usersFollowingTemp = state.usersFollowing;

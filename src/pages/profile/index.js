@@ -11,8 +11,7 @@ import { Link } from 'react-router-dom'
 const mapStateToProps = (state) => {
   return{
 		numFollowers: state.profileReducer.numFollowers,
-		numFollowing: state.profileReducer.numFollowing,
-    status: state.profileReducer.status
+		numFollowing: state.profileReducer.numFollowing
   }
 }
 

@@ -35,13 +35,6 @@ export const followUser = (id) => {
   }
 }
 
-export const chooseTagProfile = (num) => {
-  return{
-    type: actionTypes.CHOOSE_TAG_PROFILE,
-    status: num
-  }
-}
-
 export const changeFollowingUser = (contact) => {
   return{
     type: actionTypes.CHANGE_FOLLOWING_USER,

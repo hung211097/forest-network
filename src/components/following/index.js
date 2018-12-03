@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import  styles from './index.scss';
-import { chooseTagProfile, changeFollowingUser } from '../../actions';
+import { changeFollowingUser } from '../../actions';
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    chooseTagProfile: (num) => {dispatch(chooseTagProfile(num))},
 		changeFollowingUser: (contact) => {dispatch(changeFollowingUser(contact))}
   }
 }
