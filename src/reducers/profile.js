@@ -20,7 +20,7 @@ const initialState = {
     about: `Dramatically facilitate proactive solutions whereas professional intellectual capital. Holisticly utilize competitive e-markets through intermandated meta-services. Objectively.<br/><br/>Monotonectally foster future-proof infomediaries before principle-centered interfaces.Assertively recaptiualize cutting-edge web services rather than emerging "outside the box" thinking. Phosfluorescently cultivate resource maximizing technologies and user-centric convergence. Completely underwhelm
 cross functional innovation vis-a-vis.`
   },
-	status: 2,
+	status: 1,
 	numFollowers: 5,
 	usersFollow: [
     {

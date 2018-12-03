@@ -38,7 +38,7 @@ class ListFollowing extends Component {
   render() {
 		const listUser = this.props.usersFollowing.map(user => {
 			return(
-				<div className="media user-following" key={user.id}>
+				<div className="media user-following" key={user.contact}>
             <img src={user.avatar} alt="User Avatar" className="media-object pull-left" />
             <div className="media-body">
               <a href="null">{user.username}<br /><span className="text-muted username">{user.contact}</span></a>
