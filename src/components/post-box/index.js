@@ -13,9 +13,15 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   let temp = state.postsReducer.posts.concat()
-  temp.sort((a, b) => {
-    return a.id > b.id
-  })
+  for(let i = 0; i < temp.length - 1; i++){
+    for(let j = i + 1; j < temp.length; j++){
+      if(temp[i].id > temp[j].id){
+        let tmp = temp[i]
+        temp[i] = temp[j]
+        temp[j] = tmp
+      }
+    }
+  }
   return{
     profile: state.profileReducer.info,
     posts: temp
