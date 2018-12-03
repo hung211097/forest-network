@@ -41,3 +41,10 @@ export const chooseTagProfile = (num) => {
     status: num
   }
 }
+
+export const changeFollowingUser = (contact) => {
+  return{
+    type: actionTypes.CHANGE_FOLLOWING_USER,
+    contactUser: contact
+  }
+}
