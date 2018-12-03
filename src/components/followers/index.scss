@@ -1,0 +1,134 @@
+:local(.followers){
+.tab-content {
+    padding: 30px 15px 15px 15px;
+    background-color: #fff;
+}
+
+.fade {
+	opacity: 0;
+	transition: opacity .15s linear;
+	&.in {
+		opacity: 1;
+	}
+}
+
+.user-follower {
+	position: relative;
+	margin-bottom: 40px;
+	img {
+		border-radius: 2px;
+		width: 40px;
+	}
+	a {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+	.username {
+		font-size: 0.9em;
+		line-height: 1.5;
+	}
+	.btn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		min-width: 92px;
+	}
+}
+.user-following {
+	position: relative;
+	margin-bottom: 40px;
+	img {
+		border-radius: 2px;
+		width: 40px;
+	}
+	a {
+		font-size: 1.1em;
+		line-height: 1;
+	}
+	.username {
+		font-size: 0.9em;
+		line-height: 1.5;
+	}
+	.btn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		min-width: 92px;
+	}
+}
+
+.text-muted {
+    color: #777777;
+}
+
+.media-left, .media>.pull-left {
+    padding-right: 10px;
+}
+
+.btn-toggle-following {
+	background-color: #7bae16;
+	color: #fff;
+	&:hover {
+		background-color: #ef2020;
+		color: #fff;
+		span {
+			display: none;
+		}
+		&:after {
+			content: 'Unfollow';
+			display: inline;
+		}
+		i:before {
+			content: '\f129';
+		}
+	}
+}
+
+.media-body {
+	display: table-cell;
+	vertical-align: top;
+	width: 10000px;
+	overflow: hidden;
+	zoom: 1;
+}
+.media-left {
+	display: table-cell;
+	vertical-align: top;
+}
+.media-right {
+	display: table-cell;
+	vertical-align: top;
+}
+.media {
+	overflow: hidden;
+	zoom: 1;
+}
+
+.pull-right {
+    float: right!important;
+}
+
+.btn-sm {
+	font-size: 12px;
+	padding: 4px 9px;
+	line-height: 1.39;
+}
+
+
+.btn-default {
+	color: #444 !important;
+	background-color: #fff;
+	border-color: #ccc;
+	&:focus {
+		color: #444;
+		background-color: #fff;
+		border-color: #ccc;
+	}
+	&:hover {
+		color: #444;
+		border-color: #b8b8b8;
+		box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+		background-color: #e6e6e6;
+	}
+}
+}

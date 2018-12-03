@@ -35,6 +35,13 @@ export const followUser = (id) => {
   }
 }
 
+export const changeFollowingUser = (contact) => {
+  return{
+    type: actionTypes.CHANGE_FOLLOWING_USER,
+    contactUser: contact
+	}
+}
+
 export const updateProfile = (info) => {
   return{
     type: actionTypes.UPDATE_PROFILE,
