@@ -20,7 +20,7 @@ export const createPost = (post) => {
   }
 }
 
-export const createComment = (comment, id) => { 
+export const createComment = (comment, id) => {
   return{
     type: actionTypes.NEW_COMMENT,
     comment: comment,
@@ -46,5 +46,12 @@ export const updateProfile = (info) => {
   return{
     type: actionTypes.UPDATE_PROFILE,
     info: info
+  }
+}
+
+export const updatePost = (user) => {
+  return{
+    type: actionTypes.UPDATE_POST,
+    user: user
   }
 }

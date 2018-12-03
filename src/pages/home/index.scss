@@ -18,7 +18,7 @@
           -webkit-border-radius: 4px 4px 0 0;
           padding: 30px;
           text-align: center;
-          a {
+          .border-img{
             border-radius: 50%;
             border: 10px solid rgba(255,255,255,0.3);
             display: inline-block;
@@ -27,6 +27,9 @@
               height: 112px;
               border-radius: 50%;
             }
+          }
+          a{
+            color: white;
           }
           h1{
             font-size: 20px;

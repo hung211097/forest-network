@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar, ListUser } from '../../components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const mapStateToProps = (state) => {
   return{
@@ -68,10 +69,12 @@ class Home extends Component {
                   <div className="widget">
                     <div className="widget-body">
                       <div className="user-heading round">
-                        <a href="null">
+                        <Link to="/profile" className="border-img">
                           <img src={this.props.profile.avatar} alt="avatar" />
-                        </a>
-                        <h1>{this.props.profile.fullname}</h1>
+                        </Link>
+                        <Link to="/profile">
+                          <h1>{this.props.profile.username}</h1>
+                        </Link>
                         <p>@username</p>
                       </div>
                       <ul className="nav nav-pills nav-stacked">

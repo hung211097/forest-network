@@ -2,46 +2,53 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Layout } from '../../components'
-import avatar from '../../images/guy-3.jpg'
 import cover from '../../images/game.jpg'
 import { ListFollowers, ListFollowing, Timeline } from '../../components'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 const mapStateToProps = (state) => {
   return{
-		numFollowers: state.profileReducer.numFollowers,
-		numFollowing: state.profileReducer.numFollowing
+    numFollowers: state.profileReducer.numFollowers,
+    numFollowing: state.profileReducer.numFollowing,
+    profile: state.profileReducer.info
   }
 }
 
-class Profile extends Component {	
+class Profile extends Component {
+  static propTypes = {
+    numFollowers: PropTypes.number,
+    numFollowing: PropTypes.number,
+    profile: PropTypes.object
+  }
 	constructor(props){
     super(props)
     this.state = {
       numNavTag: 1
     }
   }
-	
+
 	handleTimeline() {
 		this.setState({
       numNavTag: 1
     })
 	}
-	
+
 	handleFollowers() {
 		this.setState({
       numNavTag: 2
     })
 	}
-	
+
 	handleFollowing() {
 		this.setState({
       numNavTag: 3
     })
 	}
-	
+
   render() {
+    let {profile} = this.props
     return (
 			<Layout>
 				<div className={styles.profile}>
@@ -56,8 +63,8 @@ class Profile extends Component {
 									<div className="col-md-4">
 										<div className="profile-info-left">
 											<div className="text-center">
-                        <img src={avatar} alt="Avatar" className="avatar img-circle" />
-												<h2>John Breakgrow jr.</h2>
+                        <img src={profile.avatar} alt="Avatar" className="avatar img-circle" />
+												<h2>{profile.username}</h2>
 											</div>
 											<div className="action-buttons">
 												<div className="row">
@@ -67,11 +74,16 @@ class Profile extends Component {
 													<div className="col-xs-6">
 														<a href="null" className="btn btn-azure btn-block" hidden><FontAwesomeIcon icon="envelope" /> Message</a>
 													</div>
+                          <div className="col-12">
+                            <Link to='/edit-profile' className="btn btn-azure btn-block">
+                              <FontAwesomeIcon icon="edit" /> Edit Profile
+                            </Link>
+													</div>
 												</div>
 											</div>
 											<div className="section">
 												<h3>About Me</h3>
-												<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sed ullamcorper ligula. Curabitur in sapien sed risus finibus condimentum et ac quam. Quisque eleifend, lacus ut commodo pulvinar, elit augue eleifend leo, eget suscipit augue erat id orci. .</p>
+												<p dangerouslySetInnerHTML={{ __html: profile.about }}></p>
 											</div>
 											<div className="section">
 												<h3>Statistics</h3>
@@ -90,7 +102,7 @@ class Profile extends Component {
 											</div>
 										</div>
 									</div>
-									<div className="col-md-8">	
+									<div className="col-md-8">
 										<div className="profile-info-right">
 											<ul className="nav nav-pills nav-pills-custom-minimal custom-minimal-bottom">
 												<li className={(this.state.numNavTag === 1)	? 'active' : ''}><Link to="/profile" className="nav-tag" onClick={this.handleTimeline.bind(this)}>Timeline</Link></li>

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import  styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { changeFollowingUser } from '../../actions';
+import PropTypes from 'prop-types'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -16,11 +17,15 @@ const mapStateToProps = (state) => {
   }
 }
 
-class ListFollowers extends Component {	
-		handleChangeFollow(contact) {
-		this.props.changeFollowingUser(contact);
+class ListFollowers extends Component {
+  static propTypes = {
+    usersFollow: PropTypes.array
+  }
+
+  handleChangeFollow(contact) {
+    this.props.changeFollowingUser(contact);
 	}
-	
+
   render() {
 		const listUser = this.props.usersFollow.map(user => {
 			return(
@@ -41,7 +46,7 @@ class ListFollowers extends Component {
 		<div className={styles.followers}>
 			{/* followers */}
 			<div className="tab-pane fade active in" id="followers">
-				{listUser}					
+				{listUser}
 			</div>
 			{/* end followers */}
 		</div>

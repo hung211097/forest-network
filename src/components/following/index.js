@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import  styles from './index.scss';
 import { changeFollowingUser } from '../../actions';
+import PropTypes from 'prop-types'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -15,11 +16,15 @@ const mapStateToProps = (state) => {
   }
 }
 
-class ListFollowing extends Component {	
+class ListFollowing extends Component {
+  static propTypes = {
+    usersFollowing: PropTypes.array
+  }
+
 	handleChangeFollow(contact) {
 		this.props.changeFollowingUser(contact);
 	}
-	
+
   render() {
 		const listUser = this.props.usersFollowing.map(user => {
 			return(
@@ -37,7 +42,7 @@ class ListFollowing extends Component {
 		<div className={styles.following}>
 			{/* following */}
 			<div className="tab-pane fade active in" id="following">
-				{listUser}          
+				{listUser}
 			</div>
 			{/* end following */}
 		</div>
