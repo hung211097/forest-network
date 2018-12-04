@@ -53,7 +53,7 @@ class Header extends Component {
                 <div className="d-sm-none d-block">
                   <NavItem>
                     <Link to="/edit-profile" className="nav-link">
-                      Update profile
+                      Edit profile
                     </Link>
                   </NavItem>
                   {/*<NavItem>
@@ -68,7 +68,7 @@ class Header extends Component {
                   </DropdownToggle>
                   <DropdownMenu right>
                     <Link to="/edit-profile" className="dropdown-item">
-                      Update profile
+                      Edit profile
                     </Link>
                     {/*<Link to="/follower" className="dropdown-item">
                       Followers
