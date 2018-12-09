@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Input, FormFeedback, FormGroup } from 'reactstrap';
+import { InputGroup, InputGroupAddon, Input, FormGroup, FormFeedback } from 'reactstrap';
 
 class TransferMoney extends Component {
   constructor(props){
@@ -78,35 +78,38 @@ class TransferMoney extends Component {
                 <div className="info">
                   <h2 className="title">My Account</h2>
                   <FormGroup>
-                    <Input value={this.state.my_private_key} name="private-key"
-                      onChange={this.handleChangeMyPrivateKey.bind(this)}
-                      placeholder="Private key"
-                      invalid={!this.state.my_private_key && this.state.isSubmit ? true : false}/>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">Private key</InputGroupAddon>
+                      <Input value={this.state.my_private_key} name="private-key"
+                        onChange={this.handleChangeMyPrivateKey.bind(this)}
+                        invalid={!this.state.my_private_key && this.state.isSubmit ? true : false}/>
+                    </InputGroup>
                     <FormFeedback invalid="true" className={!this.state.my_private_key && this.state.isSubmit ? "d-block" : ''}>
                       Private key is empty!
                     </FormFeedback>
                   </FormGroup>
                   <FormGroup>
-                    <Input value={this.state.my_public_key} name="public-key"
-                      onChange={this.handleChangeMyPublicKey.bind(this)}
-                      placeholder="Public key"
-                      invalid={!this.state.my_public_key && this.state.isSubmit ? true : false}/>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">Public key</InputGroupAddon>
+                      <Input value={this.state.my_public_key} name="public-key"
+                        onChange={this.handleChangeMyPublicKey.bind(this)}
+                        invalid={!this.state.my_public_key && this.state.isSubmit ? true : false}/>
+                    </InputGroup>
                     <FormFeedback invalid="true" className={!this.state.my_public_key && this.state.isSubmit ? "d-block" : ''}>
                       Public key is empty!
                     </FormFeedback>
                   </FormGroup>
                   <FormGroup>
-                    <Input value={this.state.amount} name="amount"
-                      onChange={this.handleChangeAmount.bind(this)}
-                      placeholder="Amount"
-                      type="number"
-                      invalid={this.state.amount <= 0 && this.state.isSubmit ? true : false}/>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">Amount (CEL)</InputGroupAddon>
+                      <Input value={this.state.amount} name="amount"
+                        onChange={this.handleChangeAmount.bind(this)}
+                        type="number"
+                        invalid={this.state.amount <= 0 && this.state.isSubmit ? true : false}/>
+                    </InputGroup>
                     <FormFeedback invalid="true" className={this.state.amount <= 0 && this.state.isSubmit ? "d-block" : ''}>
                       Amount is required to be more than zero!
                     </FormFeedback>
-                    {/*<FormFeedback invalid="true" className={this.state.amount && !validateNumber(this.state.amount) && this.state.isSubmit ? "d-block" : ''}>
-                      Amount is required to be more than zero!
-                    </FormFeedback>*/}
                   </FormGroup>
                 </div>
               </div>
@@ -118,10 +121,13 @@ class TransferMoney extends Component {
                 <div className="info">
                   <h2 className="title">Your Account</h2>
                   <FormGroup>
-                    <Input value={this.state.your_public_key} name="public-key"
-                      onChange={this.handleChangeYourPublicKey.bind(this)}
-                      placeholder="Public key"
-                      invalid={!this.state.your_public_key && this.state.isSubmit ? true : false}/>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">Public key</InputGroupAddon>
+                      <Input value={this.state.your_public_key} name="public-key"
+                        onChange={this.handleChangeYourPublicKey.bind(this)}
+                        placeholder="Public key"
+                        invalid={!this.state.your_public_key && this.state.isSubmit ? true : false}/>
+                    </InputGroup>
                     <FormFeedback invalid="true" className={!this.state.your_public_key && this.state.isSubmit ? "d-block" : ''}>
                       Public key is empty!
                     </FormFeedback>
