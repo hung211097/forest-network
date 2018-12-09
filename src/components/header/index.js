@@ -56,6 +56,11 @@ class Header extends Component {
                       Edit profile
                     </Link>
                   </NavItem>
+                  <NavItem>
+                    <Link to="/transfer-money" className="nav-link">
+                      Transfer money
+                    </Link>
+                  </NavItem>
                   {/*<NavItem>
                     <NavLink>Followers</NavLink>
                   </NavItem>
@@ -69,6 +74,9 @@ class Header extends Component {
                   <DropdownMenu right>
                     <Link to="/edit-profile" className="dropdown-item">
                       Edit profile
+                    </Link>
+                    <Link to="/transfer-money" className="dropdown-item">
+                      Transfer money
                     </Link>
                     {/*<Link to="/follower" className="dropdown-item">
                       Followers

@@ -38,7 +38,7 @@
       }
     }
     .small-info {
-      top: 10%;
+      top: 20%;
       @media screen and (max-width: 576px){
         top: 8%;
       }
@@ -100,5 +100,9 @@
     font-family: inherit;
     transition: box-shadow .45s, border-color .45s ease-in-out;
     box-shadow: none;
+  }
+  .btn-register{
+    padding: 10px 45px;
+    font-weight: bold;
   }
 }

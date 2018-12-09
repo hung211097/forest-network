@@ -4,6 +4,15 @@ import {Footer} from '../../components'
 import { Link } from 'react-router-dom'
 
 class SignInUp extends Component {
+
+  handleLogin(){
+
+  }
+
+  handleRegister(){
+
+  }
+
   render() {
     return (
       <div className={styles.signInUp}>
@@ -18,20 +27,13 @@ class SignInUp extends Component {
                       <h4 className="m-b-0"><span className="icon-text">Login</span></h4>
                       <p className="text-muted">Access your account</p>
                     </div>
-                    <form action="index.html" method="get">
+                    <form onSubmit={this.handleLogin.bind(this)} method="get">
                       <div className="form-group">
-                        <input type="email" className="form-control" placeholder="Email Address" />
-                      </div>
-                      <div className="form-group">
-                        <input type="password" className="form-control" placeholder="Password" />
-                        {/*<a href="#" className="pull-xs-right">
-                          <small>Forgot?</small>
-                        </a>*/}
-                        <div className="clearfix" />
+                        <input type="text" className="form-control" name="private-key" placeholder="Private key" />
                       </div>
                       <div className="center">
                         {/*<button type="submit" className="btn btn-azure">Login</button>*/}
-                        <Link to="/" className="btn btn-azure">Login</Link>
+                        <Link to="/" className="btn btn-azure btn-register" onClick={this.handleLogin.bind(this)}>Login</Link>
                       </div>
                     </form>
                   </div>
@@ -42,20 +44,8 @@ class SignInUp extends Component {
                       <span className="icon-text">Sign Up</span>
                     </h4>
                     <p className="text-muted">Create a new account</p>
-                    <form action="index.html" method="get">
-                      <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Full Name" />
-                      </div>
-                      <div className="form-group">
-                        <input type="email" className="form-control" placeholder="Email" />
-                      </div>
-                      <div className="form-group">
-                        <input type="password" className="form-control" placeholder="Password" />
-                      </div>
-                      <div className="form-group">
-                        <input type="password" className="form-control" placeholder="Confirm Password" />
-                      </div>
-                      <button type="submit" className="btn btn-azure">Register</button>
+                    <form onSubmit={this.handleRegister.bind(this)} method="get">
+                      <button type="button" className="btn btn-azure btn-register" onClick={this.handleRegister.bind(this)}>Register</button>
                     </form>
                   </div>
                 </div>

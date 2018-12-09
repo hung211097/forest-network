@@ -14,9 +14,14 @@ export function validateEmail(email){
   return re.test(email);
 }
 
-export function validatePhoneNumber(email){
+export function validatePhoneNumber(number){
   let re = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
-  return re.test(email);
+  return re.test(number);
+}
+
+export function validateNumber(string){
+	let re = /^\d+$/;
+	return re.test(string);
 }
 
 export function ConvertHTML2TextNewLine(string){
