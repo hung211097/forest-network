@@ -6,6 +6,7 @@ import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar, ListUser } fro
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import ApiService from '../../services/api.service'
 
 const mapStateToProps = (state) => {
   return{
@@ -17,6 +18,7 @@ const mapStateToProps = (state) => {
 class Home extends Component {
   constructor(props){
     super(props)
+    this.apiService = ApiService()
     this.state = {
       sideMenu: [
         {
@@ -41,6 +43,13 @@ class Home extends Component {
   static propTypes = {
     profile: PropTypes.object,
     posts: PropTypes.array
+  }
+
+
+  componentDidMount(){
+    this.apiService.getTransactions(1, 10).then((data) => {
+      console.log(data);
+    })
   }
 
   handleSelectMenu(index){
