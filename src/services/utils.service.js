@@ -31,3 +31,8 @@ export function ConvertHTML2TextNewLine(string){
 export function ConvertText2HTMLNewLine(string){
 	return string.replace(/(\r\n|\n)/g, '<br/>')
 }
+
+export function timeStamp2Date(string){
+	let ts = new Date(string)
+	return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(ts)
+}
