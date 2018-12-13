@@ -61,6 +61,16 @@ class Header extends Component {
                       Transfer money
                     </Link>
                   </NavItem>
+                  <NavItem>
+                    <Link to="/transaction-history" className="nav-link">
+                      Transaction history
+                    </Link>
+                  </NavItem>
+                  <NavItem>
+                    <Link to="/login" className="nav-link">
+                      Logout
+                    </Link>
+                  </NavItem>
                   {/*<NavItem>
                     <NavLink>Followers</NavLink>
                   </NavItem>
@@ -77,6 +87,9 @@ class Header extends Component {
                     </Link>
                     <Link to="/transfer-money" className="dropdown-item">
                       Transfer money
+                    </Link>
+                    <Link to="/transaction-history" className="dropdown-item">
+                      Transaction history
                     </Link>
                     {/*<Link to="/follower" className="dropdown-item">
                       Followers

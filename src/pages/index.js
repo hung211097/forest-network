@@ -4,6 +4,7 @@ import ErrorPage from './error'
 import Profile from './profile'
 import EditProfile from './edit-profile'
 import TransferMoney from './transfer-money'
+import TransactionHistory from './transaction-history'
 
 export {
   Home,
@@ -11,5 +12,6 @@ export {
   ErrorPage,
   EditProfile,
   Profile,
-  TransferMoney
+  TransferMoney,
+  TransactionHistory
 }
