@@ -3,7 +3,7 @@ import styles from './index.scss';
 import { Layout } from '../../components'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import { makeData } from '../../services/utils.service';
+import { timeStamp2Date } from '../../services/utils.service'
 
 class TransactionHistory extends Component {
     constructor(props) {
@@ -14,14 +14,16 @@ class TransactionHistory extends Component {
                 publicKeyReceived: "GAO4J5RXQHUVVONBDQZSRTBC42E3EIK66WZA5ZSGKMFCS6UNYMZSIDBI",
                 operation: "payment",
                 amount: 100000000000,
-                createAt: "2018-12-11 15:01:27.965+07"
+                note: "Mua quà",
+                createAt: timeStamp2Date("2018-12-11 15:01:27.965+07")
             },
             {
                 publicKey: "Huỳnh",
                 publicKeyReceived: "Hưng",
                 operation: "payment",
                 amount: 20,
-                createAt: "2018-12-11 15:01:27.965+07"
+                note: "Mua quà",
+                createAt: timeStamp2Date("2018-12-11 15:01:27.965+07")
             }]
         };
     }
@@ -62,6 +64,10 @@ class TransactionHistory extends Component {
                                     {
                                         Header: "Amount",
                                         accessor: "amount",
+                                    },
+                                    {
+                                        Header: "Note",
+                                        accessor: "note",
                                     },
                                     {
                                         Header: "Create At",

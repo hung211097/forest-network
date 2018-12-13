@@ -82,6 +82,12 @@ class Profile extends Component {
 												</div>
 											</div>
 											<div className="section">
+												<h3>Currency, energy</h3>
+												<p><span className="badge">{332 + this.props.numFollowing}</span> Balance</p>
+												<p><span className="badge">620</span> Max Energy</p>
+												<p><span className="badge">{124 + this.props.numFollowers}</span> Energy used</p>
+											</div>
+											<div className="section">
 												<h3>About Me</h3>
 												<p dangerouslySetInnerHTML={{ __html: profile.about }}></p>
 											</div>
