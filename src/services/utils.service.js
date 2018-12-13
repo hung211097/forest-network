@@ -1,6 +1,5 @@
 import format from 'date-fns/format'
 import formatDistance from 'date-fns/formatDistance'
-import namor from 'namor'
 
 export function formatDate(date, name='DD/MM/YYYY') {
 	return format(new Date(date), name)

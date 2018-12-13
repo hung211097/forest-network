@@ -33,11 +33,7 @@ class TransactionHistory extends Component {
 
         return (
             <Layout>
-                <br />
-                <br />
-                <br />
-                <br />
-                <div style={{marginBottom: '5rem'}} className={styles.transactionHistory}>
+                <div className={styles.transactionHistory}>
                     <ReactTable
                         data={data}
                         columns={[
