@@ -105,4 +105,20 @@
     padding: 10px 45px;
     font-weight: bold;
   }
+  .sweet-alert {
+    width: 60% !important;
+    top: 40% !important;
+    left: 40% !important;
+    .content-alert{
+      text-align: left;
+      word-wrap: break-word;
+    }
+    @media screen and (max-width: 576px){
+      width: 85% !important;
+      top: 35% !important;
+      left: 80% !important;
+      overflow: auto !important;
+      height: 95%;
+    }
+  }
 }

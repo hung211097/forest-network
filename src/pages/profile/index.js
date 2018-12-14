@@ -83,9 +83,9 @@ class Profile extends Component {
 											</div>
 											<div className="section">
 												<h3>Currency, energy</h3>
-												<p><span className="badge">{332 + this.props.numFollowing}</span> Balance</p>
-												<p><span className="badge">620</span> Current Energy</p>
-												<p><span className="badge">{124 + this.props.numFollowers}</span> Energy used</p>
+												<p>Balance: 100,000,000 Cellulose</p>
+												<p>Current Energy: 21122 OXY</p>
+												<p>Consumed Energy: 1513 OXY</p>
 											</div>
 											<div className="section">
 												<h3>About Me</h3>

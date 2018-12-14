@@ -41,6 +41,12 @@ class TransferMoney extends Component {
     })
   }
 
+  handleChangeMemo(e){
+    this.setState({
+      memo: e.target.value
+    })
+  }
+
   validate(){
     if(this.state.my_private_key === ''){
       return false
@@ -111,6 +117,9 @@ class TransferMoney extends Component {
                       Amount is required to be more than zero!
                     </FormFeedback>
                   </FormGroup>
+                  <textarea className="form-control" name="note" placeholder="Note" onChange={this.handleChangeMemo.bind(this)}
+                    value={this.state.memo}>
+                  </textarea>
                 </div>
               </div>
               <div className="col-12 col-sm-1 arrow">

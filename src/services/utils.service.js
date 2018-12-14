@@ -1,5 +1,6 @@
 import format from 'date-fns/format'
 import formatDistance from 'date-fns/formatDistance'
+import moment from 'moment'
 
 export function formatDate(date, name='DD/MM/YYYY') {
 	return format(new Date(date), name)
@@ -33,6 +34,7 @@ export function ConvertText2HTMLNewLine(string){
 }
 
 export function timeStamp2Date(string){
-	let ts = new Date(string)
+	let timestamps = moment(string).unix()
+	let ts = new Date(timestamps * 1000)
 	return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(ts)
 }
