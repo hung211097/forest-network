@@ -112,6 +112,15 @@ export default (state = initialState, action) => {
         ...state,
         info: {fullname: state.info.fullname, avatar: state.info.avatar, ...action.info}
       }
+    case actionTypes.SAVE_PROFILE:
+      return{
+        ...state,
+        info:{
+          fullname: state.info.fullname,
+          avatar: state.info.avatar,
+          ...action.info
+        }
+      }
     default:
       return state
   }

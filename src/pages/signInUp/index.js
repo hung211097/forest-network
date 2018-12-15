@@ -4,6 +4,16 @@ import {Footer} from '../../components';
 import { Link } from 'react-router-dom';
 import ApiService from '../../services/api.service';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { Keypair } from 'stellar-base';
+import { withRouter } from 'react-router';
+import { saveProfileFromApi } from '../../actions';
+import { connect } from 'react-redux';
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
+  }
+}
 
 class SignInUp extends Component {
   constructor(props){
@@ -12,12 +22,37 @@ class SignInUp extends Component {
     this.state = {
       isShow: false,
       isShowError: false,
-      dataRegister: null
+      dataRegister: null,
+      private_key: '',
+      block: true
     }
   }
 
-  handleLogin(){
+  componentDidMount(){
+    this.apiService.getCurrentProfile().then((data) => {
+      if(data){
+        this.props.history.push('/')
+      }
+      this.setState({
+        block: false
+      })
+    })
+  }
 
+  handleLogin(e){
+    e.preventDefault();
+    if(!this.state.private_key){
+      return
+    }
+    let key = Keypair.fromSecret(this.state.private_key)
+    let public_key = key.publicKey()
+
+    this.apiService.login(public_key).then((data) => {
+      if(data){
+        this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
+        this.props.history.push('/')
+      }
+    })
   }
 
   handleRegister(){
@@ -51,7 +86,16 @@ class SignInUp extends Component {
     })
   }
 
+  handleChangePrivateKey(e){
+    this.setState({
+      private_key: e.target.value
+    })
+  }
+
   render() {
+    if(this.state.block){
+      return null
+    }
     return (
       <div className={styles.signInUp}>
         <div className="parallax filter-black">
@@ -67,7 +111,8 @@ class SignInUp extends Component {
                     </div>
                     <form onSubmit={this.handleLogin.bind(this)} method="get">
                       <div className="form-group">
-                        <input type="text" className="form-control" name="private-key" placeholder="Private key" />
+                        <input type="text" className="form-control" name="private-key" placeholder="Private key"
+                          value={this.state.private_key} onChange={this.handleChangePrivateKey.bind(this)}/>
                       </div>
                       <div className="center">
                         {/*<button type="submit" className="btn btn-azure">Login</button>*/}
@@ -126,4 +171,4 @@ class SignInUp extends Component {
   }
 }
 
-export default SignInUp;
+export default withRouter(connect(null, mapDispatchToProps)(SignInUp));

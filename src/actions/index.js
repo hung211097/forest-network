@@ -49,6 +49,13 @@ export const updateProfile = (info) => {
   }
 }
 
+export const saveProfileFromApi = (info) => {
+  return{
+    type: actionTypes.SAVE_PROFILE,
+    info: info
+  }
+}
+
 export const updatePost = (user) => {
   return{
     type: actionTypes.UPDATE_POST,

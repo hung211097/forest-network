@@ -47,9 +47,9 @@ class Home extends Component {
 
 
   componentDidMount(){
-    this.apiService.getTransactions(1, 10).then((data) => {
-      console.log(data);
-    })
+    // this.apiService.getTransactions(1, 10).then((data) => {
+    //   console.log(data);
+    // })
   }
 
   handleSelectMenu(index){
@@ -67,6 +67,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <Layout>
         <div className={styles.home}>
