@@ -4,8 +4,12 @@ import axiosGet, { axiosPost } from './axios-fetch'
 export default () => {
   let { baseURL } = config
   let services = {
-    getUsers: (page = 1, limit = 10) => {
-      return axiosGet(baseURL + `users?page=${page}&limit=${limit}`).then((res) => {
+    getUsers: (page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
         if(res.data.status === 'success'){
           return res.data
         }
@@ -71,6 +75,11 @@ export default () => {
           return res.data.info_user
         }
         return null
+      })
+    },
+    conductTransaction: (hex) => {
+      return axiosPost(baseURL + `transactions/conduct`, {hex: hex}).then((res) => {
+        return res.data.status
       })
     },
   }

@@ -4,6 +4,12 @@
   .page-content {
     margin-top: 90px;
     margin-bottom: 30px;
+    .profile-nav{
+      @media screen and (min-width: 768px){
+        position: fixed;
+        width: 19%;
+      }
+    }
     .widget {
       padding: 0;
       box-shadow: none;

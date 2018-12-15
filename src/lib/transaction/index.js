@@ -8,25 +8,30 @@ const Transaction = vstruct([
 ]);
 
 function encode(tx) {
+  let res = null
   switch (tx.version) {
     case 1:
-      return v1.encode(tx);
-
+      res = v1.encode(tx);
+      break;
     default:
       throw Error('Unsupport version');
   };
+
+  return res;
 }
 
 function decode(data) {
+  let res = null
   const versionTx = Transaction.decode(data);
   switch (versionTx.version) {
     case 1:
-      return v1.decode(data);
+      res = v1.decode(data);
       break;
 
     default:
       throw Error('Unsupport version');
   }
+  return res;
 }
 
 function getUnsignedHash(tx) {
@@ -58,4 +63,6 @@ function hash(tx) {
     .toUpperCase();
 }
 
-module.exports = { encode, decode, verify, sign, hash };
+export default {
+  encode, decode, verify, sign, hash
+}
