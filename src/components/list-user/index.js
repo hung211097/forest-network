@@ -20,7 +20,7 @@ class ListUser extends Component {
       <div className="row animated fadeIn">
         {!!users.length && users.map((item, key) => {
             return(
-              <div className="col-sm-6 col-12">
+              <div className="col-sm-6 col-12" key={key}>
                 <UserCard user={item}/>
               </div>
             )

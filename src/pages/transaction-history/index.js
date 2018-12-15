@@ -1,13 +1,22 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { Layout } from '../../components'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
-import { timeStamp2Date } from '../../services/utils.service'
+import { Layout } from '../../components';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import { timeStamp2Date } from '../../services/utils.service';
+import ApiService from '../../services/api.service';
+import { connect } from 'react-redux'
+
+const mapStateToProps = (state) => {
+  return{
+    profile: state.profileReducer.info
+  }
+}
 
 class TransactionHistory extends Component {
     constructor(props) {
         super(props)
+        this.apiService = ApiService()
         this.state = {
             data: [{
                 publicKey: "GA6IW2JOWMP4WGI6LYAZ76ZPMFQSJAX4YLJLOQOWFC5VF5C6IGNV2IW7",
@@ -27,10 +36,20 @@ class TransactionHistory extends Component {
             }]
         };
     }
+
+    componentDidMount(){
+
+    }
+
+    UNSAFE_componentWillReceiveProps(props){
+      const { profile } = props
+      this.apiService.getTransactionsOfUser(profile.public_key, 1, 2).then((data) => {
+        console.log(data);
+      })
+    }
     render() {
         const { data } = this.state
-        console.log(data)
-
+        // console.log(data)
         return (
             <Layout>
                 <div className={styles.transactionHistory}>
@@ -84,4 +103,4 @@ class TransactionHistory extends Component {
     }
 }
 
-export default TransactionHistory;
+export default connect(mapStateToProps)(TransactionHistory);

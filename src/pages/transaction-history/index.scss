@@ -1,15 +1,13 @@
 :local(.transactionHistory) {
     margin-top: 7rem !important;
     margin-bottom: 3.5rem !important;
+    padding: 0 30px;
 
-    .ReactTable .rt-thead {
-        overflow-y: scroll;
-    }
     .ReactTable .rt-thead.-headerGroups{
-        background: #00b0ff;
+        background: #8fe9ff;
     }
     .ReactTable .rt-thead.-header{
-        background: #a4e2ff;
+        background: #d1f0ff;
     }
     .ReactTable .rt-tbody{
         background: #fff;

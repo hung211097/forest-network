@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import styles from'./index.scss';
 import logo from '../../images/logo.png';
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ApiService from '../../services/api.service';
+
 import {
   Collapse,
   Navbar,
@@ -18,6 +20,7 @@ import {
 class Header extends Component {
   constructor(props){
     super(props)
+    this.apiService = ApiService()
     this.state = {
       isOpen: false
     }
@@ -27,6 +30,10 @@ class Header extends Component {
     this.setState({
       isOpen: !this.state.isOpen
     })
+  }
+
+  handleLogout(){
+    this.apiService.logout().then(() => {})
   }
 
   render() {
@@ -67,7 +74,7 @@ class Header extends Component {
                     </Link>
                   </NavItem>
                   <NavItem>
-                    <Link to="/login" className="nav-link">
+                    <Link to="/login" className="nav-link" onClick={this.handleLogout.bind(this)}>
                       Logout
                     </Link>
                   </NavItem>
@@ -98,7 +105,7 @@ class Header extends Component {
                       Following
                     </Link>*/}
                     <DropdownItem divider />
-                    <Link to="/login" className="dropdown-item">
+                    <Link to="/login" className="dropdown-item" onClick={this.handleLogout.bind(this)}>
                       <i><FontAwesomeIcon icon="sign-out-alt"/></i> Logout
                     </Link>
                   </DropdownMenu>

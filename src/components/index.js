@@ -12,6 +12,7 @@ import ListFollowers from './followers'
 import ListFollowing from './following'
 import Timeline from './timeline'
 import ScrollToTop from './scroll-to-top'
+import PrivateRoute from './private-route'
 
 export {
   Header,
@@ -27,5 +28,6 @@ export {
   ListFollowers,
   ListFollowing,
   Timeline,
-  ScrollToTop
+  ScrollToTop,
+  PrivateRoute
 }

@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { Layout } from '../../components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Layout } from '../../components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { InputGroup, InputGroupAddon, Input, FormGroup, FormFeedback } from 'reactstrap';
+import transaction from '../../lib/transaction';
+import { connect } from 'react-redux'
+import ApiService from '../../services/api.service'
+import { Keypair } from 'stellar-base';
+import SweetAlert from 'react-bootstrap-sweetalert';
+
+const mapStateToProps = (state) => {
+  return{
+    profile: state.profileReducer.info
+  }
+}
 
 class TransferMoney extends Component {
   constructor(props){
     super(props)
+    this.apiService = ApiService()
     this.state = {
       memo: '',
-      my_public_key: '',
       my_private_key: '',
       your_public_key: '',
       amount: 0,
-      isSubmit: false
+      isSubmit: false,
+      error: '',
+      isShowError: false,
+      isShow: false
     }
-  }
-
-  handleChangeMyPublicKey(e){
-    this.setState({
-      my_public_key: e.target.value
-    })
   }
 
   handleChangeAmount(e){
@@ -41,11 +49,14 @@ class TransferMoney extends Component {
     })
   }
 
+  handleChangeMemo(e){
+    this.setState({
+      memo: e.target.value
+    })
+  }
+
   validate(){
     if(this.state.my_private_key === ''){
-      return false
-    }
-    if(this.state.my_public_key === ''){
       return false
     }
     if(this.state.amount <= 0){
@@ -65,6 +76,82 @@ class TransferMoney extends Component {
     if(!this.validate()){
       return
     }
+
+    const {profile} = this.props
+    const tx = {
+      version: 1,
+      sequence: profile.sequence + 1,
+      memo: this.state.memo ? Buffer.from(this.state.memo) : Buffer.alloc(0),
+      account: profile.public_key,
+      operation: "payment",
+      params: {
+        address: this.state.your_public_key,
+        amount: this.state.amount
+      },
+      signature: new Buffer(64)
+    }
+    let key = null
+    try{
+      key = Keypair.fromSecret(this.state.my_private_key)
+    }
+    catch(exception){
+      this.setState({
+        error: 'Invalid private key!',
+        isShowError: true
+      })
+      return
+    }
+    if(key.publicKey() !== profile.public_key){
+      this.setState({
+        error: 'Private key does not match with public key!',
+        isShowError: true
+      })
+      return
+    }
+    if(this.state.your_public_key === profile.public_key){
+      this.setState({
+        error: 'Public key must belong to another!',
+        isShowError: true
+      })
+      return
+    }
+    transaction.sign(tx, this.state.my_private_key);
+    let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+    this.apiService.conductTransaction(TxEncode).then((status) => {
+      if(status === 'success'){
+        this.setState({
+          memo: '',
+          my_private_key: '',
+          your_public_key: '',
+          amount: 0,
+          isSubmit: false,
+          isShow: true
+        })
+      }
+      else{
+        this.setState({
+          memo: '',
+          my_private_key: '',
+          your_public_key: '',
+          amount: 0,
+          isSubmit: false,
+          isShowError: true,
+          error: 'Fail to conduct transaction!'
+        })
+      }
+    })
+  }
+
+  hideAlert(){
+    this.setState({
+      isShow: false
+    })
+  }
+
+  hideAlertError(){
+    this.setState({
+      isShowError: false
+    })
   }
 
   render() {
@@ -90,17 +177,6 @@ class TransferMoney extends Component {
                   </FormGroup>
                   <FormGroup>
                     <InputGroup>
-                      <InputGroupAddon addonType="prepend">Public key</InputGroupAddon>
-                      <Input value={this.state.my_public_key} name="public-key"
-                        onChange={this.handleChangeMyPublicKey.bind(this)}
-                        invalid={!this.state.my_public_key && this.state.isSubmit ? true : false}/>
-                    </InputGroup>
-                    <FormFeedback invalid="true" className={!this.state.my_public_key && this.state.isSubmit ? "d-block" : ''}>
-                      Public key is empty!
-                    </FormFeedback>
-                  </FormGroup>
-                  <FormGroup>
-                    <InputGroup>
                       <InputGroupAddon addonType="prepend">Amount (CEL)</InputGroupAddon>
                       <Input value={this.state.amount} name="amount"
                         onChange={this.handleChangeAmount.bind(this)}
@@ -111,6 +187,9 @@ class TransferMoney extends Component {
                       Amount is required to be more than zero!
                     </FormFeedback>
                   </FormGroup>
+                  <textarea className="form-control" name="note" placeholder="Note" onChange={this.handleChangeMemo.bind(this)}
+                    value={this.state.memo}>
+                  </textarea>
                 </div>
               </div>
               <div className="col-12 col-sm-1 arrow">
@@ -119,7 +198,7 @@ class TransferMoney extends Component {
               </div>
               <div className="col-12 col-sm-4 your-account">
                 <div className="info">
-                  <h2 className="title">Your Account</h2>
+                  <h2 className="title">Received Account</h2>
                   <FormGroup>
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">Public key</InputGroupAddon>
@@ -139,10 +218,28 @@ class TransferMoney extends Component {
               <button type="button" className="btn btn-azure btn-register" onClick={this.handleSubmit.bind(this)}>Send</button>
             </div>
           </form>
+          <SweetAlert
+          	success
+          	confirmBtnText="OK"
+          	confirmBtnBsStyle="success"
+          	title="Transaction is conducted successfully!"
+            show={this.state.isShow}
+            onConfirm={this.hideAlert.bind(this)}
+            onCancel={this.hideAlert.bind(this)}>
+          </SweetAlert>
+          <SweetAlert
+          	error
+          	confirmBtnText="OK"
+          	confirmBtnBsStyle="danger"
+          	title={this.state.error}
+            show={this.state.isShowError}
+            onConfirm={this.hideAlertError.bind(this)}
+            onCancel={this.hideAlertError.bind(this)}>
+          </SweetAlert>
         </div>
       </Layout>
     );
   }
 }
 
-export default TransferMoney;
+export default connect(mapStateToProps)(TransferMoney);

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory} from './pages'
+import  { PrivateRoute } from './components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {  faHome,
           faSignOutAlt,
@@ -55,12 +56,12 @@ class App extends Component {
         <ScrollToTop>
           <Switch>
             <Redirect from='/home' to='/' />
-            <Route exact path='/' component={Home} />
+            <PrivateRoute exact path='/' component={Home} />
             <Route exact path='/login' component={SignInUp} />
-            <Route exact path='/profile' component={Profile} />
-            <Route exact path='/edit-profile' component={EditProfile} />
-            <Route exact path='/transfer-money' component={TransferMoney} />
-            <Route exact path='/transaction-history' component={TransactionHistory} />
+            <PrivateRoute exact path='/profile' component={Profile} />
+            <PrivateRoute exact path='/edit-profile' component={EditProfile} />
+            <PrivateRoute exact path='/transfer-money' component={TransferMoney} />
+            <PrivateRoute exact path='/transaction-history' component={TransactionHistory} />
             <Route component={ErrorPage} />
           </Switch>
         </ScrollToTop>
