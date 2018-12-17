@@ -48,12 +48,9 @@ export default () => {
         return null
       })
     },
-    register: () => {
-      return axiosPost(baseURL + 'register').then((res) => {
-        if(res.data.status === 'success'){
-          return res.data.keypair
-        }
-        return null
+    createAccount: (hex) => {
+      return axiosPost(baseURL + 'create-account', {hex: hex}).then((res) => {
+        return res.data.status
       })
     },
     login: (public_key) => {
