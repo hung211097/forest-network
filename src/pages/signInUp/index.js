@@ -22,6 +22,7 @@ class SignInUp extends Component {
     this.state = {
       isShow: false,
       isShowError: false,
+      error: '',
       dataRegister: null,
       private_key: '',
       block: true
@@ -33,9 +34,11 @@ class SignInUp extends Component {
       if(data){
         this.props.history.push('/')
       }
-      this.setState({
-        block: false
-      })
+      else{
+        this.setState({
+          block: false
+        })
+      }
     })
   }
 
@@ -44,13 +47,30 @@ class SignInUp extends Component {
     if(!this.state.private_key){
       return
     }
-    let key = Keypair.fromSecret(this.state.private_key)
+
+    let key = null
+    try{
+      key = Keypair.fromSecret(this.state.private_key)
+    }
+    catch(e){
+      this.setState({
+        isShowError: true,
+        error: "Invalid private key!"
+      })
+      return
+    }
     let public_key = key.publicKey()
 
     this.apiService.login(public_key).then((data) => {
       if(data){
         this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
         this.props.history.push('/')
+      }
+      else{
+        this.setState({
+          isShowError: true,
+          error: "Private key is not registered!"
+        })
       }
     })
   }
@@ -68,7 +88,8 @@ class SignInUp extends Component {
       }
       else{
         this.setState({
-          isShowError: true
+          isShowError: true,
+          error: "Server does not have enough energy to register!"
         })
       }
     })
@@ -161,7 +182,7 @@ class SignInUp extends Component {
         	error
         	confirmBtnText="OK"
         	confirmBtnBsStyle="danger"
-        	title="Server does not have enough energy to register!"
+        	title={this.state.error}
           show={this.state.isShowError}
           onConfirm={this.hideAlertError.bind(this)}
           onCancel={this.hideAlertError.bind(this)}>

@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Layout } from '../../components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Layout } from '../../components';
 import { InputGroup, InputGroupAddon, Input, FormGroup, FormFeedback } from 'reactstrap';
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { updateProfile, updatePost } from '../../actions'
-import { validateEmail, validatePhoneNumber, ConvertHTML2TextNewLine, ConvertText2HTMLNewLine } from '../../services/utils.service'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { updateProfile, updatePost } from '../../actions';
+// import { validateEmail, validatePhoneNumber, ConvertHTML2TextNewLine, ConvertText2HTMLNewLine } from '../../services/utils.service'
 import ReactTooltip from 'react-tooltip';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { Keypair } from 'stellar-base';
+import ApiService from '../../services/api.service';
+import transaction from '../../lib/transaction';
+import { calcBandwithConsume } from '../../services/utils.service';
 
 const mapStateToProps = (state) => {
   return{
@@ -31,17 +36,34 @@ class EditProfile extends Component {
 
   constructor(props){
     super(props)
+    this.apiService = ApiService()
+    this.limitSize = 4000
     this.state = {
       tabProfile: true,
       tabSetting: false,
       lockEdit: true,
       isSubmit: false,
-      ...this.props.profile
+      username: '',
+      file_avatar: null,
+      originImageUrl: '',
+      imagePreviewUrl: '',
+      isShow: false,
+      private_key: '',
+      error: '',
+      isShowError: false,
+      isShowSuccess: false
     }
   }
 
   componentWillUnmount(){
     this.toggleAbsoluteFooter(false)
+  }
+
+  UNSAFE_componentWillReceiveProps(props){
+    this.setState({
+      username: props.profile.username,
+      originImageUrl: props.profile.avatar
+    })
   }
 
   toggleAbsoluteFooter(isAbsolute){
@@ -55,12 +77,20 @@ class EditProfile extends Component {
     }
   }
 
+  componentDidMount(){
+    this.toggleAbsoluteFooter(true)
+    this.setState({
+      username: this.props.profile.username,
+      originImageUrl: this.props.profile.avatar
+    })
+  }
+
   handleTabProfile(){
     this.setState({
       tabProfile: true,
       tabSetting: false
     })
-    this.toggleAbsoluteFooter(false)
+    this.toggleAbsoluteFooter(true)
   }
 
   handleTabSetting(){
@@ -113,6 +143,28 @@ class EditProfile extends Component {
     })
   }
 
+  handleOnSelectFileAvatar(event) {
+    if(this.state.lockEdit){
+      return
+    }
+    let file = event.target.files[0]
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      this.setState({
+        file_avatar: file,
+        imagePreviewUrl: reader.result
+      });
+    }
+    reader.readAsDataURL(file)
+  }
+
+  handleDeleteAvatar(){
+    this.setState({
+      imagePreviewUrl: '',
+      file_avatar: null
+    })
+  }
+
   handleUnlockEdit(){
     this.setState({
       lockEdit: false
@@ -126,29 +178,133 @@ class EditProfile extends Component {
     this.setState({
       isSubmit: true
     })
-
     if(!this.validate()){
       return
     }
 
-    this.props.updateProfile && this.props.updateProfile({
-      username: this.state.username,
-      birthday: this.state.birthday,
-      gender: this.state.gender,
-      email: this.state.email,
-      phone: this.state.phone,
-      address: this.state.address,
-      about: ConvertText2HTMLNewLine(this.state.about),
-    })
-    
-    this.props.updatePost && this.props.updatePost({
-      id: this.props.profile.userID,
-      username: this.state.username
-    })
+    if(this.state.file_avatar){
+      let reader = new FileReader()
+      let encodedImage = null
+      reader.onload = () => {
+        encodedImage = new Buffer(reader.result, 'binary');
+        this.handleSubmit(encodedImage)
+      }
+      reader.readAsBinaryString(this.state.file_avatar)
+    }else{
+      this.handleSubmit(null)
+    }
+  }
+
+  handleSubmit(bufferImage) {
+    const {profile} = this.props
+    const data = {}
+    let arrayConsume = []
+    let flagSendImage = false
+    let changedImage = this.state.imagePreviewUrl
+
+    if(bufferImage){
+      const tx = {
+        version: 1,
+        sequence: profile.sequence + 1,
+        memo: Buffer.alloc(0),
+        account: profile.public_key,
+        operation: "update_account",
+        params: {
+          key: 'picture',
+          value: bufferImage
+        },
+        signature: new Buffer(64)
+      }
+      flagSendImage = true
+      transaction.sign(tx, this.state.private_key);
+      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+      arrayConsume.push(calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date()))
+      data.hexImage = TxEncode
+    }
+
+    if(this.state.username !== this.props.profile.username){
+      const tx = {
+        version: 1,
+        sequence: flagSendImage ? profile.sequence + 2 : profile.sequence + 1,
+        memo: Buffer.alloc(0),
+        account: profile.public_key,
+        operation: "update_account",
+        params: {
+          key: 'name',
+          value: new Buffer(this.state.username)
+        },
+        signature: new Buffer(64)
+      }
+      transaction.sign(tx, this.state.private_key);
+      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+      arrayConsume.push(calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date()))
+      data.hexUsername = TxEncode
+    }
+
+    if(Object.keys(data).length){
+      let consume = 0
+      arrayConsume.forEach((item) => {
+        consume += item
+      })
+
+      if(consume > this.props.profile.bandwithMax){
+        this.setState({
+          error: "You don't have enough OXY to conduct transaction!",
+          isShowError: true
+        })
+        return
+      }
+
+      this.apiService.updateProfile(data).then((res) => {
+        let isFailedAll = false
+        let countFailed = 0
+        res.forEach((bool) => {
+          if(bool.value === 'failed'){
+            countFailed += 1
+          }
+        })
+        if(countFailed === res.length){
+          isFailedAll = true
+        }
+
+        if(isFailedAll){
+          this.setState({
+            error: "Fail to update profile!",
+            isShowError: true,
+            username: this.props.profile.username
+          })
+          return
+        }
+
+        this.setState({
+          isShowSuccess: true
+        })
+
+        this.props.updateProfile && this.props.updateProfile({
+          username: this.state.username,
+          avatar: changedImage ? changedImage : this.state.originImageUrl
+          // birthday: this.state.birthday,
+          // gender: this.state.gender,
+          // email: this.state.email,
+          // phone: this.state.phone,
+          // address: this.state.address,
+          // about: ConvertText2HTMLNewLine(this.state.about),
+        })
+
+        this.props.updatePost && this.props.updatePost({
+          id: this.props.profile.user_id,
+          username: this.state.username
+        })
+      })
+    }
 
     this.setState({
       lockEdit: true,
-      about: ConvertText2HTMLNewLine(this.state.about)
+      // about: ConvertText2HTMLNewLine(this.state.about)
+    }, () => {
+      this.setState({
+        imagePreviewUrl: ''
+      })
     })
   }
 
@@ -156,25 +312,96 @@ class EditProfile extends Component {
     if(this.state.username === ''){
       return false
     }
-    if(this.state.birthday === ''){
+    if(this.state.private_key === ''){
       return false
     }
-    if(this.state.gender === ''){
+    if(this.state.file_avatar && this.state.file_avatar.size > this.limitSize){
       return false
     }
-    if(this.state.email === '' || !validateEmail(this.state.email)){
-      return false
-    }
-    if(this.state.phone === '' || !validatePhoneNumber(this.state.phone)){
-      return false
-    }
-    if(this.state.address === ''){
-      return false
-    }
-    if(this.state.about === ''){
+    // if(this.state.birthday === ''){
+    //   return false
+    // }
+    // if(this.state.gender === ''){
+    //   return false
+    // }
+    // if(this.state.email === '' || !validateEmail(this.state.email)){
+    //   return false
+    // }
+    // if(this.state.phone === '' || !validatePhoneNumber(this.state.phone)){
+    //   return false
+    // }
+    // if(this.state.address === ''){
+    //   return false
+    // }
+    // if(this.state.about === ''){
+    //   return false
+    // }
+    return true
+  }
+
+  validateSizeImage(){
+    if(this.state.file_avatar.size > this.limitSize){
       return false
     }
     return true
+  }
+
+  onCancel(){
+    this.setState({
+      isShow: false
+    })
+  }
+
+  onRecieveInput(e){
+    let key = null
+    try{
+      key = Keypair.fromSecret(e)
+    }
+    catch(e){
+      this.setState({
+        isShow: false,
+        isShowError: true,
+        error: "Invalid private key!"
+      })
+      return
+    }
+
+    if(key.publicKey() !== this.props.profile.public_key){
+      this.setState({
+        isShow: false,
+        isShowError: true,
+        error: "Private key does not match public key!"
+      })
+      return
+    }
+
+    this.setState({
+      private_key: e,
+      isShow: false
+    }, () => {
+      this.handleSaveEdit()
+    })
+  }
+
+  onShow(){
+    if(this.state.lockEdit){
+      return
+    }
+    this.setState({
+      isShow: true
+    })
+  }
+
+  hideAlertError(){
+    this.setState({
+      isShowError: false
+    })
+  }
+
+  hideAlertSuccess(){
+    this.setState({
+      isShowSuccess: false
+    })
   }
 
   render() {
@@ -190,9 +417,9 @@ class EditProfile extends Component {
                   <li className={this.state.tabProfile ? "active" : ""}>
                     <span onClick={this.handleTabProfile.bind(this)}><i><FontAwesomeIcon icon="user"/></i> Profile</span>
                   </li>
-                  <li className={this.state.tabSetting ? "active" : ""}>
+                  {/*<li className={this.state.tabSetting ? "active" : ""}>
                     <span onClick={this.handleTabSetting.bind(this)}><i><FontAwesomeIcon icon="cog"/></i> Settings</span>
-                  </li>
+                  </li>*/}
                 </ul>
                 {/* END NAV TABS */}
                 <div className="tab-content profile-page">
@@ -206,19 +433,24 @@ class EditProfile extends Component {
                           <div className="contact">
                             <p>
                               <span className="file-input btn btn-azure btn-file">
-                                Change Avatar <input type="file" multiple />
+                                Change Avatar <input type="file" accept="image/*" onChange={this.handleOnSelectFileAvatar.bind(this)}/>
                               </span>
                             </p>
-                            <p>
+                            {/*<p>
                               <span className="file-input btn btn-azure btn-file">
                                 Change Cover <input type="file" multiple />
                               </span>
-                            </p>
-                            {/*<ul className="list-inline social">
-                              <li><a href="#" title="Facebook"><i className="fa fa-facebook-square" /></a></li>
-                              <li><a href="#" title="Twitter"><i className="fa fa-twitter-square" /></a></li>
-                              <li><a href="#" title="Google Plus"><i className="fa fa-google-plus-square" /></a></li>
-                            </ul>*/}
+                            </p>*/}
+                            {this.state.imagePreviewUrl &&
+                              <div className="preview-image">
+                                <span onClick={this.handleDeleteAvatar.bind(this)}>X</span>
+                                <img src={this.state.imagePreviewUrl} alt="avatar" className="preview-avatar"/>
+                              </div>
+                            }
+                            <FormFeedback invalid="true"
+                              className={this.state.file_avatar && !this.validateSizeImage() && this.state.isSubmit ? "d-block" : ''}>
+                              Your image is too large!
+                            </FormFeedback>
                           </div>
                         </div>
                       </div>
@@ -238,7 +470,7 @@ class EditProfile extends Component {
                                   Your username is empty!
                                 </FormFeedback>
                               </FormGroup>
-                              <FormGroup>
+                              {/*<FormGroup>
                                 <InputGroup>
                                   <InputGroupAddon addonType="prepend">Birth Date</InputGroupAddon>
                                   <Input value={this.state.birthday} name="birthday" type="date"
@@ -259,9 +491,9 @@ class EditProfile extends Component {
                                 <FormFeedback invalid="true" className={!this.state.gender && this.state.isSubmit ? "d-block" : ''}>
                                   Your gender is empty!
                                 </FormFeedback>
-                              </FormGroup>
+                              </FormGroup>*/}
                             </div>
-                            <div className="contact_info">
+                            {/*<div className="contact_info">
                               <h3><i><FontAwesomeIcon icon="square"/></i> Contact Information</h3>
                               <FormGroup>
                                 <InputGroup>
@@ -304,18 +536,18 @@ class EditProfile extends Component {
                               </FormGroup>
                             </div>
                             <div className="about">
-                            <h3><i><FontAwesomeIcon icon="square"/></i> About Me</h3>
-                            <p dangerouslySetInnerHTML={{ __html: this.state.about }} className={!this.state.lockEdit ? "d-none" : ""}></p>
-                            <FormGroup>
-                              <Input className={this.state.lockEdit ? "d-none" : "form-control input-lg p-text-area"}
-                                 type="textarea" name="text" id="exampleText" value={ConvertHTML2TextNewLine(this.state.about)}
-                                 rows={5} onChange={this.handleChangeAbout.bind(this)}
-                                 invalid={!this.state.about && this.state.isSubmit ? true : false}/>
-                              <FormFeedback invalid="true" className={!this.state.about && this.state.isSubmit ? "d-block" : ''}>
-                                Your information is empty!
-                              </FormFeedback>
-                            </FormGroup>
-                          </div>
+                              <h3><i><FontAwesomeIcon icon="square"/></i> About Me</h3>
+                              <p dangerouslySetInnerHTML={{ __html: this.state.about }} className={!this.state.lockEdit ? "d-none" : ""}></p>
+                              <FormGroup>
+                                <Input className={this.state.lockEdit ? "d-none" : "form-control input-lg p-text-area"}
+                                   type="textarea" name="text" id="exampleText" value={ConvertHTML2TextNewLine(this.state.about)}
+                                   rows={5} onChange={this.handleChangeAbout.bind(this)}
+                                   invalid={!this.state.about && this.state.isSubmit ? true : false}/>
+                                <FormFeedback invalid="true" className={!this.state.about && this.state.isSubmit ? "d-block" : ''}>
+                                  Your information is empty!
+                                </FormFeedback>
+                              </FormGroup>
+                            </div>*/}
                           </form>
                         </div>
                       </div>
@@ -324,7 +556,7 @@ class EditProfile extends Component {
                   {/* END PROFILE TAB CONTENT */}
 
                   {/* SETTINGS TAB CONTENT */}
-                  <div className={this.state.tabSetting ? "tab-pane settings active" : "tab-pane settings"} id="settings-tab">
+                  {/*<div className={this.state.tabSetting ? "tab-pane settings active" : "tab-pane settings"} id="settings-tab">
                     <form className="form-horizontal">
                       <fieldset>
                         <h3><i><FontAwesomeIcon icon="square"/></i> Change Password</h3>
@@ -354,7 +586,7 @@ class EditProfile extends Component {
                         <i><FontAwesomeIcon icon="save"/></i> Save Changes
                       </span>
                     </p>
-                  </div>
+                  </div>*/}
                   {/* END SETTINGS TAB CONTENT */}
                 </div>
               </div>
@@ -363,10 +595,40 @@ class EditProfile extends Component {
           <span className="write" data-tip="Edit" onClick={this.handleUnlockEdit.bind(this)}>
             <i><FontAwesomeIcon icon="edit"/></i>
           </span>
-          <span className="save" data-tip="Save" onClick={this.handleSaveEdit.bind(this)}>
+          <span className="save" data-tip="Save" onClick={this.onShow.bind(this)}>
             <i><FontAwesomeIcon icon="save"/></i>
           </span>
           <ReactTooltip />
+          <SweetAlert
+            input
+            showCancel
+            cancelBtnBsStyle="default"
+            title="Confirm"
+            show={this.state.isShow}
+            placeHolder="Write your private key!"
+            onConfirm={this.onRecieveInput.bind(this)}
+            onCancel={this.onCancel.bind(this)}
+            >
+            <p>Write your private key:</p>
+          </SweetAlert>
+          <SweetAlert
+          	error
+          	confirmBtnText="OK"
+          	confirmBtnBsStyle="danger"
+          	title={this.state.error}
+            show={this.state.isShowError}
+            onConfirm={this.hideAlertError.bind(this)}
+            onCancel={this.hideAlertError.bind(this)}>
+          </SweetAlert>
+          <SweetAlert
+          	success
+          	confirmBtnText="OK"
+          	confirmBtnBsStyle="success"
+          	title="Update profile successfully!"
+            show={this.state.isShowSuccess}
+            onConfirm={this.hideAlertSuccess.bind(this)}
+            onCancel={this.hideAlertSuccess.bind(this)}>
+          </SweetAlert>
         </div>
       </Layout>
     );

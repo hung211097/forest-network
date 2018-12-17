@@ -17,15 +17,15 @@ export default () => {
       })
     },
     getInfoUser: (public_key) => {
-      return axiosGet(baseURL + `users/${public_key}`).then((res) => {
+      return axiosGet(baseURL + `users/id/${public_key}`).then((res) => {
         if(res.data.status === 'success'){
           return res.data
         }
         return null
       })
     },
-    getTransactionsOfUser: (public_key, page = 1, limit = 10, params = {}) => {
-      let url = baseURL + `users/${public_key}/transactions?page=${page}&limit=${limit}`
+    getTransactionsOfUser: (page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/transactions?page=${page}&limit=${limit}`
       if(params.order && params.type){
         url += `&order=${params.order}&type=${params.type}`
       }
@@ -82,6 +82,14 @@ export default () => {
         return res.data.status
       })
     },
+    updateProfile: (data) => {
+      return axiosPost(baseURL + `users/update-profile`, {data: data}).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data.result
+        }
+        return null
+      })
+    }
   }
 
   return services

@@ -42,8 +42,7 @@ class TransactionHistory extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(props){
-      const { profile } = props
-      this.apiService.getTransactionsOfUser(profile.public_key, 1, 2).then((data) => {
+      this.apiService.getTransactionsOfUser(1, 2).then((data) => {
         console.log(data);
       })
     }
