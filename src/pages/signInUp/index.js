@@ -8,6 +8,8 @@ import { Keypair } from 'stellar-base';
 import { withRouter } from 'react-router';
 import { saveProfileFromApi } from '../../actions';
 import { connect } from 'react-redux';
+import { Input, FormGroup, FormFeedback } from 'reactstrap';
+import crypto from 'crypto';
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -21,11 +23,12 @@ class SignInUp extends Component {
     this.apiService = ApiService()
     this.state = {
       isShow: false,
-      isShowError: false,
-      error: '',
       dataRegister: null,
       private_key: '',
-      block: true
+      block: true,
+      isSubmit: false,
+      errorLogin: '',
+      isShowError: false
     }
   }
 
@@ -44,7 +47,16 @@ class SignInUp extends Component {
 
   handleLogin(e){
     e.preventDefault();
+
+    this.setState({
+      isSubmit: true
+    })
+
     if(!this.state.private_key){
+      this.setState({
+        isShowError: true,
+        errorLogin: 'Private key is empty!'
+      })
       return
     }
 
@@ -55,7 +67,7 @@ class SignInUp extends Component {
     catch(e){
       this.setState({
         isShowError: true,
-        error: "Invalid private key!"
+        errorLogin: "Invalid private key!"
       })
       return
     }
@@ -69,29 +81,27 @@ class SignInUp extends Component {
       else{
         this.setState({
           isShowError: true,
-          error: "Private key is not registered!"
+          errorLogin: "Private key is not registered!"
         })
       }
     })
   }
 
-  handleRegister(){
-    this.apiService.register().then((data) => {
-      if(data){
-        this.setState({
-          dataRegister: data
-        }, () => {
-          this.setState({
-            isShow: true
-          })
-        })
-      }
-      else{
-        this.setState({
-          isShowError: true,
-          error: "Server does not have enough energy to register!"
-        })
-      }
+  handleGenerate(){
+    let key = Keypair.random()
+    let data = {
+      secret_key: key.secret(),
+      public_key: key.publicKey(),
+      secret_key_base64: key._secretKey.toString('base64'),
+      public_key_base64: key._publicKey.toString('base64'),
+      tendermint_address: crypto.createHash('sha256').update(key._publicKey).digest().slice(0, 20).toString('hex').toUpperCase()
+    }
+    this.setState({
+      dataRegister: data
+    }, () => {
+      this.setState({
+        isShow: true
+      })
     })
   }
 
@@ -101,14 +111,9 @@ class SignInUp extends Component {
     })
   }
 
-  hideAlertError(){
-    this.setState({
-      isShowError: false
-    })
-  }
-
   handleChangePrivateKey(e){
     this.setState({
+      isShowError: false,
       private_key: e.target.value
     })
   }
@@ -131,10 +136,19 @@ class SignInUp extends Component {
                       <p className="text-muted">Access your account</p>
                     </div>
                     <form onSubmit={this.handleLogin.bind(this)} method="get">
-                      <div className="form-group">
+                      <FormGroup>
+                        <Input value={this.state.private_key} name="private-key"
+                          onChange={this.handleChangePrivateKey.bind(this)}
+                          placeholder="Private key"
+                          invalid={this.state.isShowError && this.state.isSubmit ? true : false}/>
+                        <FormFeedback invalid="true" className={this.state.isShowError && this.state.isSubmit ? "d-block" : ''}>
+                          {this.state.errorLogin}
+                        </FormFeedback>
+                      </FormGroup>
+                      {/*<div className="form-group">
                         <input type="text" className="form-control" name="private-key" placeholder="Private key"
                           value={this.state.private_key} onChange={this.handleChangePrivateKey.bind(this)}/>
-                      </div>
+                      </div>*/}
                       <div className="center">
                         {/*<button type="submit" className="btn btn-azure">Login</button>*/}
                         <Link to="/" className="btn btn-azure btn-register" onClick={this.handleLogin.bind(this)}>Login</Link>
@@ -145,11 +159,11 @@ class SignInUp extends Component {
                 <div className="card">
                   <div className="card-block center">
                     <h4 className="m-b-0">
-                      <span className="icon-text">Sign Up</span>
+                      <span className="icon-text">Generate Keypair</span>
                     </h4>
-                    <p className="text-muted">Create a new account</p>
-                    <form onSubmit={this.handleRegister.bind(this)} method="get">
-                      <button type="button" className="btn btn-azure btn-register" onClick={this.handleRegister.bind(this)}>Register</button>
+                    <p className="text-muted">Help you generate keypair to join</p>
+                    <form onSubmit={this.handleGenerate.bind(this)} method="get">
+                      <button type="button" className="btn btn-azure btn-register" onClick={this.handleGenerate.bind(this)}>Generate</button>
                     </form>
                   </div>
                 </div>
@@ -162,7 +176,7 @@ class SignInUp extends Component {
         	success
         	confirmBtnText="OK"
         	confirmBtnBsStyle="primary"
-        	title="Register Successfully!"
+        	title="Generate Successfully!"
           show={this.state.isShow}
           onConfirm={this.hideAlert.bind(this)}
           onCancel={this.hideAlert.bind(this)}>
@@ -177,15 +191,6 @@ class SignInUp extends Component {
             <br/>
             <span style={{fontWeight: 'bold'}}>Tendermint Address: </span>{this.state.dataRegister ? this.state.dataRegister.tendermint_address : ''}
           </p>
-        </SweetAlert>
-        <SweetAlert
-        	error
-        	confirmBtnText="OK"
-        	confirmBtnBsStyle="danger"
-        	title={this.state.error}
-          show={this.state.isShowError}
-          onConfirm={this.hideAlertError.bind(this)}
-          onCancel={this.hideAlertError.bind(this)}>
         </SweetAlert>
       </div>
     );
