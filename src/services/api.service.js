@@ -16,8 +16,8 @@ export default () => {
         return null
       })
     },
-    getInfoUser: (public_key) => {
-      return axiosGet(baseURL + `users/id/${public_key}`).then((res) => {
+    getInfoUser: (user_id) => {
+      return axiosGet(baseURL + `users/${user_id}`).then((res) => {
         if(res.data.status === 'success'){
           return res.data
         }

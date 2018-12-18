@@ -6,6 +6,7 @@ import {fromNowDate} from '../../services/utils.service';
 import { connect } from 'react-redux'
 import {likePost, createComment} from '../../actions'
 import ReactEmoji from 'react-emoji'
+import defaultAvatar from '../../images/default-avatar.png'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -146,7 +147,7 @@ class Post extends Component {
           </div>
           <div className="box-footer">
             <form action="#" method="post">
-              <img className="img-responsive img-circle img-sm" src={profile.avatar} alt="Alt Text" />
+              <img className="img-responsive img-circle img-sm" src={profile.avatar ? profile.avatar : defaultAvatar} alt="Alt Text" />
               <div className="img-push">
                 <textarea className="form-control input-sm" rows="2" placeholder="Type here for your comment"
                   value={this.state.content} onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleContentChange.bind(this)}>

@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import ApiService from '../../services/api.service'
+import defaultAvatar from '../../images/default-avatar.png'
 
 const mapStateToProps = (state) => {
   return{
@@ -79,7 +80,7 @@ class Home extends Component {
                     <div className="widget-body">
                       <div className="user-heading round">
                         <Link to="/profile" className="border-img">
-                          <img src={this.props.profile.avatar} alt="avatar" />
+                          <img src={this.props.profile.avatar ? this.props.profile.avatar : defaultAvatar} alt="avatar" />
                         </Link>
                         <Link to="/profile">
                           <h1>{this.props.profile.username}</h1>
