@@ -86,7 +86,7 @@ class PostBox extends Component {
 				else{
 					console.log(status)
 				}
-			})      
+			})
     }
   }
 

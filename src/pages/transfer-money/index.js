@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import ApiService from '../../services/api.service'
 import { Keypair } from 'stellar-base';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { calcBandwithConsume } from '../../services/utils.service';
 
 const mapStateToProps = (state) => {
   return{
@@ -101,6 +102,18 @@ class TransferMoney extends Component {
       })
       return
     }
+
+    try{
+      transaction.encode(tx).toString('base64')
+    }
+    catch(e){
+      this.setState({
+        error: 'Invalid public key!',
+        isShowError: true
+      })
+      return
+    }
+
     if(key.publicKey() !== profile.public_key){
       this.setState({
         error: 'Private key does not match with public key!',
@@ -115,6 +128,16 @@ class TransferMoney extends Component {
       })
       return
     }
+
+    let consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date())
+    if(consume > this.props.profile.bandwithMax){
+      this.setState({
+        error: "You don't have enough OXY to conduct transaction!",
+        isShowError: true
+      })
+      return
+    }
+
     transaction.sign(tx, this.state.my_private_key);
     let TxEncode = '0x' + transaction.encode(tx).toString('hex');
     this.apiService.conductTransaction(TxEncode).then((status) => {

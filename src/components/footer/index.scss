@@ -4,6 +4,9 @@
   width: 100%;
   background-color: #fff;
   display: inline-block;
+  @media screen and (max-width: 576px){
+    position: unset !important;
+  }
   .text-muted {
     margin: 15px 0;
     color: #777777;

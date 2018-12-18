@@ -64,7 +64,7 @@ class Post extends Component {
     if(this.state.content){
       this.props.createComment && this.props.createComment({
         avatar: profile.avatar,
-        userID: profile.userID,
+        user_id: profile.user_id,
         username: profile.username,
         content: this.state.content,
         created_on: new Date().toString()

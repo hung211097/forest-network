@@ -207,4 +207,31 @@
       line-height: 2;
     }
   }
+  .preview-image{
+    position: relative;
+    display: inline-block;
+    &:hover{
+      span{
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+    span{
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 7px;
+      font-weight: bold;
+      transition: 0.2s ease-in-out;
+      opacity: 0;
+      visibility: hidden;
+      color: white;
+      background: black;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .preview-avatar{
+      max-height: 120px;
+    }
+  }
 }
