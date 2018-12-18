@@ -24,7 +24,8 @@ import {  faHome,
           faPlus,
           faArrowRight,
           faArrowLeft,
-          faArrowDown } from '@fortawesome/free-solid-svg-icons'
+          faArrowDown,
+          faUserMinus} from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { ScrollToTop } from './components'
 
@@ -49,7 +50,8 @@ library.add(fab,
             faPlus,
             faArrowRight,
             faArrowLeft,
-            faArrowDown)
+            faArrowDown,
+            faUserMinus)
 
 class App extends Component {
   render() {

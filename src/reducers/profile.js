@@ -13,6 +13,8 @@ const initialState = {
     fullname: "John Breakgrow",
     username: "",
     avatar: undefined,
+    following: [],
+    follower: []
     // birthday: "1990-11-21",
     // gender: "male",
     // email: "me@jonasmith.com",
@@ -118,6 +120,28 @@ export default (state = initialState, action) => {
         info:{
           fullname: state.info.fullname,
           ...action.info
+        }
+      }
+    case actionTypes.FOLLOW_USER:
+    console.log([...state.info.following, action.id]);
+      return{
+        ...state,
+        info:{
+          ...state.info,
+          fullname: state.info.fullname,
+          following: [...state.info.following, action.id],
+        }
+      }
+    case actionTypes.UNFOLLOW_USER:
+      let tempArr = state.info.following.filter((item) => {
+        return item !== action.id
+      })
+      return{
+        ...state,
+        info:{
+          ...state.info,
+          fullname: state.info.fullname,
+          following: tempArr,
         }
       }
     default:

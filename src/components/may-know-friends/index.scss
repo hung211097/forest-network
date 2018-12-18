@@ -1,6 +1,10 @@
 @import "../../styles/variables.scss";
 
 :local(.mayKnowFriend){
+  @media screen and (min-width: 768px){
+    position: fixed;
+    width: 19%;
+  }
   .widget-mayknow{
     padding: 0;
     box-shadow: none;
@@ -69,6 +73,21 @@
   }
   .btn-icon {
     padding: 5px 7px;
+    font-size: 16px;
     border-radius: 50% !important;
+    position: relative;
+    top: 6px;
+  }
+  .confirmation{
+    button{
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+  .check-success{
+    color: $main-color-2;
+    position: relative;
+    top: 8px;
+    right: 10px;
   }
 }

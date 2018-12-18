@@ -9,6 +9,7 @@ import { Keypair } from 'stellar-base';
 import { Input, FormGroup, FormFeedback } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 const mapStateToProps = (state) => {
   return{
@@ -17,6 +18,10 @@ const mapStateToProps = (state) => {
 }
 
 class CreateAccount extends Component {
+  static propTypes = {
+    profile: PropTypes.object
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()

@@ -86,6 +86,52 @@ export default () => {
         }
         return null
       })
+    },
+    getUnfollowedUsers: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/unfolloweds?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getFollowers: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/followers?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getFollowing: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/followings?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    updateListFollow: (hex) => {
+      return axiosPost(baseURL + `follow`, {hex: hex}).then((res) => {
+        return res.data.status
+      })
+    },
+    getPubkeysFollowing: (user_id, arrID) => {
+      return axiosPost(baseURL + `users/${user_id}/followings/public-key`, {data: arrID}).then((res) => {
+        return res.data.pubkeys
+      })
     }
   }
 

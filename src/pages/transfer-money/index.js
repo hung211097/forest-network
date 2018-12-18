@@ -9,6 +9,7 @@ import ApiService from '../../services/api.service'
 import { Keypair } from 'stellar-base';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { calcBandwithConsume } from '../../services/utils.service';
+import PropTypes from 'prop-types'
 
 const mapStateToProps = (state) => {
   return{
@@ -17,6 +18,10 @@ const mapStateToProps = (state) => {
 }
 
 class TransferMoney extends Component {
+  static propTypes = {
+    profile: PropTypes.object
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()

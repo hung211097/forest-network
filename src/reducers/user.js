@@ -54,19 +54,20 @@ const initialState = {
 }
 
 export default (state = initialState, action) => {
-  switch(action.type){
-    case actionTypes.FOLLOW_USER:
-    let temp = state.users.map((item) => {
-      if(item.id === action.idUser){
-        item.isFollow = !item.isFollow
-      }
-      return item
-    })
-    return{
-      ...state,
-      users: temp
-    }
-    default:
-      return state
-  }
+  // switch(action.type){
+  //   case actionTypes.FOLLOW_USER:
+  //   let temp = state.users.map((item) => {
+  //     if(item.id === action.idUser){
+  //       item.isFollow = !item.isFollow
+  //     }
+  //     return item
+  //   })
+  //   return{
+  //     ...state,
+  //     users: temp
+  //   }
+  //   default:
+  //     return state
+  // }
+  return state
 }

@@ -10,6 +10,7 @@ import { saveProfileFromApi } from '../../actions';
 import { connect } from 'react-redux';
 import { Input, FormGroup, FormFeedback } from 'reactstrap';
 import crypto from 'crypto';
+import PropTypes from 'prop-types'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -18,6 +19,10 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class SignInUp extends Component {
+  static propTypes = {
+    saveProfileFromApi: PropTypes.func
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()

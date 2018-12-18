@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar, ListUser } from '../../components'
+import { PostBox, Post, MayKnowFriends, Calendar, ListUser } from '../../components'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
@@ -68,6 +68,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.props.profile);
     return (
       <Layout>
         <div className={styles.home}>
@@ -152,7 +153,7 @@ class Home extends Component {
               {/* right posts */}
               <div className="col-md-3">
                 {/* Friends activity */}
-                <FriendActivity />
+                {/*<FriendActivity />*/}
                 {/* End Friends activity */}
 
                 {/* People You May Know */}
