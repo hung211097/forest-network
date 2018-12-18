@@ -6,9 +6,7 @@ import 'react-table/react-table.css';
 import { timeStamp2Date } from '../../services/utils.service';
 import ApiService from '../../services/api.service';
 import { connect } from 'react-redux'
-import queryString from 'query-string'
 import Pagination from '../../components/pagination'
-import { Link } from 'react-router-dom'
 
 const mapStateToProps = (state) => {
   return{
@@ -29,40 +27,129 @@ class TransactionHistory extends Component {
             isLast: false
         }
     }
+
+    handleChangePage(index){
+        var isFirstPage = false
+        var isLastPage = false
+        const { profile } = this.props
+        console.log(index)
+        this.setState({
+            page: index
+        }, () => {
+            this.apiService.getTransactionsOfUser(profile.public_key, this.state.page, 10).then((res) => {
+                var numbers = [];
+                if (res.total_page > 2) {
+                    if (this.state.page === 1)
+                        for (var i = 1; i <= 3; i++)
+                            numbers.push({
+                                value: i,
+                                isCurPage: i === this.state.page,
+                            });
+                    else if (this.state.page === res.total_page)
+                        for (var j = res.total_page - 2; j <= res.total_page; j++)
+                            numbers.push({
+                                value: j,
+                                isCurPage: j === this.state.page
+                            });
+                    else {
+                        numbers.push({
+                            value: this.state.page - 1,
+                            isCurPage: false
+                        });
+                        numbers.push({
+                            value: this.state.page,
+                            isCurPage: true
+                        });
+                        numbers.push({
+                            value: this.state.page + 1,
+                            isCurPage: false
+                        });
+                    }
+                } else if (res.total_page < 2) {
+                    isFirstPage = true;
+                    isLastPage = true;
+                    numbers.push({
+                        value: this.state.page,
+                        isCurPage: true
+                    });
+                } else {
+                    if (this.state.page === 1) {
+                        isFirstPage = true;
+                        isLastPage = false;
+                        numbers.push({
+                            value: this.state.page,
+                            isCurPage: true
+                        });
+                        numbers.push({
+                            value: this.state.page + 1,
+                            isCurPage: false
+                        });
+                    } else {
+                        isFirstPage = false;
+                        isLastPage = true;
+                        numbers.push({
+                            value: this.state.page - 1,
+                            isCurPage: false
+                        });
+                        numbers.push({
+                            value: this.state.page,
+                            isCurPage: true
+                        });
+                    }
+                }
+    
+                for (var z = 0; z < numbers.length; z++) {
+                    if (numbers[z].isCurPage === true && z === 0) {
+                        isFirstPage = true;
+                        break;
+                    }
+                    else if (numbers[z].isCurPage === true && z === (numbers.length - 1)) {
+                        isLastPage = true;
+                    }
+                }
+                
+                this.setState({
+                    data: res.transactions,
+                    pages: res.total_page,
+                    page_numbers: numbers,
+                    isFirst: isFirstPage,
+                    isLast: isLastPage,
+                    page: this.state.page + 1
+                })
+          })
+        })
+    }
     
     UNSAFE_componentWillReceiveProps(props){
         var isFirstPage = false
         var isLastPage = false
-        var temp = +queryString.parse(this.props.location.search).page
-        if (!temp)
-            temp = 1;
         const { profile } = props
-        this.apiService.getTransactionsOfUser(profile.public_key, temp, 10).then((res) => {
+        this.apiService.getTransactionsOfUser(profile.public_key, this.state.page, 10).then((res) => {
             var numbers = [];
             if (res.total_page > 2) {
-                if (temp === 1)
+                if (this.state.page === 1)
                     for (var i = 1; i <= 3; i++)
                         numbers.push({
                             value: i,
-                            isCurPage: i === temp,
+                            isCurPage: i === this.state.page,
                         });
-                else if (temp === res.total_page)
+                else if (this.state.page === res.total_page)
                     for (var j = res.total_page - 2; j <= res.total_page; j++)
                         numbers.push({
                             value: j,
-                            isCurPage: j === temp
+                            isCurPage: j === this.state.page
                         });
                 else {
                     numbers.push({
-                        value: temp - 1,
+                        value: this.state.page - 1,
                         isCurPage: false
                     });
                     numbers.push({
-                        value: temp,
+                        value: this.state.page,
                         isCurPage: true
                     });
                     numbers.push({
-                        value: temp + 1,
+                        value: this.state.page + 1,
                         isCurPage: false
                     });
                 }
@@ -70,30 +157,30 @@ class TransactionHistory extends Component {
                 isFirstPage = true;
                 isLastPage = true;
                 numbers.push({
-                    value: temp,
+                    value: this.state.page,
                     isCurPage: true
                 });
             } else {
-                if (temp === 1) {
+                if (this.state.page === 1) {
                     isFirstPage = true;
                     isLastPage = false;
                     numbers.push({
-                        value: temp,
+                        value: this.state.page,
                         isCurPage: true
                     });
                     numbers.push({
-                        value: temp + 1,
+                        value: this.state.page + 1,
                         isCurPage: false
                     });
                 } else {
                     isFirstPage = false;
                     isLastPage = true;
                     numbers.push({
-                        value: temp - 1,
+                        value: this.state.page - 1,
                         isCurPage: false
                     });
                     numbers.push({
-                        value: temp,
+                        value: this.state.page,
                         isCurPage: true
                     });
                 }
@@ -108,19 +195,20 @@ class TransactionHistory extends Component {
                     isLastPage = true;
                 }
             }
-
+            
             this.setState({
                 data: res.transactions,
                 pages: res.total_page,
                 page_numbers: numbers,
                 isFirst: isFirstPage,
-                isLast: isLastPage
+                isLast: isLastPage,
+                page: this.state.page + 1
             })
       })
     }
 
     render() {
-        const { data, pages, page_numbers, isFirst, isLast } = this.state;
+        const { data, pages, page_numbers, isFirst, isLast} = this.state;
         return (
             <Layout>
                 <div className={styles.transactionHistory}>
@@ -178,20 +266,20 @@ class TransactionHistory extends Component {
                                     ?
                                     <li className="page-item disabled"><span className="page-link">First</span></li>
                                     :
-                                    <li className="page-item"><Link to="?page=1" className="page-link">First</Link></li>
+                                    <li className="page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, 1)}>First</span></li>
                                 }
                                 {!!page_numbers.length && page_numbers.map((item, key) => {
                                     if (item.isCurPage) {
-                                        return <li key={key} className="active page-item"><Link to={'?page=' + item.value} className="page-link">{item.value}</Link></li>
+                                        return <li key={key} className="active page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, item.value)}>{item.value}</span></li>
                                     }
-                                    return <li key={key} className="page-item"><Link to={'?page=' + item.value} className="page-link">{item.value}</Link></li>
+                                    return <li key={key} className="page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, item.value)}>{item.value}</span></li>
                                 })
                                 }
                                 {isLast
                                     ?
                                     <li className="page-item disabled"><span className="page-link">Last</span></li>
                                     :
-                                    <li className="page-item"><Link to={'?page=' + pages} className="page-link">Last</Link></li>
+                                    <li className="page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, pages)}>Last</span></li>
                                 }
                             </ul>
                         </nav>
