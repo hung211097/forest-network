@@ -3,6 +3,9 @@ import styles from'./index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { createPost } from '../../actions';
+import ApiService from '../../services/api.service'
+import { Keypair } from 'stellar-base';
+import transaction from '../../lib/transaction';
 import PropTypes from 'prop-types'
 
 const mapDispatchToProps = (dispatch) => {
@@ -30,30 +33,60 @@ class PostBox extends Component {
 
   constructor(props){
     super(props)
+		this.apiService = ApiService()
     this.state = {
-      content: ''
+      content: '',
+			privateKey: 'SCC364LOGS5SHIYYK3RJEYP6AHL5GQN2LCYZPAH6643IM3LYUZW74LFH'
     }
   }
 
   handleSubmit(){
     if(this.state.content){
-      let {posts, profile} = this.props
-      let obj = {
-        id: posts[posts.length - 1].id + 1,
-        userID: profile.userID,
-        avatar: profile.avatar,
-        username: profile.username,
-        authorize: "Shared publicly",
-        created_on: new Date().toString(),
-        likes: 0,
-        isLike: false,
-        content: this.state.content,
-        comments: []
-      }
-      this.props.createPost && this.props.createPost(obj)
-      this.setState({
-        content: ''
-      })
+			const plainTextContent = `{
+				"type": 1,
+				"text": "${this.state.content}"
+			}`
+			
+			let tx = {
+				version: 1,
+				account: this.props.profile.public_key,
+				sequence: 9, // this.props.profile.sequence + 1
+				memo: Buffer.alloc(0),
+				operation: "post",
+				params: {
+					keys: [],
+					content: Buffer.from((JSON.stringify(JSON.parse(plainTextContent)))),
+				},
+				signature: new Buffer(64)
+			}
+			transaction.sign(tx, this.state.privateKey);
+			let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+			console.log(tx)
+			console.log(TxEncode)
+			this.apiService.createPost(tx).then((status) => {
+				if(status === 'success'){
+					let {posts, profile} = this.props
+					let obj = {
+						id: posts[posts.length - 1].id + 1,
+						userID: profile.userID,
+						avatar: profile.avatar,
+						username: profile.username,
+						authorize: "Shared publicly",
+						created_on: new Date().toString(),
+						likes: 0,
+						isLike: false,
+						content: this.state.content,
+						comments: []
+					}
+					this.props.createPost && this.props.createPost(obj)
+					this.setState({
+						content: ''
+					})
+				}
+				else{
+					console.log(status)
+				}
+			})      
     }
   }
 

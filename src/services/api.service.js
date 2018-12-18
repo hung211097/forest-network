@@ -82,6 +82,11 @@ export default () => {
         return res.data.status
       })
     },
+		createPost: (tx) => {
+      return axiosPost(baseURL + 'posts', {tx: tx}).then((res) => {
+        return res.data.status
+      })
+    },
   }
 
   return services
