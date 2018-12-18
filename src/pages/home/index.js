@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { Layout } from '../../components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox, Post, MayKnowFriends, Calendar, ListUser } from '../../components'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import ApiService from '../../services/api.service'
-import defaultAvatar from '../../images/default-avatar.png'
+import { Layout } from '../../components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { PostBox, Post, MayKnowFriends, Calendar, ListUser } from '../../components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import ApiService from '../../services/api.service';
+import defaultAvatar from '../../images/default-avatar.png';
 
 const mapStateToProps = (state) => {
   return{
@@ -48,9 +48,7 @@ class Home extends Component {
 
 
   componentDidMount(){
-    // this.apiService.getTransactions(1, 10).then((data) => {
-    //   console.log(data);
-    // })
+
   }
 
   handleSelectMenu(index){

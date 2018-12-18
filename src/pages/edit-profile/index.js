@@ -9,10 +9,14 @@ import { updateProfile, updatePost } from '../../actions';
 // import { validateEmail, validatePhoneNumber, ConvertHTML2TextNewLine, ConvertText2HTMLNewLine } from '../../services/utils.service'
 import ReactTooltip from 'react-tooltip';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { Keypair } from 'stellar-base';
 import ApiService from '../../services/api.service';
 import transaction from '../../lib/transaction';
 import { calcBandwithConsume } from '../../services/utils.service';
+import { keyStorage } from '../../constants/localStorage';
+import { loadItem } from '../../services/storage.service';
+import { SecretKey } from '../../constants/crypto';
+import CryptoJS from 'crypto-js';
+import defaultAvatar from '../../images/default-avatar.png';
 
 const mapStateToProps = (state) => {
   return{
@@ -48,7 +52,6 @@ class EditProfile extends Component {
       originImageUrl: '',
       imagePreviewUrl: '',
       isShow: false,
-      private_key: '',
       error: '',
       isShowError: false,
       isShowSuccess: false
@@ -202,6 +205,9 @@ class EditProfile extends Component {
     let flagSendImage = false
     let changedImage = this.state.imagePreviewUrl
 
+    let temp = loadItem(keyStorage.private_key)
+    let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
     if(bufferImage){
       const tx = {
         version: 1,
@@ -216,7 +222,7 @@ class EditProfile extends Component {
         signature: new Buffer(64)
       }
       flagSendImage = true
-      transaction.sign(tx, this.state.private_key);
+      transaction.sign(tx, my_private_key);
       let TxEncode = '0x' + transaction.encode(tx).toString('hex');
       arrayConsume.push(calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date()))
       data.hexImage = TxEncode
@@ -235,7 +241,7 @@ class EditProfile extends Component {
         },
         signature: new Buffer(64)
       }
-      transaction.sign(tx, this.state.private_key);
+      transaction.sign(tx, my_private_key);
       let TxEncode = '0x' + transaction.encode(tx).toString('hex');
       arrayConsume.push(calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date()))
       data.hexUsername = TxEncode
@@ -312,9 +318,6 @@ class EditProfile extends Component {
     if(this.state.username === ''){
       return false
     }
-    if(this.state.private_key === ''){
-      return false
-    }
     if(this.state.file_avatar && this.state.file_avatar.size > this.limitSize){
       return false
     }
@@ -344,52 +347,6 @@ class EditProfile extends Component {
       return false
     }
     return true
-  }
-
-  onCancel(){
-    this.setState({
-      isShow: false
-    })
-  }
-
-  onRecieveInput(e){
-    let key = null
-    try{
-      key = Keypair.fromSecret(e)
-    }
-    catch(e){
-      this.setState({
-        isShow: false,
-        isShowError: true,
-        error: "Invalid private key!"
-      })
-      return
-    }
-
-    if(key.publicKey() !== this.props.profile.public_key){
-      this.setState({
-        isShow: false,
-        isShowError: true,
-        error: "Private key does not match public key!"
-      })
-      return
-    }
-
-    this.setState({
-      private_key: e,
-      isShow: false
-    }, () => {
-      this.handleSaveEdit()
-    })
-  }
-
-  onShow(){
-    if(this.state.lockEdit){
-      return
-    }
-    this.setState({
-      isShow: true
-    })
   }
 
   hideAlertError(){
@@ -428,7 +385,7 @@ class EditProfile extends Component {
                     <div className="row">
                       <div className="col-md-3">
                         <div className="user-info-left">
-                          <img src={profile.avatar} alt="avatar" />
+                          <img src={profile.avatar ? profile.avatar : defaultAvatar} className="cur-avatar" alt="avatar" />
                           <h2>{profile.username}</h2>
                           <div className="contact">
                             <p>
@@ -595,22 +552,10 @@ class EditProfile extends Component {
           <span className="write" data-tip="Edit" onClick={this.handleUnlockEdit.bind(this)}>
             <i><FontAwesomeIcon icon="edit"/></i>
           </span>
-          <span className="save" data-tip="Save" onClick={this.onShow.bind(this)}>
+          <span className="save" data-tip="Save" onClick={this.handleSaveEdit.bind(this)}>
             <i><FontAwesomeIcon icon="save"/></i>
           </span>
           <ReactTooltip />
-          <SweetAlert
-            input
-            showCancel
-            cancelBtnBsStyle="default"
-            title="Confirm"
-            show={this.state.isShow}
-            placeHolder="Write your private key!"
-            onConfirm={this.onRecieveInput.bind(this)}
-            onCancel={this.onCancel.bind(this)}
-            >
-            <p>Write your private key:</p>
-          </SweetAlert>
           <SweetAlert
           	error
           	confirmBtnText="OK"

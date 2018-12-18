@@ -6,9 +6,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import transaction from '../../lib/transaction';
 import { calcBandwithConsume } from '../../services/utils.service';
-import { Input, FormGroup, FormFeedback } from 'reactstrap';
-import { Keypair } from 'stellar-base';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import CryptoJS from 'crypto-js';
+import { keyStorage } from '../../constants/localStorage';
+import { loadItem } from '../../services/storage.service';
+import { SecretKey } from '../../constants/crypto';
 
 const mapStateToProps = (state) => {
   return{
@@ -26,14 +28,13 @@ class MayKnowFriends extends Component {
     this.apiService = ApiService()
     this.state = {
       users: [],
-      private_key: '',
       isSubmit: false,
       isShowError: false,
       error: '',
       showConfirm: false,
       isShowSuccess: false,
       isShowErrorPopup: false,
-      isSuccess: false
+      isSuccess: false,
     }
   }
 
@@ -45,13 +46,6 @@ class MayKnowFriends extends Component {
           users: data.users
         })
       }
-    })
-  }
-
-  handleChangePrivateKey(e){
-    this.setState({
-      isShowError: false,
-      private_key: e.target.value
     })
   }
 
@@ -71,41 +65,18 @@ class MayKnowFriends extends Component {
 
     const {profile} = this.props
 
-    if(!this.state.private_key){
-      this.setState({
-        isShowError: true,
-        error: "Private key is empty!"
-      })
-      return
-    }
-
-    let key = null
-    try{
-      key = Keypair.fromSecret(this.state.private_key)
-    }
-    catch(e){
-      this.setState({
-        isShowError: true,
-        error: "Invalid private key!"
-      })
-      return
-    }
-
-    if(key.publicKey() !== profile.public_key){
-      this.setState({
-        error: 'Private key does not match with public key!',
-        isShowError: true
-      })
-      return
-    }
+    let temp = loadItem(keyStorage.private_key)
+    let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
 
     this.apiService.getPubkeysFollowing(profile.public_key, profile.following).then((data) => {
       let listPubkey = {
         addresses: []
       }
+
       data.forEach((item) => {
         listPubkey.addresses.push(new Buffer(item.public_key))
       })
+
       const tx = {
         version: 1,
         sequence: profile.sequence + 1,
@@ -128,19 +99,20 @@ class MayKnowFriends extends Component {
         return
       }
 
-      transaction.sign(tx, this.state.private_key);
+      transaction.sign(tx, my_private_key);
       let TxEncode = '0x' + transaction.encode(tx).toString('hex');
       this.apiService.updateListFollow(TxEncode).then((flag) => {
         if(flag === 'success'){
           this.setState({
             isShowSuccess: true,
             isSuccess: true,
-            private_key: ''
+            showConfirm: false
           })
         }
         else{
           this.setState({
-            isShowErrorPopup: true
+            isShowErrorPopup: true,
+            showConfirm: false
           })
         }
       })
@@ -173,7 +145,9 @@ class MayKnowFriends extends Component {
                   {!!this.state.users.length && this.state.users.map((item, key) => {
                       return(
                         <li key={key}>
-                          <MayKnowFriendsItem user={item} onShowConfirm={this.handleShowConfirm.bind(this)} isSuccess={this.state.isSuccess}/>
+                          <MayKnowFriendsItem user={item}
+                            onShowConfirm={this.handleShowConfirm.bind(this)}
+                            isSuccess={this.state.isSuccess}/>
                         </li>
                       )
                     })
@@ -181,18 +155,12 @@ class MayKnowFriends extends Component {
                 </ul>
               </div>
             </div>
+            {this.state.isShowError &&
+              <p className="error">{this.state.error}</p>
+            }
             {this.state.showConfirm &&
               <form onSubmit={this.handleSubmit.bind(this)}>
                 <div className="confirmation">
-                  <FormGroup>
-                    <Input value={this.state.private_key} name="private-key"
-                      onChange={this.handleChangePrivateKey.bind(this)}
-                      placeholder="Private key"
-                      invalid={this.state.isShowError && this.state.isSubmit ? true : false}/>
-                    <FormFeedback invalid="true" className={this.state.isShowError && this.state.isSubmit ? "d-block" : ''}>
-                      {this.state.error}
-                    </FormFeedback>
-                  </FormGroup>
                   <button className="btn btn-azure" onClick={this.handleSubmit.bind(this)}>Confirm</button>
                 </div>
               </form>

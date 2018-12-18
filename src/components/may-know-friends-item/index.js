@@ -18,7 +18,8 @@ class MayKnowFriendsItem extends Component {
     user: PropTypes.object,
     followUser: PropTypes.func,
     unFollowUser: PropTypes.func,
-    onShowConfirm: PropTypes.any
+    onShowConfirm: PropTypes.any,
+    isSuccess: PropTypes.bool,
   }
 
   constructor(props){

@@ -4,6 +4,8 @@ import logo from '../../images/logo.png';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ApiService from '../../services/api.service';
+import { keyStorage } from '../../constants/localStorage';
+import { removeItem } from '../../services/storage.service';
 
 import {
   Collapse,
@@ -34,6 +36,7 @@ class Header extends Component {
 
   handleLogout(){
     this.apiService.logout().then(() => {})
+    removeItem(keyStorage.private_key)
   }
 
   render() {

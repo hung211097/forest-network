@@ -77,9 +77,12 @@
     border-radius: 50% !important;
     position: relative;
     top: 6px;
+    right: 7px;
   }
   .confirmation{
+    text-align: center;
     button{
+      width: 65%;
       font-size: 14px;
       font-weight: bold;
     }
@@ -89,5 +92,10 @@
     position: relative;
     top: 8px;
     right: 10px;
+  }
+  .error{
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
   }
 }
