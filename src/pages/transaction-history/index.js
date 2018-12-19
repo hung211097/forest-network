@@ -28,102 +28,11 @@ class TransactionHistory extends Component {
         }
     }
 
-    handleChangePage(index){
-        var isFirstPage = false
-        var isLastPage = false
-        const { profile } = this.props
-        console.log(index)
-        this.setState({
-            page: index
-        }, () => {
-            this.apiService.getTransactionsOfUser(profile.public_key, this.state.page, 10).then((res) => {
-                var numbers = [];
-                if (res.total_page > 2) {
-                    if (this.state.page === 1)
-                        for (var i = 1; i <= 3; i++)
-                            numbers.push({
-                                value: i,
-                                isCurPage: i === this.state.page,
-                            });
-                    else if (this.state.page === res.total_page)
-                        for (var j = res.total_page - 2; j <= res.total_page; j++)
-                            numbers.push({
-                                value: j,
-                                isCurPage: j === this.state.page
-                            });
-                    else {
-                        numbers.push({
-                            value: this.state.page - 1,
-                            isCurPage: false
-                        });
-                        numbers.push({
-                            value: this.state.page,
-                            isCurPage: true
-                        });
-                        numbers.push({
-                            value: this.state.page + 1,
-                            isCurPage: false
-                        });
-                    }
-                } else if (res.total_page < 2) {
-                    isFirstPage = true;
-                    isLastPage = true;
-                    numbers.push({
-                        value: this.state.page,
-                        isCurPage: true
-                    });
-                } else {
-                    if (this.state.page === 1) {
-                        isFirstPage = true;
-                        isLastPage = false;
-                        numbers.push({
-                            value: this.state.page,
-                            isCurPage: true
-                        });
-                        numbers.push({
-                            value: this.state.page + 1,
-                            isCurPage: false
-                        });
-                    } else {
-                        isFirstPage = false;
-                        isLastPage = true;
-                        numbers.push({
-                            value: this.state.page - 1,
-                            isCurPage: false
-                        });
-                        numbers.push({
-                            value: this.state.page,
-                            isCurPage: true
-                        });
-                    }
-                }
-    
-                for (var z = 0; z < numbers.length; z++) {
-                    if (numbers[z].isCurPage === true && z === 0) {
-                        isFirstPage = true;
-                        break;
-                    }
-                    else if (numbers[z].isCurPage === true && z === (numbers.length - 1)) {
-                        isLastPage = true;
-                    }
-                }
-                
-                this.setState({
-                    data: res.transactions,
-                    pages: res.total_page,
-                    page_numbers: numbers,
-                    isFirst: isFirstPage,
-                    isLast: isLastPage,
-                    page: this.state.page + 1
-                })
-          })
-        })
-    }
-    
-    UNSAFE_componentWillReceiveProps(props){
+    loadData(props) {
         var isFirstPage = false
         var isLastPage = false
         const { profile } = props
+        console.log(this.state.page)
         this.apiService.getTransactionsOfUser(profile.public_key, this.state.page, 10).then((res) => {
             var numbers = [];
             if (res.total_page > 2) {
@@ -195,16 +104,28 @@ class TransactionHistory extends Component {
                     isLastPage = true;
                 }
             }
-            
+
             this.setState({
                 data: res.transactions,
                 pages: res.total_page,
                 page_numbers: numbers,
                 isFirst: isFirstPage,
-                isLast: isLastPage,
-                page: this.state.page + 1
+                isLast: isLastPage
             })
-      })
+        })
+    }
+
+    handleChangePage(index){
+        console.log(index)
+        this.setState({
+            page: index
+        }, () => {
+            this.loadData(this.props)
+        })
+    }
+    
+    UNSAFE_componentWillReceiveProps(props){
+        this.loadData(props)
     }
 
     render() {
