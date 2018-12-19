@@ -3,10 +3,19 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import ApiService from '../services/api.service';
 import { Route } from 'react-router-dom'
+import { connect } from 'react-redux';
+import { saveProfileFromApi } from '../actions';
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
+  }
+}
 
 class PrivateRoute extends Component {
   static propTypes = {
     config: PropTypes.any,
+    saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
@@ -23,6 +32,7 @@ class PrivateRoute extends Component {
         this.props.history.push('/login')
       }
       else{
+        this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
         this.setState({
           block: false
         })
@@ -40,4 +50,4 @@ class PrivateRoute extends Component {
   }
 }
 
-export default withRouter(PrivateRoute);
+export default withRouter(connect(null, mapDispatchToProps)(PrivateRoute));

@@ -39,8 +39,8 @@ class MayKnowFriends extends Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(props){
-    const {profile} = props
+  componentDidMount(){
+    const {profile} = this.props
     this.apiService.getUnfollowedUsers(profile.user_id, 1, 3).then((data) => {
       if(data){
         this.setState({
