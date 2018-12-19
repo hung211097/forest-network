@@ -6,6 +6,7 @@ import 'react-table/react-table.css';
 import { timeStamp2Date } from '../../services/utils.service';
 import ApiService from '../../services/api.service';
 import { connect } from 'react-redux'
+import Pagination from '../../components/pagination'
 
 const mapStateToProps = (state) => {
   return{
@@ -18,41 +19,121 @@ class TransactionHistory extends Component {
         super(props)
         this.apiService = ApiService()
         this.state = {
-            data: [{
-                publicKey: "GA6IW2JOWMP4WGI6LYAZ76ZPMFQSJAX4YLJLOQOWFC5VF5C6IGNV2IW7",
-                publicKeyReceived: "GAO4J5RXQHUVVONBDQZSRTBC42E3EIK66WZA5ZSGKMFCS6UNYMZSIDBI",
-                operation: "payment",
-                amount: 100000000000,
-                note: "Mua quà",
-                createAt: timeStamp2Date("2018-12-11 15:01:27.965+07")
-            },
-            {
-                publicKey: "Huỳnh",
-                publicKeyReceived: "Hưng",
-                operation: "payment",
-                amount: 20,
-                note: "Mua quà",
-                createAt: timeStamp2Date("2018-12-11 15:01:27.965+07")
-            }]
-        };
+            data : [],
+            pages: 0,
+            page: 1,
+            page_numbers: 0,
+            isFirst: false,
+            isLast: false
+        }
     }
 
-    componentDidMount(){
+    loadData(props) {
+        var isFirstPage = false
+        var isLastPage = false
+        console.log(this.state.page)
+        this.apiService.getTransactionsOfUser(this.state.page, 10).then((res) => {
+            var numbers = [];
+            if (res.total_page > 2) {
+                if (this.state.page === 1)
+                    for (var i = 1; i <= 3; i++)
+                        numbers.push({
+                            value: i,
+                            isCurPage: i === this.state.page,
+                        });
+                else if (this.state.page === res.total_page)
+                    for (var j = res.total_page - 2; j <= res.total_page; j++)
+                        numbers.push({
+                            value: j,
+                            isCurPage: j === this.state.page
+                        });
+                else {
+                    numbers.push({
+                        value: this.state.page - 1,
+                        isCurPage: false
+                    });
+                    numbers.push({
+                        value: this.state.page,
+                        isCurPage: true
+                    });
+                    numbers.push({
+                        value: this.state.page + 1,
+                        isCurPage: false
+                    });
+                }
+            } else if (res.total_page < 2) {
+                isFirstPage = true;
+                isLastPage = true;
+                numbers.push({
+                    value: this.state.page,
+                    isCurPage: true
+                });
+            } else {
+                if (this.state.page === 1) {
+                    isFirstPage = true;
+                    isLastPage = false;
+                    numbers.push({
+                        value: this.state.page,
+                        isCurPage: true
+                    });
+                    numbers.push({
+                        value: this.state.page + 1,
+                        isCurPage: false
+                    });
+                } else {
+                    isFirstPage = false;
+                    isLastPage = true;
+                    numbers.push({
+                        value: this.state.page - 1,
+                        isCurPage: false
+                    });
+                    numbers.push({
+                        value: this.state.page,
+                        isCurPage: true
+                    });
+                }
+            }
 
+            for (var z = 0; z < numbers.length; z++) {
+                if (numbers[z].isCurPage === true && z === 0) {
+                    isFirstPage = true;
+                    break;
+                }
+                else if (numbers[z].isCurPage === true && z === (numbers.length - 1)) {
+                    isLastPage = true;
+                }
+            }
+
+            this.setState({
+                data: res.transactions,
+                pages: res.total_page,
+                page_numbers: numbers,
+                isFirst: isFirstPage,
+                isLast: isLastPage
+            })
+        })
     }
 
+    handleChangePage(index){
+        console.log(index)
+        this.setState({
+            page: index
+        }, () => {
+            this.loadData(this.props)
+        })
+    }
+    
     UNSAFE_componentWillReceiveProps(props){
-      this.apiService.getTransactionsOfUser(1, 2).then((data) => {
-        console.log(data);
-      })
+        this.loadData(props)
     }
+
     render() {
-        const { data } = this.state
-        // console.log(data)
+        const { data, pages, page_numbers, isFirst, isLast} = this.state;
         return (
             <Layout>
                 <div className={styles.transactionHistory}>
                     <ReactTable
+                        PaginationComponent={Pagination}
                         data={data}
                         columns={[
                             {
@@ -60,7 +141,7 @@ class TransactionHistory extends Component {
                                 columns: [
                                     {
                                         Header: "Public Key",
-                                        accessor: "publicKey"
+                                        accessor: "public_key"
                                     }
                                 ]
                             },
@@ -69,7 +150,7 @@ class TransactionHistory extends Component {
                                 columns: [
                                     {
                                         Header: "Public Key Received",
-                                        accessor: "publicKeyReceived"
+                                        accessor: "public_key_received"
                                     },
                                     {
                                         Header: "Operation",
@@ -80,22 +161,49 @@ class TransactionHistory extends Component {
                                         accessor: "amount",
                                     },
                                     {
-                                        Header: "Note",
-                                        accessor: "note",
+                                        Header: "Memo",
+                                        accessor: "memo",
                                     },
                                     {
-                                        Header: "Create At",
-                                        accessor: "createAt",
+                                        Header: "Created At",
+                                        id: "created_at",   
+                                        accessor: d => timeStamp2Date(d.created_at),
                                     }
                                 ]
                             }
                         ]}
+                        showPageSizeOptions={false}
                         defaultPageSize={10}
                         style={{
-                            height: "400px" // This will force the table body to overflow and scroll, since there is not enough room
+                            height: "400px"
                         }}
                         className="-striped -highlight"
                     />
+                    {data.length > 0 &&
+                        <nav className="Bot" aria-label="Page navigation example">
+                            <ul className="pagination justify-content-center">
+                                {isFirst
+                                    ?
+                                    <li className="page-item disabled"><span className="page-link">First</span></li>
+                                    :
+                                    <li className="page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, 1)}>First</span></li>
+                                }
+                                {!!page_numbers.length && page_numbers.map((item, key) => {
+                                    if (item.isCurPage) {
+                                        return <li key={key} className="active page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, item.value)}>{item.value}</span></li>
+                                    }
+                                    return <li key={key} className="page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, item.value)}>{item.value}</span></li>
+                                })
+                                }
+                                {isLast
+                                    ?
+                                    <li className="page-item disabled"><span className="page-link">Last</span></li>
+                                    :
+                                    <li className="page-item"><span className="page-link" onClick={this.handleChangePage.bind(this, pages)}>Last</span></li>
+                                }
+                            </ul>
+                        </nav>
+                    }
                 </div>
             </Layout>
         );
