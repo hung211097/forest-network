@@ -5,10 +5,13 @@ import ApiService from '../../services/api.service'
 import SweetAlert from 'react-bootstrap-sweetalert';
 import transaction from '../../lib/transaction';
 import { calcBandwithConsume } from '../../services/utils.service';
-import { Keypair } from 'stellar-base';
 import { Input, FormGroup, FormFeedback } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { keyStorage } from '../../constants/localStorage';
+import { loadItem } from '../../services/storage.service';
+import { SecretKey } from '../../constants/crypto';
+import CryptoJS from 'crypto-js';
 
 const mapStateToProps = (state) => {
   return{
@@ -17,16 +20,18 @@ const mapStateToProps = (state) => {
 }
 
 class CreateAccount extends Component {
+  static propTypes = {
+    profile: PropTypes.object
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()
     this.state = {
       isShowError: false,
       isShowSuccess: false,
-      private_key: '',
       your_public_key: '',
       isSubmit: false,
-      nextStep: false,
       error: '',
       errorPopup: '',
       isShowErrorPopup: false
@@ -50,7 +55,6 @@ class CreateAccount extends Component {
 
   componentDidMount(){
     this.toggleAbsoluteFooter(true)
-
   }
 
   handleSubmit(){
@@ -58,44 +62,45 @@ class CreateAccount extends Component {
       isSubmit: true
     })
 
-    if(!this.state.private_key){
-      this.setState({
-        isShowError: true,
-        error: "Private key is empty!"
-      })
-      return
-    }
+    const {profile} = this.props
 
-    let key = null
-    try{
-      key = Keypair.fromSecret(this.state.private_key)
-    }
-    catch(e){
+    if(!this.state.your_public_key){
       this.setState({
         isShowError: true,
-        error: "Invalid private key!"
-      })
-      return
-    }
-
-    if(key.publicKey() !== this.props.profile.public_key){
-      this.setState({
-        isShowError: true,
-        error: "Private key does not match your public key!"
+        error: 'Public key is empty!'
       })
       return
     }
 
     const tx = {
       version: 1,
-      sequence: this.props.profile.sequence + 18,
+      sequence: profile.sequence + 1,
       memo: Buffer.alloc(0),
-      account: this.props.profile.public_key,
+      account: profile.public_key,
       operation: "create_account",
       params: {
         address: this.state.your_public_key,
       },
       signature: new Buffer(64)
+    }
+
+    if(this.state.your_public_key === profile.public_key){
+      this.setState({
+        error: 'Public key must belong to another!',
+        isShowError: true
+      })
+      return
+    }
+
+    try{
+      transaction.encode(tx).toString('base64')
+    }
+    catch(e){
+      this.setState({
+        error: "Invalid public key!!",
+        isShowError: true
+      })
+      return
     }
 
     let consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date())
@@ -107,14 +112,16 @@ class CreateAccount extends Component {
       return
     }
 
-    transaction.sign(tx, this.state.private_key);
+    let temp = loadItem(keyStorage.private_key)
+    let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
+    transaction.sign(tx, my_private_key);
     let TxEncode = '0x' + transaction.encode(tx).toString('hex');
 
     this.apiService.createAccount(TxEncode).then((data) => {
       if(data === 'success'){
         this.setState({
           isShowSuccess: true,
-          private_key: '',
           your_public_key: '',
           nextStep: false,
           isSubmit: false
@@ -123,7 +130,6 @@ class CreateAccount extends Component {
       else{
         this.setState({
           isShowErrorPopup: true,
-          private_key: '',
           your_public_key: '',
           nextStep: false,
           isSubmit: false,
@@ -139,38 +145,9 @@ class CreateAccount extends Component {
     })
   }
 
-  handleNext(){
-    this.setState({
-      isSubmit: true
-    })
-
-    if(!this.state.your_public_key){
-      return
-    }
-
-    this.setState({
-      nextStep: true,
-      isSubmit: false
-    })
-  }
-
-  handleBack(){
-    this.setState({
-      nextStep: false,
-      isSubmit: false
-    })
-  }
-
   handleChangePublicKey(e){
     this.setState({
       your_public_key: e.target.value
-    })
-  }
-
-  handleChangePrivateKey(e){
-    this.setState({
-      isShowError: false,
-      private_key: e.target.value
     })
   }
 
@@ -187,23 +164,11 @@ class CreateAccount extends Component {
           <div className="row create-account">
             <h2>Create Account</h2>
             <div className="col-12 col-sm-5">
-              <div className={this.state.nextStep ? "d-none" : "animated fadeInLeft step"}>
+              <div className="animated fadeIn step">
                 <h4>New public key</h4>
                 <FormGroup>
                   <Input value={this.state.your_public_key} name="public-key"
                     onChange={this.handleChangePublicKey.bind(this)}
-                    placeholder="Private key"
-                    invalid={!this.state.your_public_key && this.state.isSubmit ? true : false}/>
-                  <FormFeedback invalid="true" className={!this.state.your_public_key && this.state.isSubmit ? "d-block" : ''}>
-                    Public key is empty!
-                  </FormFeedback>
-                </FormGroup>
-              </div>
-              <div className={this.state.nextStep ? "animated fadeInRight step": "d-none"}>
-                <h4>Private key</h4>
-                <FormGroup>
-                  <Input value={this.state.private_key} name="public-key"
-                    onChange={this.handleChangePrivateKey.bind(this)}
                     placeholder="Private key"
                     invalid={this.state.isShowError && this.state.isSubmit ? true : false}/>
                   <FormFeedback invalid="true" className={this.state.isShowError && this.state.isSubmit ? "d-block" : ''}>
@@ -211,12 +176,8 @@ class CreateAccount extends Component {
                   </FormFeedback>
                 </FormGroup>
               </div>
-              <div className="control-area">
-                <span className={this.state.nextStep ? "btn btn-primary animated fadeInRight" : "d-none"}
-                  onClick={this.handleBack.bind(this)}><i><FontAwesomeIcon icon="arrow-left"/></i> Back</span>
-                <span className={this.state.nextStep ? "d-none" : "btn btn-primary float-right animated fadeInLeft"}
-                  onClick={this.handleNext.bind(this)}>Next <i><FontAwesomeIcon icon="arrow-right"/></i></span>
-                <span className={this.state.nextStep ? "btn btn-primary float-right animated fadeInRight" : "d-none"}
+              <div className="control-area text-center">
+                <span className="btn btn-primary animated fadeIn"
                   onClick={this.handleSubmit.bind(this)}>Submit</span>
               </div>
             </div>

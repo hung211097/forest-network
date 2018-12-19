@@ -58,6 +58,9 @@
           }
           img{
             border: 3px solid black;
+            &.cur-avatar{
+              width: 50%;
+            }
           }
           .btn{
             border-radius: 0px !important;

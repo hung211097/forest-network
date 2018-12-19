@@ -94,6 +94,7 @@ function encode(tx) {
 
     case 'update_account':
       if(tx.params.key === 'followings'){
+        console.log("OK");
         params = UpdateAccountParams.encode({
           ...tx.params,
           value: Followings.encode(tx.params.value)
@@ -179,4 +180,9 @@ function decode(data) {
   };
 }
 
-export default { encode, decode, decodePost, decodeFollowing };
+export default {
+  encode,
+  decode,
+  decodePost,
+  decodeFollowing
+}

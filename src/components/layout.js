@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return{
+  return{ 
     saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
   }
 }

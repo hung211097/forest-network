@@ -7,6 +7,7 @@ import { ListFollowers, ListFollowing, Timeline } from '../../components'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import defaultAvatar from '../../images/default-avatar.png'
 
 const mapStateToProps = (state) => {
   return{
@@ -63,7 +64,7 @@ class Profile extends Component {
 									<div className="col-md-4">
 										<div className="profile-info-left">
 											<div className="text-center">
-                        <img src={profile.avatar} alt="Avatar" className="avatar img-circle" />
+                        <img src={profile.avatar ? profile.avatar : defaultAvatar} alt="Avatar" className="avatar img-circle" />
 												<h2>{profile.username}</h2>
 											</div>
 											<div className="action-buttons">

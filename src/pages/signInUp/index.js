@@ -10,6 +10,11 @@ import { saveProfileFromApi } from '../../actions';
 import { connect } from 'react-redux';
 import { Input, FormGroup, FormFeedback } from 'reactstrap';
 import crypto from 'crypto';
+import PropTypes from 'prop-types'
+import CryptoJS from 'crypto-js';
+import { keyStorage } from '../../constants/localStorage';
+import { saveItem } from '../../services/storage.service';
+import { SecretKey } from '../../constants/crypto';
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -18,6 +23,10 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class SignInUp extends Component {
+  static propTypes = {
+    saveProfileFromApi: PropTypes.func
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()
@@ -75,6 +84,9 @@ class SignInUp extends Component {
 
     this.apiService.login(public_key).then((data) => {
       if(data){
+        let key = CryptoJS.AES.encrypt(this.state.private_key, SecretKey)
+        saveItem(keyStorage.private_key, key.toString())
+        // let b = CryptoJS.AES.decrypt(key.toString(), "SecretKey").toString(CryptoJS.enc.Utf8)
         this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
         this.props.history.push('/')
       }

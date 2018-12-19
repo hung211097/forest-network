@@ -1,10 +1,14 @@
 :local(.transactionHistory) {
-    margin-top: 7rem !important;
-    margin-bottom: 3.5rem !important;
+    margin-top: 6.2rem !important;
     padding: 0 30px;
 
+    .Bot {
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
     .ReactTable .rt-thead.-headerGroups{
-        background: #8fe9ff;
+        background: #007bff;
     }
     .ReactTable .rt-thead.-header{
         background: #d1f0ff;
@@ -14,5 +18,10 @@
     }
     .ReactTable .pagination-bottom{
         background: #fff;
+    }
+
+    a.page-link:hover{
+        background-color: #007bff !important;
+        color: white !important;
     }
 }
