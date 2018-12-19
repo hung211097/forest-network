@@ -146,7 +146,7 @@ class ListUser extends Component {
               })
             }
           </div>
-          {this.state.page < this.state.total_page &&
+          {this.state.page <= this.state.total_page &&
             <div className="load-more">
               <button className="btn btn-more" onClick={this.handleLoadMore.bind(this)}>LOAD MORE</button>
             </div>
