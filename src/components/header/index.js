@@ -4,6 +4,8 @@ import logo from '../../images/logo.png';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ApiService from '../../services/api.service';
+import { keyStorage } from '../../constants/localStorage';
+import { removeItem } from '../../services/storage.service';
 
 import {
   Collapse,
@@ -34,6 +36,7 @@ class Header extends Component {
 
   handleLogout(){
     this.apiService.logout().then(() => {})
+    removeItem(keyStorage.private_key)
   }
 
   render() {
@@ -64,6 +67,11 @@ class Header extends Component {
                     </Link>
                   </NavItem>
                   <NavItem>
+                    <Link to="/create-account" className="nav-link">
+                      Create account
+                    </Link>
+                  </NavItem>
+                  <NavItem>
                     <Link to="/transfer-money" className="nav-link">
                       Transfer money
                     </Link>
@@ -75,7 +83,7 @@ class Header extends Component {
                   </NavItem>
                   <NavItem>
                     <Link to="/login" className="nav-link" onClick={this.handleLogout.bind(this)}>
-                      Logout
+                      <i><FontAwesomeIcon icon="sign-out-alt"/></i> Logout
                     </Link>
                   </NavItem>
                   {/*<NavItem>
@@ -91,6 +99,9 @@ class Header extends Component {
                   <DropdownMenu right>
                     <Link to="/edit-profile" className="dropdown-item">
                       Edit profile
+                    </Link>
+                    <Link to="/create-account" className="dropdown-item">
+                      Create account
                     </Link>
                     <Link to="/transfer-money" className="dropdown-item">
                       Transfer money

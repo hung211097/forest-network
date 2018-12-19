@@ -8,7 +8,7 @@ const initialState = {
     {
       id: 1,
       avatar: avatar1,
-      userID: 1,
+      user_id: 1,
       username: "John Breakgrow",
       authorize: "Shared publicly",
       created_on: "Sat Dec 01 2018 09:56:49 GMT+0700 (Indochina Time)",
@@ -18,14 +18,14 @@ const initialState = {
       comments: [
         {
           avatar: avatar2,
-          userID: 3,
+          user_id: 3,
           username: "Maria Gonzales",
           content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
           created_on: "Sat Dec 01 2018 10:56:49 GMT+0700 (Indochina Time)"
         },
         {
           avatar: avatar3,
-          userID: 2,
+          user_id: 2,
           username: "Luna Stark",
           content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
           created_on: "Sat Dec 01 2018 11:00:49 GMT+0700 (Indochina Time)"
@@ -35,7 +35,7 @@ const initialState = {
     {
       id: 2,
       avatar: avatar3,
-      userID: 2,
+      user_id: 2,
       username: "Luna Stark",
       authorize: "Shared publicly",
       created_on: "Thu Dec 29 2018 10:32:49 GMT+0700 (Indochina Time)",
@@ -45,14 +45,14 @@ const initialState = {
       comments: [
         {
           avatar: avatar2,
-          userID: 3,
+          user_id: 3,
           username: "Maria Gonzales",
           content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
           created_on: "Sat Dec 01 2018 10:56:49 GMT+0700 (Indochina Time)"
         },
         {
           avatar: avatar1,
-          userID: 1,
+          user_id: 1,
           username: "John Breakgrow",
           content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
           created_on: "Sat Dec 01 2018 11:00:49 GMT+0700 (Indochina Time)"
@@ -99,11 +99,11 @@ export default (state = initialState, action) => {
       }
     case actionTypes.UPDATE_POST:
       temp = state.posts.map((item) => {
-        if(item.userID === action.user.id){
+        if(item.user_id === action.user.id){
           item.username = action.user.username
         }
         item.comments = item.comments.map((cmt) => {
-          if(cmt.userID === action.user.id){
+          if(cmt.user_id === action.user.id){
             cmt.username = action.user.username
           }
           return cmt

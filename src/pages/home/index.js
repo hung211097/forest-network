@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { Layout } from '../../components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { PostBox, Post, FriendActivity, MayKnowFriends, Calendar, ListUser } from '../../components'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import ApiService from '../../services/api.service'
+import { Layout } from '../../components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { PostBox, Post, MayKnowFriends, Calendar, ListUser } from '../../components';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import ApiService from '../../services/api.service';
+import defaultAvatar from '../../images/default-avatar.png';
 
 const mapStateToProps = (state) => {
   return{
@@ -47,9 +48,7 @@ class Home extends Component {
 
 
   componentDidMount(){
-    // this.apiService.getTransactions(1, 10).then((data) => {
-    //   console.log(data);
-    // })
+
   }
 
   handleSelectMenu(index){
@@ -67,6 +66,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.props.profile);
     return (
       <Layout>
         <div className={styles.home}>
@@ -79,7 +79,7 @@ class Home extends Component {
                     <div className="widget-body">
                       <div className="user-heading round">
                         <Link to="/profile" className="border-img">
-                          <img src={this.props.profile.avatar} alt="avatar" />
+                          <img src={this.props.profile.avatar ? this.props.profile.avatar : defaultAvatar} alt="avatar" />
                         </Link>
                         <Link to="/profile">
                           <h1>{this.props.profile.username}</h1>
@@ -151,7 +151,7 @@ class Home extends Component {
               {/* right posts */}
               <div className="col-md-3">
                 {/* Friends activity */}
-                <FriendActivity />
+                {/*<FriendActivity />*/}
                 {/* End Friends activity */}
 
                 {/* People You May Know */}
