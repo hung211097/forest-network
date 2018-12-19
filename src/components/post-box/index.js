@@ -4,8 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { createPost } from '../../actions';
 import ApiService from '../../services/api.service'
+import {calcBandwithConsume} from '../../services/utils.service'
 import { Keypair } from 'stellar-base';
 import transaction from '../../lib/transaction';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import PropTypes from 'prop-types'
 
 const mapDispatchToProps = (dispatch) => {
@@ -36,26 +38,41 @@ class PostBox extends Component {
 		this.apiService = ApiService()
     this.state = {
       content: '',
-			privateKey: 'SCC364LOGS5SHIYYK3RJEYP6AHL5GQN2LCYZPAH6643IM3LYUZW74LFH'
+			privateKey: 'SCC364LOGS5SHIYYK3RJEYP6AHL5GQN2LCYZPAH6643IM3LYUZW74LFH',
+      isShowError: false,
+			error: '',
+      isShowSuccess: false
     }
   }
 
+	hideAlertError(){
+    this.setState({
+      isShowError: false
+    })
+  }
+
+  hideAlertSuccess(){
+    this.setState({
+      isShowSuccess: false
+    })
+  }
+	
   handleSubmit(){
     if(this.state.content){
-			const plainTextContent = `{
-				"type": 1,
-				"text": "${this.state.content}"
-			}`
+			const plainTextContent = {
+				type: 1,
+				text: this.state.content
+			}
 			
 			let tx = {
 				version: 1,
 				account: this.props.profile.public_key,
-				sequence: 9, // this.props.profile.sequence + 1
+				sequence: 10, // this.props.profile.sequence + 1
 				memo: Buffer.alloc(0),
 				operation: "post",
 				params: {
 					keys: [],
-					content: Buffer.from((JSON.stringify(JSON.parse(plainTextContent)))),
+					content: plainTextContent,
 				},
 				signature: new Buffer(64)
 			}
@@ -63,7 +80,14 @@ class PostBox extends Component {
 			let TxEncode = '0x' + transaction.encode(tx).toString('hex');
 			console.log(tx)
 			console.log(TxEncode)
-			this.apiService.createPost(tx).then((status) => {
+			const consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date());
+			if(consume > this.props.profile.bandwithMax){
+        this.setState({
+          error: "You don't have enough OXY to conduct transaction!",
+          isShowError: true
+        })
+      }
+			this.apiService.createPost(TxEncode).then((status) => {
 				if(status === 'success'){
 					let {posts, profile} = this.props
 					let obj = {
@@ -110,6 +134,25 @@ class PostBox extends Component {
             </ul>
           </div>
         </div>
+			
+				<SweetAlert
+					error
+					confirmBtnText="OK"
+					confirmBtnBsStyle="danger"
+					title={this.state.error}
+					show={this.state.isShowError}
+					onConfirm={this.hideAlertError.bind(this)}
+					onCancel={this.hideAlertError.bind(this)}>
+				</SweetAlert>
+				<SweetAlert
+					success
+					confirmBtnText="OK"
+					confirmBtnBsStyle="success"
+					title="Update profile successfully!"
+					show={this.state.isShowSuccess}
+					onConfirm={this.hideAlertSuccess.bind(this)}
+					onCancel={this.hideAlertSuccess.bind(this)}>
+				</SweetAlert>
       </div>
     );
   }

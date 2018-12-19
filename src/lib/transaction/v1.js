@@ -1,6 +1,6 @@
-import vstruct from 'varstruct';
-import { Keypair } from 'stellar-base';
-import base32 from 'base32.js';
+const vstruct = require('varstruct');
+const base32 = require('base32.js');
+const { Keypair } = require('stellar-base');
 
 const Transaction = vstruct([
   { name: 'version', type: vstruct.UInt8 },
@@ -44,6 +44,23 @@ const InteractParams = vstruct([
   // React if '', like, love, haha, anrgy, sad, wow
 ]);
 
+const PlainTextContent = vstruct([
+  { name: 'type', type: vstruct.UInt8 },
+  { name: 'text', type: vstruct.VarString(vstruct.UInt16BE) },
+]);
+
+const Followings = vstruct([
+  { name: 'addresses', type: vstruct.VarArray(vstruct.UInt16BE, vstruct.Buffer(35)) },
+]);
+
+function decodePost(tx) {
+  return PlainTextContent.decode(tx);
+}
+
+function decodeFollowing(tx){
+  return Followings.decode(tx);
+}
+
 function encode(tx) {
   let params, operation;
   if (tx.version !== 1) {
@@ -67,12 +84,24 @@ function encode(tx) {
       break;
 
     case 'post':
-      params = PostParams.encode(tx.params);
+      params = PostParams.encode(
+      {
+        ...tx.params,
+        content: PlainTextContent.encode(tx.params.content)
+      });
       operation = 3;
       break;
 
     case 'update_account':
-      params = UpdateAccountParams.encode(tx.params);
+      if(tx.params.key === 'followings'){
+        params = UpdateAccountParams.encode({
+          ...tx.params,
+          value: Followings.encode(tx.params.value)
+        });
+      }
+      else{
+        params = UpdateAccountParams.encode(tx.params);
+      }
       operation = 4;
       break;
 
@@ -150,7 +179,4 @@ function decode(data) {
   };
 }
 
-export default {
-  encode,
-  decode,
-}
+export default { encode, decode, decodePost, decodeFollowing };

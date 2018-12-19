@@ -79,8 +79,8 @@ export default () => {
         return res.data.status
       })
     },
-		createPost: (tx) => {
-      return axiosPost(baseURL + 'posts', {tx: tx}).then((res) => {
+		createPost: (TxEncode) => {
+      return axiosPost(baseURL + 'posts', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
     },
