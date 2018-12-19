@@ -1,5 +1,5 @@
 import {actionTypes} from '../constants/actionType';
-import avatar from '../images/guy-3.jpg';
+// import avatar from '../images/guy-3.jpg';
 import avatar1 from '../images/guy-2.jpg';
 import avatar2 from '../images/guy-5.jpg';
 import avatar3 from '../images/guy-6.jpg';
@@ -9,16 +9,18 @@ import avatar6 from '../images/woman-4.jpg';
 
 const initialState = {
   info: {
-    userID: 1,
+    // user_id: 1,
     fullname: "John Breakgrow",
-    username: "John Breakgrow",
-    avatar: avatar,
-    birthday: "1990-11-21",
-    gender: "male",
-    email: "me@jonasmith.com",
-    phone: "1234567890",
-    address: "Riverside City 66, 80123 Denver, Colorado",
-    about: `Dramatically facilitate proactive solutions whereas professional intellectual capital. Holisticly utilize competitive e-markets through intermandated meta-services. Objectively.<br/><br/>Monotonectally foster future-proof infomediaries before principle-centered interfaces.Assertively recaptiualize cutting-edge web services rather than emerging "outside the box" thinking. Phosfluorescently cultivate resource maximizing technologies and user-centric convergence. Completely underwhelm cross functional innovation vis-a-vis.`
+    username: "",
+    avatar: undefined,
+    following: [],
+    follower: []
+    // birthday: "1990-11-21",
+    // gender: "male",
+    // email: "me@jonasmith.com",
+    // phone: "1234567890",
+    // address: "Riverside City 66, 80123 Denver, Colorado",
+    // about: `Dramatically facilitate proactive solutions whereas professional intellectual capital. Holisticly utilize competitive e-markets through intermandated meta-services. Objectively.<br/><br/>Monotonectally foster future-proof infomediaries before principle-centered interfaces.Assertively recaptiualize cutting-edge web services rather than emerging "outside the box" thinking. Phosfluorescently cultivate resource maximizing technologies and user-centric convergence. Completely underwhelm cross functional innovation vis-a-vis.`
   },
 	numFollowers: 5,
 	usersFollow: [
@@ -110,15 +112,36 @@ export default (state = initialState, action) => {
     case actionTypes.UPDATE_PROFILE:
       return{
         ...state,
-        info: {fullname: state.info.fullname, avatar: state.info.avatar, ...action.info}
+        info: {...state.info, ...action.info}
       }
     case actionTypes.SAVE_PROFILE:
       return{
         ...state,
         info:{
           fullname: state.info.fullname,
-          avatar: state.info.avatar,
           ...action.info
+        }
+      }
+    case actionTypes.FOLLOW_USER:
+    console.log([...state.info.following, action.id]);
+      return{
+        ...state,
+        info:{
+          ...state.info,
+          fullname: state.info.fullname,
+          following: [...state.info.following, action.id],
+        }
+      }
+    case actionTypes.UNFOLLOW_USER:
+      let tempArr = state.info.following.filter((item) => {
+        return item !== action.id
+      })
+      return{
+        ...state,
+        info:{
+          ...state.info,
+          fullname: state.info.fullname,
+          following: tempArr,
         }
       }
     default:

@@ -6,8 +6,13 @@ import { InputGroup, InputGroupAddon, Input, FormGroup, FormFeedback } from 'rea
 import transaction from '../../lib/transaction';
 import { connect } from 'react-redux'
 import ApiService from '../../services/api.service'
-import { Keypair } from 'stellar-base';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { calcBandwithConsume } from '../../services/utils.service';
+import PropTypes from 'prop-types'
+import { keyStorage } from '../../constants/localStorage';
+import { loadItem } from '../../services/storage.service';
+import { SecretKey } from '../../constants/crypto';
+import CryptoJS from 'crypto-js';
 
 const mapStateToProps = (state) => {
   return{
@@ -16,12 +21,15 @@ const mapStateToProps = (state) => {
 }
 
 class TransferMoney extends Component {
+  static propTypes = {
+    profile: PropTypes.object
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()
     this.state = {
       memo: '',
-      my_private_key: '',
       your_public_key: '',
       amount: 0,
       isSubmit: false,
@@ -34,12 +42,6 @@ class TransferMoney extends Component {
   handleChangeAmount(e){
     this.setState({
       amount: +e.target.value
-    })
-  }
-
-  handleChangeMyPrivateKey(e){
-    this.setState({
-      my_private_key: e.target.value
     })
   }
 
@@ -56,9 +58,6 @@ class TransferMoney extends Component {
   }
 
   validate(){
-    if(this.state.my_private_key === ''){
-      return false
-    }
     if(this.state.amount <= 0){
       return false
     }
@@ -90,24 +89,10 @@ class TransferMoney extends Component {
       },
       signature: new Buffer(64)
     }
-    let key = null
-    try{
-      key = Keypair.fromSecret(this.state.my_private_key)
-    }
-    catch(exception){
-      this.setState({
-        error: 'Invalid private key!',
-        isShowError: true
-      })
-      return
-    }
-    if(key.publicKey() !== profile.public_key){
-      this.setState({
-        error: 'Private key does not match with public key!',
-        isShowError: true
-      })
-      return
-    }
+
+    let temp = loadItem(keyStorage.private_key)
+    let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
     if(this.state.your_public_key === profile.public_key){
       this.setState({
         error: 'Public key must belong to another!',
@@ -115,13 +100,33 @@ class TransferMoney extends Component {
       })
       return
     }
-    transaction.sign(tx, this.state.my_private_key);
+
+    try{
+      transaction.encode(tx).toString('base64')
+    }
+    catch(e){
+      this.setState({
+        error: "Invalid public key!!",
+        isShowError: true
+      })
+      return
+    }
+
+    let consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date())
+    if(consume > this.props.profile.bandwithMax){
+      this.setState({
+        error: "You don't have enough OXY to conduct transaction!",
+        isShowError: true
+      })
+      return
+    }
+
+    transaction.sign(tx, my_private_key);
     let TxEncode = '0x' + transaction.encode(tx).toString('hex');
     this.apiService.conductTransaction(TxEncode).then((status) => {
       if(status === 'success'){
         this.setState({
           memo: '',
-          my_private_key: '',
           your_public_key: '',
           amount: 0,
           isSubmit: false,
@@ -131,7 +136,6 @@ class TransferMoney extends Component {
       else{
         this.setState({
           memo: '',
-          my_private_key: '',
           your_public_key: '',
           amount: 0,
           isSubmit: false,
@@ -164,17 +168,6 @@ class TransferMoney extends Component {
               <div className="col-12 col-sm-4 my-account">
                 <div className="info">
                   <h2 className="title">My Account</h2>
-                  <FormGroup>
-                    <InputGroup>
-                      <InputGroupAddon addonType="prepend">Private key</InputGroupAddon>
-                      <Input value={this.state.my_private_key} name="private-key"
-                        onChange={this.handleChangeMyPrivateKey.bind(this)}
-                        invalid={!this.state.my_private_key && this.state.isSubmit ? true : false}/>
-                    </InputGroup>
-                    <FormFeedback invalid="true" className={!this.state.my_private_key && this.state.isSubmit ? "d-block" : ''}>
-                      Private key is empty!
-                    </FormFeedback>
-                  </FormGroup>
                   <FormGroup>
                     <InputGroup>
                       <InputGroupAddon addonType="prepend">Amount (CEL)</InputGroupAddon>

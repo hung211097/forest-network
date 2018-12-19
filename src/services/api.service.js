@@ -16,16 +16,16 @@ export default () => {
         return null
       })
     },
-    getInfoUser: (public_key) => {
-      return axiosGet(baseURL + `users/${public_key}`).then((res) => {
+    getInfoUser: (user_id) => {
+      return axiosGet(baseURL + `users/${user_id}`).then((res) => {
         if(res.data.status === 'success'){
           return res.data
         }
         return null
       })
     },
-    getTransactionsOfUser: (public_key, page = 1, limit = 10, params = {}) => {
-      let url = baseURL + `users/${public_key}/transactions?page=${page}&limit=${limit}`
+    getTransactionsOfUser: (page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/transactions?page=${page}&limit=${limit}`
       if(params.order && params.type){
         url += `&order=${params.order}&type=${params.type}`
       }
@@ -48,12 +48,9 @@ export default () => {
         return null
       })
     },
-    register: () => {
-      return axiosPost(baseURL + 'register').then((res) => {
-        if(res.data.status === 'success'){
-          return res.data.keypair
-        }
-        return null
+    createAccount: (hex) => {
+      return axiosPost(baseURL + 'create-account', {hex: hex}).then((res) => {
+        return res.data.status
       })
     },
     login: (public_key) => {
@@ -82,6 +79,60 @@ export default () => {
         return res.data.status
       })
     },
+    updateProfile: (data) => {
+      return axiosPost(baseURL + `users/update-profile`, {data: data}).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data.result
+        }
+        return null
+      })
+    },
+    getUnfollowedUsers: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/unfolloweds?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getFollowers: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/followers?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getFollowing: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/followings?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    updateListFollow: (hex) => {
+      return axiosPost(baseURL + `follow`, {hex: hex}).then((res) => {
+        return res.data.status
+      })
+    },
+    getPubkeysFollowing: (user_id, arrID) => {
+      return axiosPost(baseURL + `users/${user_id}/followings/public-key`, {data: arrID}).then((res) => {
+        return res.data.pubkeys
+      })
+    }
   }
 
   return services

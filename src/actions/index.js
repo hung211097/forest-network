@@ -28,13 +28,6 @@ export const createComment = (comment, id) => {
   }
 }
 
-export const followUser = (id) => {
-  return{
-    type: actionTypes.FOLLOW_USER,
-    idUser: id
-  }
-}
-
 export const changeFollowingUser = (contact) => {
   return{
     type: actionTypes.CHANGE_FOLLOWING_USER,
@@ -60,5 +53,19 @@ export const updatePost = (user) => {
   return{
     type: actionTypes.UPDATE_POST,
     user: user
+  }
+}
+
+export const followUser = (user_id) => {
+  return{
+    type: actionTypes.FOLLOW_USER,
+    id: user_id
+  }
+}
+
+export const unFollowUser = (user_id) => {
+  return{
+    type: actionTypes.UNFOLLOW_USER,
+    id: user_id
   }
 }

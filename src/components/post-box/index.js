@@ -40,7 +40,7 @@ class PostBox extends Component {
       let {posts, profile} = this.props
       let obj = {
         id: posts[posts.length - 1].id + 1,
-        userID: profile.userID,
+        user_id: profile.user_id,
         avatar: profile.avatar,
         username: profile.username,
         authorize: "Shared publicly",
