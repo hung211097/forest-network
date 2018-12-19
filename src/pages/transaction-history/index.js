@@ -31,9 +31,8 @@ class TransactionHistory extends Component {
     loadData(props) {
         var isFirstPage = false
         var isLastPage = false
-        const { profile } = props
         console.log(this.state.page)
-        this.apiService.getTransactionsOfUser(profile.public_key, this.state.page, 10).then((res) => {
+        this.apiService.getTransactionsOfUser(this.state.page, 10).then((res) => {
             var numbers = [];
             if (res.total_page > 2) {
                 if (this.state.page === 1)
