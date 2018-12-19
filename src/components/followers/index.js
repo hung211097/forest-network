@@ -60,8 +60,7 @@ class ListFollowers extends Component {
   }
 
   handleLoadMore(){
-    this.apiService.getFollowers(this.props.profile.user_id, this.state.page, 2).then((data) => {
-      console.log(data);
+    this.apiService.getFollowers(this.props.profile.user_id, this.state.page, 3).then((data) => {
       data.followers.forEach((item) => {
         let temp = this.props.profile.following.find((findItem) => {
           return findItem.user_id === item.user_id
@@ -73,7 +72,6 @@ class ListFollowers extends Component {
           item.isFollow = false
         }
       })
-      console.log(data.followers);
       this.setState({
         users: [...this.state.users, ...data.followers],
         total_page: data.total_page,
@@ -174,7 +172,6 @@ class ListFollowers extends Component {
   }
 
   render() {
-    console.log(this.props.profile);
     return (
       <div className={styles.followers}>
         {/* followers */}
