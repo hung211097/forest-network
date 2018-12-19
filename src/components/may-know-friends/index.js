@@ -11,6 +11,7 @@ import CryptoJS from 'crypto-js';
 import { keyStorage } from '../../constants/localStorage';
 import { loadItem } from '../../services/storage.service';
 import { SecretKey } from '../../constants/crypto';
+import base32 from 'base32.js';
 
 const mapStateToProps = (state) => {
   return{
@@ -74,7 +75,7 @@ class MayKnowFriends extends Component {
       }
 
       data.forEach((item) => {
-        listPubkey.addresses.push(new Buffer(item.public_key))
+        listPubkey.addresses.push(Buffer.from(base32.decode(item.public_key)))
       })
 
       const tx = {
@@ -85,7 +86,7 @@ class MayKnowFriends extends Component {
         operation: "update_account",
         params: {
           key: 'followings',
-          value: Buffer.from(JSON.stringify(listPubkey))
+          value: listPubkey
         },
         signature: new Buffer(64)
       }
