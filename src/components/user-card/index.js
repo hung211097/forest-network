@@ -3,43 +3,77 @@ import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { followUser } from '../../actions';
+import { followUser, unFollowUser } from '../../actions';
+import defaultAvatar from '../../images/default-avatar.png';
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    followUser: (id) => {dispatch(followUser(id))}
+    followUser: (user_id) => {dispatch(followUser(user_id))},
+    unFollowUser: (user_id) => {dispatch(unFollowUser(user_id))},
   }
 }
 
 const mapStateToProps = (state) => {
   return{
-    users: state.usersReducer.users
+    users: state.usersReducer.users,
+    profile: state.profileReducer.info,
   }
 }
 
 class UserCard extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
-    followUser: PropTypes.func
+    profile: PropTypes.object,
+    followUser: PropTypes.func,
+    unFollowUser: PropTypes.func,
+    onShowConfirm: PropTypes.func,
+  }
+
+  constructor(props){
+    super(props)
+    this.state = {
+      isFollow: false
+    }
+  }
+
+  componentDidMount(){
+    let temp = this.props.profile.following.find((item) => {
+      return item === this.props.user.user_id
+    })
+    if(temp){
+      this.setState({
+        isFollow: true
+      })
+    }
   }
 
   handleFollow(){
-    this.props.followUser && this.props.followUser(this.props.user.id)
+    this.setState({
+      isFollow: !this.state.isFollow
+    }, () =>{
+      if(this.state.isFollow){
+        this.props.followUser && this.props.followUser(this.props.user.user_id)
+      }
+      else{
+        this.props.followUser && this.props.unFollowUser(this.props.user.user_id)
+      }
+    })
+    this.props.onShowConfirm && this.props.onShowConfirm()
   }
-  
+
   render() {
     let {user} = this.props
     return (
       <div className={styles.userCard}>
         <div className="contact-box center-version">
           <a href="null">
-            <img alt="avatar" className="img-circle" src={user.avatar}/>
+            <img alt="avatar" className="img-circle" src={user.avatar ? user.avatar : defaultAvatar}/>
             <h3 className="m-b-xs"><strong>{user.username}</strong></h3>
-            <div className="font-bold">{user.career}</div>
+            <div className="font-bold">@username</div>
           </a>
           <div className="contact-box-footer">
             <div className="m-t-xs btn-group">
-              {user.isFollow ?
+              {this.state.isFollow ?
                 <button className="btn btn-xs btn-white" onClick={this.handleFollow.bind(this)}>
                   Followed &nbsp;<i><FontAwesomeIcon icon="check"/></i>
                 </button>

@@ -1,4 +1,4 @@
-import {actionTypes} from '../constants/actionType'
+// import {actionTypes} from '../constants/actionType'
 import avatar1 from '../images/guy-2.jpg';
 import avatar2 from '../images/guy-5.jpg';
 import avatar3 from '../images/guy-6.jpg';

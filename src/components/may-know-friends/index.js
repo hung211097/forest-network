@@ -29,7 +29,6 @@ class MayKnowFriends extends Component {
     this.apiService = ApiService()
     this.state = {
       users: [],
-      isSubmit: false,
       isShowError: false,
       error: '',
       showConfirm: false,
@@ -41,7 +40,7 @@ class MayKnowFriends extends Component {
 
   componentDidMount(){
     const {profile} = this.props
-    this.apiService.getUnfollowedUsers(profile.user_id, 1, 3).then((data) => {
+    this.apiService.getUnfollowedUsers(profile.user_id, 1, 4).then((data) => {
       if(data){
         this.setState({
           users: data.users
@@ -60,10 +59,6 @@ class MayKnowFriends extends Component {
 
   handleSubmit(e){
     e.preventDefault()
-    this.setState({
-      isSubmit: true
-    })
-
     const {profile} = this.props
 
     let temp = loadItem(keyStorage.private_key)
@@ -113,7 +108,6 @@ class MayKnowFriends extends Component {
         else{
           this.setState({
             isShowErrorPopup: true,
-            showConfirm: false
           })
         }
       })

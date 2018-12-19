@@ -123,7 +123,6 @@ export default (state = initialState, action) => {
         }
       }
     case actionTypes.FOLLOW_USER:
-    console.log([...state.info.following, action.id]);
       return{
         ...state,
         info:{

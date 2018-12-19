@@ -6,6 +6,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { followUser, unFollowUser } from '../../actions';
 
+const mapStateToProps = (state) => {
+  return{
+    profile: state.profileReducer.info
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return{
     followUser: (user_id) => {dispatch(followUser(user_id))},
@@ -16,6 +22,7 @@ const mapDispatchToProps = (dispatch) => {
 class MayKnowFriendsItem extends Component {
   static propTypes = {
     user: PropTypes.object,
+    profile: PropTypes.object,
     followUser: PropTypes.func,
     unFollowUser: PropTypes.func,
     onShowConfirm: PropTypes.any,
@@ -29,6 +36,17 @@ class MayKnowFriendsItem extends Component {
     }
   }
 
+  componentDidMount(){
+    let temp = this.props.profile.following.find((item) => {
+      return item === this.props.user.user_id
+    })
+    if(temp){
+      this.setState({
+        isFollow: true
+      })
+    }
+  }
+  
   handleFollow(){
     this.setState({
       isFollow: !this.state.isFollow
@@ -70,4 +88,4 @@ class MayKnowFriendsItem extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MayKnowFriendsItem);
+export default connect(mapStateToProps, mapDispatchToProps)(MayKnowFriendsItem);
