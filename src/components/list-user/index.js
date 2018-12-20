@@ -25,7 +25,8 @@ const mapStateToProps = (state) => {
 class ListUser extends Component {
   static propTypes = {
     users: PropTypes.array,
-    profile: PropTypes.object
+    profile: PropTypes.object,
+    saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
@@ -38,7 +39,7 @@ class ListUser extends Component {
       showConfirm: false,
       error: '',
       isShowSuccess: false,
-      isShowErrorPopup: false
+      isShowErrorPopup: false,
     }
   }
 
@@ -61,11 +62,10 @@ class ListUser extends Component {
   }
 
   handleSubmit(){
-    const {profile} = this.props
     let temp = loadItem(keyStorage.private_key)
     let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
 
-    this.apiService.getPubkeysFollowing(profile.public_key, profile.following).then((data) => {
+    this.apiService.getPubkeysFollowing(this.props.profile.public_key, this.props.profile.following).then((data) => {
       let listPubkey = {
         addresses: []
       }
@@ -74,43 +74,46 @@ class ListUser extends Component {
         listPubkey.addresses.push(Buffer.from(base32.decode(item.public_key)))
       })
 
-      const tx = {
-        version: 1,
-        sequence: profile.sequence + 1,
-        memo: Buffer.alloc(0),
-        account: profile.public_key,
-        operation: "update_account",
-        params: {
-          key: 'followings',
-          value: listPubkey
-        },
-        signature: new Buffer(64)
-      }
+      this.apiService.getCurrentProfile().then((userProfile) => {
+        const profile = userProfile
+        const tx = {
+          version: 1,
+          sequence: profile.sequence + 1,
+          memo: Buffer.alloc(0),
+          account: profile.public_key,
+          operation: "update_account",
+          params: {
+            key: 'followings',
+            value: listPubkey
+          },
+          signature: new Buffer(64)
+        }
 
-      let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
-      if(consume > profile.bandwithMax){
-        this.setState({
-          error: "You don't have enough OXY to conduct transaction!",
-          isShowErrorPopup: true
+        let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
+        if(consume > profile.bandwithMax){
+          this.setState({
+            error: "You don't have enough OXY to conduct transaction!",
+            isShowError: true
+          })
+          return
+        }
+
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+        this.apiService.updateListFollow(TxEncode).then((flag) => {
+          if(flag === 'success'){
+            this.setState({
+              isShowSuccess: true,
+              isSuccess: true,
+              showConfirm: false,
+            })
+          }
+          else{
+            this.setState({
+              isShowErrorPopup: true,
+            })
+          }
         })
-        return
-      }
-
-      transaction.sign(tx, my_private_key);
-      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-      this.apiService.updateListFollow(TxEncode).then((flag) => {
-        if(flag === 'success'){
-          this.setState({
-            isShowSuccess: true,
-            showConfirm: false
-          })
-        }
-        else{
-          this.setState({
-            isShowErrorPopup: true,
-            error: 'Fail to update list follow!'
-          })
-        }
       })
     })
   }

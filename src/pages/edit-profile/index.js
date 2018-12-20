@@ -27,7 +27,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return{
     updateProfile: (info) => {dispatch(updateProfile(info))},
-    updatePost: (user) => {dispatch(updatePost(user))}
+    updatePost: (user) => {dispatch(updatePost(user))},
   }
 }
 
@@ -35,7 +35,8 @@ class EditProfile extends Component {
   static propTypes = {
       profile: PropTypes.object,
       updateProfile: PropTypes.func,
-      updatePost: PropTypes.func
+      updatePost: PropTypes.func,
+      saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
@@ -54,7 +55,7 @@ class EditProfile extends Component {
       isShow: false,
       error: '',
       isShowError: false,
-      isShowSuccess: false
+      isShowSuccess: false,
     }
   }
 
@@ -107,42 +108,6 @@ class EditProfile extends Component {
   handleChangeUsername(e){
     this.setState({
       username: e.target.value
-    })
-  }
-
-  handleChangeBirthday(e){
-    this.setState({
-      birthday: e.target.value
-    })
-  }
-
-  handleChangeGender(e){
-    this.setState({
-      gender: e.target.value
-    })
-  }
-
-  handleChangeEmail(e){
-    this.setState({
-      email: e.target.value
-    })
-  }
-
-  handleChangePhone(e){
-    this.setState({
-      phone: e.target.value
-    })
-  }
-
-  handleChangeAddress(e){
-    this.setState({
-      address: e.target.value
-    })
-  }
-
-  handleChangeAbout(e){
-    this.setState({
-      about: e.target.value
     })
   }
 
@@ -199,118 +164,132 @@ class EditProfile extends Component {
   }
 
   handleSubmit(bufferImage) {
-    const {profile} = this.props
     const data = {}
-    let arrayConsume = []
+    let dateImage = null
     let flagSendImage = false
     let changedImage = this.state.imagePreviewUrl
+    let extraOXY = null
 
     let temp = loadItem(keyStorage.private_key)
     let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
 
-    if(bufferImage){
-      const tx = {
-        version: 1,
-        sequence: profile.sequence + 1,
-        memo: Buffer.alloc(0),
-        account: profile.public_key,
-        operation: "update_account",
-        params: {
-          key: 'picture',
-          value: bufferImage
-        },
-        signature: new Buffer(64)
-      }
-      flagSendImage = true
-      transaction.sign(tx, my_private_key);
-      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-      arrayConsume.push(calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date()))
-      data.hexImage = TxEncode
-    }
-
-    if(this.state.username !== this.props.profile.username){
-      const tx = {
-        version: 1,
-        sequence: flagSendImage ? profile.sequence + 2 : profile.sequence + 1,
-        memo: Buffer.alloc(0),
-        account: profile.public_key,
-        operation: "update_account",
-        params: {
-          key: 'name',
-          value: new Buffer(this.state.username)
-        },
-        signature: new Buffer(64)
-      }
-      transaction.sign(tx, my_private_key);
-      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-      arrayConsume.push(calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date()))
-      data.hexUsername = TxEncode
-    }
-
-    if(Object.keys(data).length){
-      let consume = 0
-      arrayConsume.forEach((item) => {
-        consume += item
-      })
-
-      if(consume > this.props.profile.bandwithMax){
-        this.setState({
-          error: "You don't have enough OXY to conduct transaction!",
-          isShowError: true
-        })
-        return
-      }
-
-      this.apiService.updateProfile(data).then((res) => {
-        let isFailedAll = false
-        let countFailed = 0
-        res.forEach((bool) => {
-          if(bool.value === 'failed'){
-            countFailed += 1
-          }
-        })
-        if(countFailed === res.length){
-          isFailedAll = true
+    this.apiService.getCurrentProfile().then((userProfile) => {
+      const profile = userProfile
+      if(bufferImage){
+        const tx = {
+          version: 1,
+          sequence: profile.sequence + 1,
+          memo: Buffer.alloc(0),
+          account: profile.public_key,
+          operation: "update_account",
+          params: {
+            key: 'picture',
+            value: bufferImage
+          },
+          signature: new Buffer(64)
         }
+        flagSendImage = true
+        dateImage = new Date()
 
-        if(isFailedAll){
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+        extraOXY = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), dateImage) > profile.bandwithMax
+        if(extraOXY){
           this.setState({
-            error: "Fail to update profile!",
-            isShowError: true,
-            username: this.props.profile.username
+            error: "You don't have enough OXY to conduct transaction!",
+            isShowError: true
           })
           return
         }
+        data.hexImage = TxEncode
+      }
 
-        this.setState({
-          isShowSuccess: true
+      if(this.state.username !== profile.username){
+        const tx = {
+          version: 1,
+          sequence: flagSendImage ? profile.sequence + 2 : profile.sequence + 1,
+          memo: Buffer.alloc(0),
+          account: profile.public_key,
+          operation: "update_account",
+          params: {
+            key: 'name',
+            value: new Buffer(this.state.username)
+          },
+          signature: new Buffer(64)
+        }
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+        if(flagSendImage){
+          if(calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), dateImage, extraOXY) > profile.bandwithMax){
+            this.setState({
+              error: "You don't have enough OXY to conduct transaction!",
+              isShowError: true
+            })
+            return
+          }
+        }
+        else{
+          if(calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date()) > profile.bandwithMax){
+            this.setState({
+              error: "You don't have enough OXY to conduct transaction!",
+              isShowError: true
+            })
+            return
+          }
+        }
+        data.hexUsername = TxEncode
+      }
+
+      if(Object.keys(data).length){
+        this.apiService.updateProfile(data).then((res) => {
+          let isFailedAll = false
+          let countFailed = 0
+          res.forEach((bool) => {
+            if(bool.value === 'failed'){
+              countFailed += 1
+            }
+          })
+          if(countFailed === res.length){
+            isFailedAll = true
+          }
+
+          if(isFailedAll){
+            this.setState({
+              error: "Fail to update profile!",
+              isShowError: true,
+              username: profile.username
+            })
+            return
+          }
+
+          this.setState({
+            isShowSuccess: true,
+          })
+
+          // this.apiService.getCurrentProfile().then((updateData) => {
+          //   this.props.saveProfileFromApi && this.props.saveProfileFromApi(updateData)
+          // })
+
+          this.props.updateProfile && this.props.updateProfile({
+            username: this.state.username,
+            avatar: changedImage ? changedImage : this.state.originImageUrl
+          })
+
+          this.props.updatePost && this.props.updatePost({
+            id: this.props.profile.user_id,
+            username: this.state.username
+          })
         })
+      }
 
-        this.props.updateProfile && this.props.updateProfile({
-          username: this.state.username,
-          avatar: changedImage ? changedImage : this.state.originImageUrl
-          // birthday: this.state.birthday,
-          // gender: this.state.gender,
-          // email: this.state.email,
-          // phone: this.state.phone,
-          // address: this.state.address,
-          // about: ConvertText2HTMLNewLine(this.state.about),
-        })
-
-        this.props.updatePost && this.props.updatePost({
-          id: this.props.profile.user_id,
-          username: this.state.username
-        })
-      })
-    }
-
-    this.setState({
-      lockEdit: true,
-      // about: ConvertText2HTMLNewLine(this.state.about)
-    }, () => {
       this.setState({
-        imagePreviewUrl: ''
+        lockEdit: true,
+      }, () => {
+        this.setState({
+          imagePreviewUrl: ''
+        })
       })
+
     })
   }
 
@@ -321,24 +300,6 @@ class EditProfile extends Component {
     if(this.state.file_avatar && this.state.file_avatar.size > this.limitSize){
       return false
     }
-    // if(this.state.birthday === ''){
-    //   return false
-    // }
-    // if(this.state.gender === ''){
-    //   return false
-    // }
-    // if(this.state.email === '' || !validateEmail(this.state.email)){
-    //   return false
-    // }
-    // if(this.state.phone === '' || !validatePhoneNumber(this.state.phone)){
-    //   return false
-    // }
-    // if(this.state.address === ''){
-    //   return false
-    // }
-    // if(this.state.about === ''){
-    //   return false
-    // }
     return true
   }
 
@@ -427,124 +388,13 @@ class EditProfile extends Component {
                                   Your username is empty!
                                 </FormFeedback>
                               </FormGroup>
-                              {/*<FormGroup>
-                                <InputGroup>
-                                  <InputGroupAddon addonType="prepend">Birth Date</InputGroupAddon>
-                                  <Input value={this.state.birthday} name="birthday" type="date"
-                                    onChange={this.handleChangeBirthday.bind(this)} disabled={this.state.lockEdit ? true : false}
-                                    invalid={!this.state.birthday && this.state.isSubmit ? true : false}/>
-                                </InputGroup>
-                                <FormFeedback invalid="true" className={!this.state.birthday && this.state.isSubmit ? "d-block" : ''}>
-                                  Your birthday is empty!
-                                </FormFeedback>
-                              </FormGroup>
-                              <FormGroup>
-                                <InputGroup>
-                                  <InputGroupAddon addonType="prepend">Gender</InputGroupAddon>
-                                  <Input value={this.state.gender} name="gender"
-                                    onChange={this.handleChangeGender.bind(this)} disabled={this.state.lockEdit ? true : false}
-                                    invalid={!this.state.gender && this.state.isSubmit ? true : false}/>
-                                </InputGroup>
-                                <FormFeedback invalid="true" className={!this.state.gender && this.state.isSubmit ? "d-block" : ''}>
-                                  Your gender is empty!
-                                </FormFeedback>
-                              </FormGroup>*/}
                             </div>
-                            {/*<div className="contact_info">
-                              <h3><i><FontAwesomeIcon icon="square"/></i> Contact Information</h3>
-                              <FormGroup>
-                                <InputGroup>
-                                  <InputGroupAddon addonType="prepend">Email</InputGroupAddon>
-                                  <Input value={this.state.email} name="email"
-                                    onChange={this.handleChangeEmail.bind(this)} disabled={this.state.lockEdit ? true : false}
-                                    invalid={(!this.state.email || !validateEmail(this.state.email)) && this.state.isSubmit ? true : false}/>
-                                </InputGroup>
-                                <FormFeedback invalid="true" className={!this.state.email && this.state.isSubmit ? "d-block" : ''}>
-                                  Your email is empty!
-                                </FormFeedback>
-                                <FormFeedback invalid="true" className={this.state.email && !validateEmail(this.state.email) && this.state.isSubmit ? "d-block" : ''}>
-                                  Your email is wrong format!
-                                </FormFeedback>
-                              </FormGroup>
-                              <FormGroup>
-                                <InputGroup>
-                                  <InputGroupAddon addonType="prepend">Phone</InputGroupAddon>
-                                  <Input value={this.state.phone} name="phone"
-                                    onChange={this.handleChangePhone.bind(this)} disabled={this.state.lockEdit ? true : false}
-                                    invalid={(!this.state.username || !validatePhoneNumber(this.state.phone)) && this.state.isSubmit ? true : false}/>
-                                </InputGroup>
-                                <FormFeedback invalid="true" className={!this.state.phone && this.state.isSubmit ? "d-block" : ''}>
-                                  Your phone number is empty!
-                                </FormFeedback>
-                                <FormFeedback invalid="true" className={this.state.phone && !validatePhoneNumber(this.state.phone) && this.state.isSubmit ? "d-block" : ''}>
-                                  Your phone number is wrong format!
-                                </FormFeedback>
-                              </FormGroup>
-                              <FormGroup>
-                                <InputGroup>
-                                  <InputGroupAddon addonType="prepend">Address</InputGroupAddon>
-                                  <Input value={this.state.address} name="address"
-                                    onChange={this.handleChangeAddress.bind(this)} disabled={this.state.lockEdit ? true : false}
-                                    invalid={!this.state.address && this.state.isSubmit ? true : false}/>
-                                </InputGroup>
-                                <FormFeedback invalid="true" className={!this.state.address && this.state.isSubmit ? "d-block" : ''}>
-                                  Your address is empty!
-                                </FormFeedback>
-                              </FormGroup>
-                            </div>
-                            <div className="about">
-                              <h3><i><FontAwesomeIcon icon="square"/></i> About Me</h3>
-                              <p dangerouslySetInnerHTML={{ __html: this.state.about }} className={!this.state.lockEdit ? "d-none" : ""}></p>
-                              <FormGroup>
-                                <Input className={this.state.lockEdit ? "d-none" : "form-control input-lg p-text-area"}
-                                   type="textarea" name="text" id="exampleText" value={ConvertHTML2TextNewLine(this.state.about)}
-                                   rows={5} onChange={this.handleChangeAbout.bind(this)}
-                                   invalid={!this.state.about && this.state.isSubmit ? true : false}/>
-                                <FormFeedback invalid="true" className={!this.state.about && this.state.isSubmit ? "d-block" : ''}>
-                                  Your information is empty!
-                                </FormFeedback>
-                              </FormGroup>
-                            </div>*/}
                           </form>
                         </div>
                       </div>
                     </div>
                   </div>
                   {/* END PROFILE TAB CONTENT */}
-
-                  {/* SETTINGS TAB CONTENT */}
-                  {/*<div className={this.state.tabSetting ? "tab-pane settings active" : "tab-pane settings"} id="settings-tab">
-                    <form className="form-horizontal">
-                      <fieldset>
-                        <h3><i><FontAwesomeIcon icon="square"/></i> Change Password</h3>
-                        <div className="form-group row">
-                          <label htmlFor="old-password" className="col-sm-3 control-label">Old Password</label>
-                          <div className="col-sm-4">
-                            <input type="password" id="old-password" name="old-password" className="form-control" />
-                          </div>
-                        </div>
-                        <hr />
-                        <div className="form-group row">
-                          <label htmlFor="password" className="col-sm-3 control-label">New Password</label>
-                          <div className="col-sm-4">
-                            <input type="password" id="password" name="password" className="form-control" />
-                          </div>
-                        </div>
-                        <div className="form-group row">
-                          <label htmlFor="password2" className="col-sm-3 control-label">Repeat Password</label>
-                          <div className="col-sm-4">
-                            <input type="password" id="password2" name="password2" className="form-control" />
-                          </div>
-                        </div>
-                      </fieldset>
-                    </form>
-                    <p className="text-center">
-                      <span href="null" className="btn btn-custom-primary">
-                        <i><FontAwesomeIcon icon="save"/></i> Save Changes
-                      </span>
-                    </p>
-                  </div>*/}
-                  {/* END SETTINGS TAB CONTENT */}
                 </div>
               </div>
             </div>
