@@ -1,7 +1,7 @@
-import vstruct from 'varstruct';
-import { Keypair } from 'stellar-base';
-import crypto from 'crypto';
 import v1 from './v1';
+import vstruct from 'varstruct';
+import crypto from 'crypto';
+import { Keypair } from 'stellar-base';
 
 const Transaction = vstruct([
   { name: 'version', type: vstruct.UInt8 },

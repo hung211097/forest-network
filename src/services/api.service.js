@@ -79,6 +79,11 @@ export default () => {
         return res.data.status
       })
     },
+		createPost: (TxEncode) => {
+      return axiosPost(baseURL + 'posts', {TxEncode: TxEncode}).then((res) => {
+        return res.data.status
+      })
+    },
     updateProfile: (data) => {
       return axiosPost(baseURL + `users/update-profile`, {data: data}).then((res) => {
         if(res.data.status === 'success'){
@@ -132,7 +137,19 @@ export default () => {
       return axiosPost(baseURL + `users/${user_id}/followings/public-key`, {data: arrID}).then((res) => {
         return res.data.pubkeys
       })
-    }
+    },
+    getPostOnHome: (user_id, page, limit, params = {}) => {
+      let url = baseURL + `users/${user_id}/posts-wall?page=${page}&limit=${limit}`
+			if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
   }
 
   return services
