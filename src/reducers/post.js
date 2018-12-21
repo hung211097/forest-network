@@ -58,6 +58,60 @@ const initialState = {
           created_on: "Sat Dec 01 2018 11:00:49 GMT+0700 (Indochina Time)"
         }
       ]
+    },
+    {
+      id: 3,
+      avatar: avatar3,
+      user_id: 2,
+      username: "Huỳnh",
+      authorize: "Shared publicly",
+      created_on: "Thu Dec 29 2018 10:32:49 GMT+0700 (Indochina Time)",
+      likes: 12,
+      isLike: false,
+      content: "I took this photo this morning. What do you guys think?",
+      comments: [
+        {
+          avatar: avatar2,
+          user_id: 3,
+          username: "Maria Gonzales",
+          content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+          created_on: "Sat Dec 01 2018 10:56:49 GMT+0700 (Indochina Time)"
+        },
+        {
+          avatar: avatar1,
+          user_id: 1,
+          username: "John Breakgrow",
+          content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+          created_on: "Sat Dec 01 2018 11:00:49 GMT+0700 (Indochina Time)"
+        }
+      ]
+    },
+    {
+      id: 4,
+      avatar: avatar3,
+      user_id: 2,
+      username: "Hưng",
+      authorize: "Shared publicly",
+      created_on: "Thu Dec 29 2018 10:32:49 GMT+0700 (Indochina Time)",
+      likes: 12,
+      isLike: false,
+      content: "I took this photo this morning. What do you guys think?",
+      comments: [
+        {
+          avatar: avatar2,
+          user_id: 3,
+          username: "Maria Gonzales",
+          content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+          created_on: "Sat Dec 01 2018 10:56:49 GMT+0700 (Indochina Time)"
+        },
+        {
+          avatar: avatar1,
+          user_id: 1,
+          username: "John Breakgrow",
+          content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
+          created_on: "Sat Dec 01 2018 11:00:49 GMT+0700 (Indochina Time)"
+        }
+      ]
     }
   ]
 }

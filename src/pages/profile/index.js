@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import defaultAvatar from '../../images/default-avatar.png'
+import ReactDOM from 'react-dom';
 
 const mapStateToProps = (state) => {
   return{
@@ -26,7 +27,8 @@ class Profile extends Component {
 	constructor(props){
     super(props)
     this.state = {
-      numNavTag: 1
+			numNavTag: 1,
+			intervalId: 0
     }
   }
 
@@ -49,7 +51,7 @@ class Profile extends Component {
 	}
 
   render() {
-    let {profile} = this.props
+		let {profile} = this.props
     return (
 			<Layout>
 				<div className={styles.profile}>
@@ -89,23 +91,10 @@ class Profile extends Component {
 												<p>Consumed Energy: 1513 OXY</p>
 											</div>
 											<div className="section">
-												<h3>About Me</h3>
-												<p dangerouslySetInnerHTML={{ __html: profile.about }}></p>
-											</div>
-											<div className="section">
 												<h3>Statistics</h3>
 												<p><span className="badge">{332 + this.props.numFollowing}</span> Following</p>
 												<p><span className="badge">{124 + this.props.numFollowers}</span> Followers</p>
 												<p><span className="badge">620</span> Likes</p>
-											</div>
-											<div className="section">
-												<h3>Social</h3>
-												<ul className="list-unstyled list-social">
-													<li><a href="null"><FontAwesomeIcon icon={['fab', 'twitter']} /> @jhongrwo</a></li>
-													<li><a href="null"><FontAwesomeIcon icon={['fab', 'facebook']} /> John grow</a></li>
-													<li><a href="null"><FontAwesomeIcon icon={['fab', 'dribbble']} /> johninizzie</a></li>
-													<li><a href="null"><FontAwesomeIcon icon={['fab', 'linkedin']} /> John grow</a></li>
-												</ul>
 											</div>
 										</div>
 									</div>
