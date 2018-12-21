@@ -24,3 +24,21 @@
 .text-muted {
   color: #777777;
 }
+
+.btn-more{
+  border: 1px solid black;
+  background: white;
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+  padding: 8px 40px;
+  margin-top: 10px;
+  transition: 0.2s ease-in-out;
+  &:hover{
+    background: black;
+    color: white;
+  }
+  &:focus{
+    box-shadow: none;
+  }
+}

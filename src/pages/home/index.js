@@ -82,6 +82,7 @@ class Home extends Component {
   }
 
   render() {
+<<<<<<< HEAD
 		const posts = this.state.dataPosts.map(post => {	
 			const postTemplate = {
 				id: post.id,
@@ -100,6 +101,9 @@ class Home extends Component {
 				// <div>abc</div>
 			);
 		});	
+=======
+    console.log(this.props.profile);
+>>>>>>> master
     return (
       <Layout>
         <div className={styles.home}>
