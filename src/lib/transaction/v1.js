@@ -1,6 +1,6 @@
-const vstruct = require('varstruct');
-const base32 = require('base32.js');
-const { Keypair } = require('stellar-base');
+import vstruct from 'varstruct';
+import base32 from 'base32.js';
+import { Keypair } from 'stellar-base';
 
 const Transaction = vstruct([
   { name: 'version', type: vstruct.UInt8 },
