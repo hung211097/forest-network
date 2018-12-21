@@ -65,6 +65,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log(this.props.profile);
     return (
       <Layout>
         <div className={styles.home}>

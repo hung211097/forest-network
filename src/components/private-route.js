@@ -12,10 +12,17 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+const mapStateToProps = (state) => {
+  return{
+    profile: state.profileReducer.info
+  }
+}
+
 class PrivateRoute extends Component {
   static propTypes = {
     config: PropTypes.any,
-    saveProfileFromApi: PropTypes.func
+    saveProfileFromApi: PropTypes.func,
+    profile: PropTypes.object
   }
 
   constructor(props){
@@ -26,7 +33,7 @@ class PrivateRoute extends Component {
     }
   }
 
-  componentDidMount(){
+  checkProfile(){
     this.apiService.getCurrentProfile().then((data) => {
       if(!data){
         this.props.history.push('/login')
@@ -40,6 +47,16 @@ class PrivateRoute extends Component {
     })
   }
 
+  componentDidMount(){
+    this.checkProfile()
+  }
+
+  componentDidUpdate(prevProps){
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.checkProfile()
+    }
+  }
+
   render() {
     if(this.state.block){
       return null
@@ -50,4 +67,4 @@ class PrivateRoute extends Component {
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(PrivateRoute));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PrivateRoute));

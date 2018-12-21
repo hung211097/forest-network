@@ -7,10 +7,6 @@ class Layout extends Component {
       children: PropTypes.any.isRequired,
   }
 
-  constructor(props){
-    super(props)
-  }
-
   render() {
     return (
       <div>

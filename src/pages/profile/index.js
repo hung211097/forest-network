@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Layout } from '../../components'
-import cover from '../../images/game.jpg'
+import cover from '../../images/cover-image.jpg'
 import { ListFollowers, ListFollowing, Timeline } from '../../components'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'

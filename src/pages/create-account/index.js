@@ -21,7 +21,7 @@ const mapStateToProps = (state) => {
 
 class CreateAccount extends Component {
   static propTypes = {
-    profile: PropTypes.object
+    profile: PropTypes.object,
   }
 
   constructor(props){
@@ -34,7 +34,7 @@ class CreateAccount extends Component {
       isSubmit: false,
       error: '',
       errorPopup: '',
-      isShowErrorPopup: false
+      isShowErrorPopup: false,
     }
   }
 
@@ -62,8 +62,6 @@ class CreateAccount extends Component {
       isSubmit: true
     })
 
-    const {profile} = this.props
-
     if(!this.state.your_public_key){
       this.setState({
         isShowError: true,
@@ -72,70 +70,73 @@ class CreateAccount extends Component {
       return
     }
 
-    const tx = {
-      version: 1,
-      sequence: profile.sequence + 1,
-      memo: Buffer.alloc(0),
-      account: profile.public_key,
-      operation: "create_account",
-      params: {
-        address: this.state.your_public_key,
-      },
-      signature: new Buffer(64)
-    }
-
-    if(this.state.your_public_key === profile.public_key){
-      this.setState({
-        error: 'Public key must belong to another!',
-        isShowError: true
-      })
-      return
-    }
-
-    try{
-      transaction.encode(tx).toString('base64')
-    }
-    catch(e){
-      this.setState({
-        error: "Invalid public key!!",
-        isShowError: true
-      })
-      return
-    }
-
-    let consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date())
-    if(consume > this.props.profile.bandwithMax){
-      this.setState({
-        errorPopup: "You don't have enough OXY to conduct transaction!",
-        isShowErrorPopup: true
-      })
-      return
-    }
-
-    let temp = loadItem(keyStorage.private_key)
-    let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-
-    transaction.sign(tx, my_private_key);
-    let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-
-    this.apiService.createAccount(TxEncode).then((data) => {
-      if(data === 'success'){
-        this.setState({
-          isShowSuccess: true,
-          your_public_key: '',
-          nextStep: false,
-          isSubmit: false
-        })
+    this.apiService.getCurrentProfile().then((data) => {
+      const profile = data
+      const tx = {
+        version: 1,
+        sequence: profile.sequence + 1,
+        memo: Buffer.alloc(0),
+        account: profile.public_key,
+        operation: "create_account",
+        params: {
+          address: this.state.your_public_key,
+        },
+        signature: new Buffer(64)
       }
-      else{
+
+      if(this.state.your_public_key === profile.public_key){
         this.setState({
-          isShowErrorPopup: true,
-          your_public_key: '',
-          nextStep: false,
-          isSubmit: false,
-          errorPopup: 'Fail to create account!'
+          error: 'Public key must belong to another!',
+          isShowError: true
         })
+        return
       }
+
+      try{
+        transaction.encode(tx).toString('base64')
+      }
+      catch(e){
+        this.setState({
+          error: "Invalid public key!!",
+          isShowError: true
+        })
+        return
+      }
+
+      let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
+      if(consume > this.props.profile.bandwithMax){
+        this.setState({
+          errorPopup: "You don't have enough OXY to conduct transaction!",
+          isShowErrorPopup: true
+        })
+        return
+      }
+
+      let temp = loadItem(keyStorage.private_key)
+      let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
+      transaction.sign(tx, my_private_key);
+      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+
+      this.apiService.createAccount(TxEncode).then((data) => {
+        if(data === 'success'){
+          this.setState({
+            isShowSuccess: true,
+            your_public_key: '',
+            nextStep: false,
+            isSubmit: false,
+          })
+        }
+        else{
+          this.setState({
+            isShowErrorPopup: true,
+            your_public_key: '',
+            nextStep: false,
+            isSubmit: false,
+            errorPopup: 'Fail to create account!'
+          })
+        }
+      })
     })
   }
 
@@ -169,7 +170,7 @@ class CreateAccount extends Component {
                 <FormGroup>
                   <Input value={this.state.your_public_key} name="public-key"
                     onChange={this.handleChangePublicKey.bind(this)}
-                    placeholder="Private key"
+                    placeholder="Public key"
                     invalid={this.state.isShowError && this.state.isSubmit ? true : false}/>
                   <FormFeedback invalid="true" className={this.state.isShowError && this.state.isSubmit ? "d-block" : ''}>
                     {this.state.error}

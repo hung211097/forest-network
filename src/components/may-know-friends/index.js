@@ -21,7 +21,8 @@ const mapStateToProps = (state) => {
 
 class MayKnowFriends extends Component {
   static propTypes = {
-    profile: PropTypes.object
+    profile: PropTypes.object,
+    saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
@@ -29,7 +30,6 @@ class MayKnowFriends extends Component {
     this.apiService = ApiService()
     this.state = {
       users: [],
-      isSubmit: false,
       isShowError: false,
       error: '',
       showConfirm: false,
@@ -41,7 +41,7 @@ class MayKnowFriends extends Component {
 
   componentDidMount(){
     const {profile} = this.props
-    this.apiService.getUnfollowedUsers(profile.user_id, 1, 3).then((data) => {
+    this.apiService.getUnfollowedUsers(profile.user_id, 1, 4).then((data) => {
       if(data){
         this.setState({
           users: data.users
@@ -60,16 +60,11 @@ class MayKnowFriends extends Component {
 
   handleSubmit(e){
     e.preventDefault()
-    this.setState({
-      isSubmit: true
-    })
-
-    const {profile} = this.props
 
     let temp = loadItem(keyStorage.private_key)
     let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
 
-    this.apiService.getPubkeysFollowing(profile.public_key, profile.following).then((data) => {
+    this.apiService.getPubkeysFollowing(this.props.profile.public_key, this.props.profile.following).then((data) => {
       let listPubkey = {
         addresses: []
       }
@@ -78,44 +73,46 @@ class MayKnowFriends extends Component {
         listPubkey.addresses.push(Buffer.from(base32.decode(item.public_key)))
       })
 
-      const tx = {
-        version: 1,
-        sequence: profile.sequence + 1,
-        memo: Buffer.alloc(0),
-        account: profile.public_key,
-        operation: "update_account",
-        params: {
-          key: 'followings',
-          value: listPubkey
-        },
-        signature: new Buffer(64)
-      }
+      this.apiService.getCurrentProfile().then((userProfile) => {
+        const profile = userProfile
+        const tx = {
+          version: 1,
+          sequence: profile.sequence + 1,
+          memo: Buffer.alloc(0),
+          account: profile.public_key,
+          operation: "update_account",
+          params: {
+            key: 'followings',
+            value: listPubkey
+          },
+          signature: new Buffer(64)
+        }
 
-      let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
-      if(consume > profile.bandwithMax){
-        this.setState({
-          error: "You don't have enough OXY to conduct transaction!",
-          isShowError: true
+        let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
+        if(consume > profile.bandwithMax){
+          this.setState({
+            error: "You don't have enough OXY to conduct transaction!",
+            isShowError: true
+          })
+          return
+        }
+
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+        this.apiService.updateListFollow(TxEncode).then((flag) => {
+          if(flag === 'success'){
+            this.setState({
+              isShowSuccess: true,
+              isSuccess: true,
+              showConfirm: false,
+            })
+          }
+          else{
+            this.setState({
+              isShowErrorPopup: true,
+            })
+          }
         })
-        return
-      }
-
-      transaction.sign(tx, my_private_key);
-      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-      this.apiService.updateListFollow(TxEncode).then((flag) => {
-        if(flag === 'success'){
-          this.setState({
-            isShowSuccess: true,
-            isSuccess: true,
-            showConfirm: false
-          })
-        }
-        else{
-          this.setState({
-            isShowErrorPopup: true,
-            showConfirm: false
-          })
-        }
       })
     })
   }
