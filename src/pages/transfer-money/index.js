@@ -22,7 +22,8 @@ const mapStateToProps = (state) => {
 
 class TransferMoney extends Component {
   static propTypes = {
-    profile: PropTypes.object
+    profile: PropTypes.object,
+    saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
@@ -35,7 +36,7 @@ class TransferMoney extends Component {
       isSubmit: false,
       error: '',
       isShowError: false,
-      isShow: false
+      isShow: false,
     }
   }
 
@@ -76,73 +77,76 @@ class TransferMoney extends Component {
       return
     }
 
-    const {profile} = this.props
-    const tx = {
-      version: 1,
-      sequence: profile.sequence + 1,
-      memo: this.state.memo ? Buffer.from(this.state.memo) : Buffer.alloc(0),
-      account: profile.public_key,
-      operation: "payment",
-      params: {
-        address: this.state.your_public_key,
-        amount: this.state.amount
-      },
-      signature: new Buffer(64)
-    }
 
-    let temp = loadItem(keyStorage.private_key)
-    let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-
-    if(this.state.your_public_key === profile.public_key){
-      this.setState({
-        error: 'Public key must belong to another!',
-        isShowError: true
-      })
-      return
-    }
-
-    try{
-      transaction.encode(tx).toString('base64')
-    }
-    catch(e){
-      this.setState({
-        error: "Invalid public key!!",
-        isShowError: true
-      })
-      return
-    }
-
-    let consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date())
-    if(consume > this.props.profile.bandwithMax){
-      this.setState({
-        error: "You don't have enough OXY to conduct transaction!",
-        isShowError: true
-      })
-      return
-    }
-
-    transaction.sign(tx, my_private_key);
-    let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-    this.apiService.conductTransaction(TxEncode).then((status) => {
-      if(status === 'success'){
-        this.setState({
-          memo: '',
-          your_public_key: '',
-          amount: 0,
-          isSubmit: false,
-          isShow: true
-        })
+    this.apiService.getCurrentProfile().then((userProfile) => {
+      const profile = userProfile
+      const tx = {
+        version: 1,
+        sequence: profile.sequence + 1,
+        memo: this.state.memo ? Buffer.from(this.state.memo) : Buffer.alloc(0),
+        account: profile.public_key,
+        operation: "payment",
+        params: {
+          address: this.state.your_public_key,
+          amount: this.state.amount
+        },
+        signature: new Buffer(64)
       }
-      else{
+
+      let temp = loadItem(keyStorage.private_key)
+      let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
+      if(this.state.your_public_key === profile.public_key){
         this.setState({
-          memo: '',
-          your_public_key: '',
-          amount: 0,
-          isSubmit: false,
-          isShowError: true,
-          error: 'Fail to conduct transaction!'
+          error: 'Public key must belong to another!',
+          isShowError: true
         })
+        return
       }
+
+      try{
+        transaction.encode(tx).toString('base64')
+      }
+      catch(e){
+        this.setState({
+          error: "Invalid public key!!",
+          isShowError: true
+        })
+        return
+      }
+
+      let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
+      if(consume > profile.bandwithMax){
+        this.setState({
+          error: "You don't have enough OXY to conduct transaction!",
+          isShowError: true
+        })
+        return
+      }
+
+      transaction.sign(tx, my_private_key);
+      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+      this.apiService.conductTransaction(TxEncode).then((status) => {
+        if(status === 'success'){
+          this.setState({
+            memo: '',
+            your_public_key: '',
+            amount: 0,
+            isSubmit: false,
+            isShow: true,
+          })
+        }
+        else{
+          this.setState({
+            memo: '',
+            your_public_key: '',
+            amount: 0,
+            isSubmit: false,
+            isShowError: true,
+            error: 'Fail to conduct transaction!'
+          })
+        }
+      })
     })
   }
 

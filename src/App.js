@@ -54,6 +54,11 @@ library.add(fab,
             faUserMinus)
 
 class App extends Component {
+  componentDidMount(){
+    document.addEventListener("DOMContentLoaded", function(event) {
+      window.scrollTo(0, 0)
+    });
+  }
   render() {
     return (
       <Router>

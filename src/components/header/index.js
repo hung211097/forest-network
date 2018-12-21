@@ -52,12 +52,12 @@ class Header extends Component {
               <Nav className="ml-auto" navbar>
                 <NavItem>
                   <Link to="/profile" className="nav-link">
-                    Profile
+                    <i><FontAwesomeIcon icon="user" /></i> Profile
                   </Link>
                 </NavItem>
                 <NavItem>
                   <Link to="/" className="nav-link">
-                    Home
+                    <i><FontAwesomeIcon icon="home" /></i>  Home
                   </Link>
                 </NavItem>
                 <div className="d-sm-none d-block">

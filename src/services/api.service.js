@@ -25,7 +25,7 @@ export default () => {
       })
     },
     getTransactionsOfUser: (page = 1, limit = 10, params = {}) => {
-      let url = baseURL + `users/transactions?page=${page}&limit=${limit}`
+      let url = baseURL + `users/me/transactions?page=${page}&limit=${limit}`
       if(params.order && params.type){
         url += `&order=${params.order}&type=${params.type}`
       }

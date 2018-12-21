@@ -48,7 +48,6 @@ class Home extends Component {
 
 
   componentDidMount(){
-
   }
 
   handleSelectMenu(index){

@@ -40,7 +40,7 @@ export function timeStamp2Date(string){
 	return new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(ts)
 }
 
-export function calcBandwithConsume(account, txString64, timeNewTransaction){
+export function calcBandwithConsume(account, txString64, timeNewTransaction, extraOXY = null){
 	const txSize = Buffer.from(txString64, 'base64').length
 	const currentTime = timeNewTransaction
 	let diff = constCalc.BANDWIDTH_PERIOD
@@ -49,7 +49,7 @@ export function calcBandwithConsume(account, txString64, timeNewTransaction){
 			diff = moment(currentTime).unix() - moment(account.bandwithTime).unix()
 		}
 	}
-	const bandwidthConsume = Math.ceil(Math.max(0, (constCalc.BANDWIDTH_PERIOD - diff) / constCalc.BANDWIDTH_PERIOD) * account.bandwith + txSize)
-
+	const tempOXY = extraOXY ? extraOXY : account.bandwith
+	const bandwidthConsume = Math.ceil(Math.max(0, (constCalc.BANDWIDTH_PERIOD - diff) / constCalc.BANDWIDTH_PERIOD) * tempOXY + txSize)
 	return bandwidthConsume
 }
