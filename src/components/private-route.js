@@ -27,30 +27,21 @@ class PrivateRoute extends Component {
     }
   }
 
-  componentDidMount(){
-		fetch('http://localhost:8888/users/29')
-      .then(res => res.json())
-			.then(dataFetch => {				
-				this.apiService.getCurrentProfile().then((data) => {
-					if(!data){
-						this.props.history.push('/login')
-					}
-					else{
-						this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-						this.setState({
-							block: false
-						})
-					}
-				})
-        console.log(dataFetch.info_user.bandwith)
+  componentDidMount(){	
+		this.apiService.getCurrentProfile().then((data) => {
+			if(!data){
+				this.props.history.push('/login')
+			}
+			else{
+				this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
 				this.setState({
-					bandwith: dataFetch.info_user.bandwith
+					block: false
 				})
-			});
+			}
+		})
   }
 
   render() {
-		const a = this.state.bandwith
     if(this.state.block){
       return null
     }

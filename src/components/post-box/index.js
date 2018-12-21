@@ -13,10 +13,12 @@ import { SecretKey } from '../../constants/crypto';
 import CryptoJS from 'crypto-js';
 import { keyStorage } from '../../constants/localStorage';
 import { loadItem } from '../../services/storage.service';
+import { saveProfileFromApi } from '../../actions';
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    createPost: (post) => {dispatch(createPost(post))}
+    createPost: (post) => {dispatch(createPost(post))},
+		saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
   }
 }
 
@@ -34,7 +36,8 @@ const mapStateToProps = (state) => {
 class PostBox extends Component {
   static propTypes = {
     createPost: PropTypes.func,
-    profile: PropTypes.object
+    profile: PropTypes.object,
+		saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
@@ -62,63 +65,59 @@ class PostBox extends Component {
   }
 	
   handleSubmit(){
-    if(this.state.content){
-			const plainTextContent = {
-				type: 1,
-				text: this.state.content
-			}
-			
-			let tx = {
-				version: 1,
-				account: this.props.profile.public_key,
-				sequence: this.props.profile.sequence + 1,
-				memo: Buffer.alloc(0),
-				operation: "post",
-				params: {
-					keys: [],
-					content: plainTextContent,
-				},
-				signature: new Buffer(64)
-			}
-			
-			let temp = loadItem(keyStorage.private_key)
-			let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-			transaction.sign(tx, my_private_key);
-			let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-			
-			const consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date());
-			if(consume > this.props.profile.bandwithMax){
-        this.setState({
-          error: "You don't have enough OXY to conduct transaction!",
-          isShowError: true
-        })
-      }
-			else {
-				this.apiService.createPost(TxEncode).then((status) => {
-					if(status === 'success'){
-						let {posts, profile} = this.props
-						let obj = {
-							id: posts[posts.length - 1].id + 1,
-							userID: profile.userID,
-							avatar: profile.avatar,
-							username: profile.username,
-							authorize: "Shared publicly",
-							created_on: new Date().toString(),
-							likes: 0,
-							isLike: false,
-							content: this.state.content,
-							comments: []
-						}
-						this.props.createPost && this.props.createPost(obj)
+    if(this.state.content){			
+			this.apiService.getCurrentProfile().then((data) => {
+				if(!data){
+					this.props.history.push('/login')
+				}
+				else{
+					this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
+					console.log(this.props.profile)
+					const plainTextContent = {
+						type: 1,
+						text: this.state.content
+					}
+					
+					let tx = {
+						version: 1,
+						account: this.props.profile.public_key,
+						sequence: this.props.profile.sequence + 1,
+						memo: Buffer.alloc(0),
+						operation: "post",
+						params: {
+							keys: [],
+							content: plainTextContent,
+						},
+						signature: new Buffer(64)
+					}
+					console.log(this.props.profile.sequence);
+					console.log(this.props.profile.bandwith);
+					let temp = loadItem(keyStorage.private_key)
+					let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+					transaction.sign(tx, my_private_key);
+					let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+					
+					const consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date());
+					if(consume > this.props.profile.bandwithMax){
 						this.setState({
-							content: ''
+							error: "You don't have enough OXY to conduct transaction!",
+							isShowError: true
 						})
 					}
-					else{
-						console.log(status)
+					else {
+						this.apiService.createPost(TxEncode).then((status) => {
+							if(status === 'success'){
+								this.setState({
+									content: ''
+								})
+							}
+							else{
+								console.log(status)
+							}
+						})
 					}
-				})
-			}
+				}
+			})			
     }
   }
 
