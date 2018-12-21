@@ -14,6 +14,7 @@ import ListFollowing from './following'
 import Timeline from './timeline'
 import ScrollToTop from './scroll-to-top'
 import PrivateRoute from './private-route'
+import MyPost from './my-post'
 
 export {
   Header,
@@ -31,5 +32,6 @@ export {
   Timeline,
   ScrollToTop,
   PrivateRoute,
-  MayKnowFriendsItem
+  MayKnowFriendsItem,
+  MyPost
 }
