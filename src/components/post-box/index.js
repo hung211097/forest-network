@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { createPost } from '../../actions';
 import ApiService from '../../services/api.service'
 import {calcBandwithConsume} from '../../services/utils.service'
-import { Keypair } from 'stellar-base';
 import transaction from '../../lib/transaction';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import PropTypes from 'prop-types'
@@ -45,7 +44,6 @@ class PostBox extends Component {
 		this.apiService = ApiService()
     this.state = {
       content: '',
-			privateKey: 'SCC364LOGS5SHIYYK3RJEYP6AHL5GQN2LCYZPAH6643IM3LYUZW74LFH',
       isShowError: false,
 			error: '',
       isShowSuccess: false
@@ -72,7 +70,6 @@ class PostBox extends Component {
 				}
 				else{
 					this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-					console.log(this.props.profile)
 					const plainTextContent = {
 						type: 1,
 						text: this.state.content
@@ -90,8 +87,6 @@ class PostBox extends Component {
 						},
 						signature: new Buffer(64)
 					}
-					console.log(this.props.profile.sequence);
-					console.log(this.props.profile.bandwith);
 					let temp = loadItem(keyStorage.private_key)
 					let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
 					transaction.sign(tx, my_private_key);
@@ -107,12 +102,16 @@ class PostBox extends Component {
 					else {
 						this.apiService.createPost(TxEncode).then((status) => {
 							if(status === 'success'){
+								this.props.handleAdd(this.state.content, new Date())
 								this.setState({
 									content: ''
 								})
 							}
 							else{
-								console.log(status)
+								this.setState({
+									error: "Post failed",
+									isShowError: true
+								})
 							}
 						})
 					}
@@ -155,7 +154,7 @@ class PostBox extends Component {
 					success
 					confirmBtnText="OK"
 					confirmBtnBsStyle="success"
-					title="Update profile successfully!"
+					title="Successfully!"
 					show={this.state.isShowSuccess}
 					onConfirm={this.hideAlertSuccess.bind(this)}
 					onCancel={this.hideAlertSuccess.bind(this)}>

@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PostBox, Post, MayKnowFriends, Calendar, ListUser } from '../../components';
+import { PostsWall, MayKnowFriends, Calendar, ListUser } from '../../components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import ApiService from '../../services/api.service';
 import defaultAvatar from '../../images/default-avatar.png';
-import InfiniteScroll from 'react-infinite-scroller';
 
 const mapStateToProps = (state) => {
   return{
@@ -39,6 +38,7 @@ class Home extends Component {
           icon: "users"
         }
       ],
+			dataNewPosts: [],
 			dataPosts: [],
 			pages: 10,
 			page: 1,
@@ -53,7 +53,13 @@ class Home extends Component {
 
 
   componentDidMount(){
-		console.log(this.props.profile)
+		this.apiService.getPostOnHome(this.props.profile.user_id, 1, this.state.perPage).then((res) => {
+			this.setState ({
+				dataPosts: res.posts,
+				page: 1,
+				pages: res.total_page,
+			})
+		})
   }
 	
 	loadData(page) {
@@ -82,28 +88,6 @@ class Home extends Component {
   }
 
   render() {
-<<<<<<< HEAD
-		const posts = this.state.dataPosts.map(post => {	
-			const postTemplate = {
-				id: post.id,
-				avatar: this.props.profile.avatar,
-				user_id: post.user_id,
-				username: this.props.profile.usernameT,
-				authorize: "Shared publicly",
-				created_on: post.created_at,
-				likes: 100,
-				isLike: false,
-				content: post.content,
-				comments: []
-			}
-			return (
-				<Post key={postTemplate.id} post={postTemplate}/>
-				// <div>abc</div>
-			);
-		});	
-=======
-    console.log(this.props.profile);
->>>>>>> master
     return (
       <Layout>
         <div className={styles.home}>
@@ -152,24 +136,7 @@ class Home extends Component {
                               switch(key){
                                 case 0:
                                   return(
-                                    <div className="animated fadeIn" key={key}>
-                                      <PostBox />
-																			<div>
-																				<InfiniteScroll
-																					pageStart={0}
-																					loadMore={this.loadData.bind(this)}
-																					hasMore={this.state.page <= this.state.pages}>
-																						{posts}
-																				</InfiniteScroll>
-																			</div>
-																		</div>
-                                      // {!!this.props.posts.length && this.props.posts.map((item) => {
-                                          // return(
-                                            // ''//<Post key={item.id} post={item}/>
-                                          // )
-                                        // })
-                                      // }
-                                    
+                                    <PostsWall key={key}/>                                  
                                   )
                                 case 1:
                                   return(
