@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount} from './pages'
+import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, Others} from './pages'
 import  { PrivateRoute } from './components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {  faHome,
@@ -68,6 +68,7 @@ class App extends Component {
             <PrivateRoute exact path='/' component={Home} />
             <Route exact path='/login' component={SignInUp} />
             <PrivateRoute exact path='/profile' component={Profile} />
+            <PrivateRoute exact path='/user/:id' component={Others} />
             <PrivateRoute exact path='/edit-profile' component={EditProfile} />
             <PrivateRoute exact path='/transfer-money' component={TransferMoney} />
             <PrivateRoute exact path='/transaction-history' component={TransactionHistory} />
