@@ -42,7 +42,7 @@ class EditProfile extends Component {
   constructor(props){
     super(props)
     this.apiService = ApiService()
-    this.limitSize = 4000
+    this.limitSize = 30000
     this.state = {
       tabProfile: true,
       tabSetting: false,

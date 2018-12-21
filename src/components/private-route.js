@@ -48,17 +48,13 @@ class PrivateRoute extends Component {
   }
 
   componentDidMount(){
-    // console.log("OKOKOKOKOKOK");
     this.checkProfile()
   }
 
   componentDidUpdate(prevProps){
-    // console.log("OK");
-    // console.log(this.props.profile);
-    // console.log(prevProps.profile);
-    // if(this.props.profile. !== prevProps.profile){
-    //   this.checkProfile()
-    // }
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.checkProfile()
+    }
   }
 
   render() {
