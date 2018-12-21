@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.scss';
 import { Layout } from '../../components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PostBox, Post, MayKnowFriends, Calendar, ListUser } from '../../components';
+import { PostsWall, MayKnowFriends, Calendar, ListUser } from '../../components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -37,7 +37,7 @@ class Home extends Component {
           isSelect: false,
           icon: "users"
         }
-      ]
+      ],
     }
   }
 
@@ -49,7 +49,7 @@ class Home extends Component {
 
   componentDidMount(){
   }
-
+		
   handleSelectMenu(index){
     let temp = this.state.sideMenu.concat()
     temp = temp.map((item, key) => {
@@ -65,7 +65,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.props.profile);
     return (
       <Layout>
         <div className={styles.home}>
@@ -114,15 +113,7 @@ class Home extends Component {
                               switch(key){
                                 case 0:
                                   return(
-                                    <div className="animated fadeIn" key={key}>
-                                      <PostBox />
-                                      {!!this.props.posts.length && this.props.posts.map((item) => {
-                                          return(
-                                            <Post key={item.id} post={item}/>
-                                          )
-                                        })
-                                      }
-                                    </div>
+                                    <PostsWall key={key}/>                                  
                                   )
                                 case 1:
                                   return(

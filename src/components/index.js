@@ -15,6 +15,7 @@ import Timeline from './timeline'
 import ScrollToTop from './scroll-to-top'
 import PrivateRoute from './private-route'
 import MyPost from './my-post'
+import PostsWall from './posts-wall'
 
 export {
   Header,
@@ -33,5 +34,6 @@ export {
   ScrollToTop,
   PrivateRoute,
   MayKnowFriendsItem,
-  MyPost
+  MyPost,
+  PostsWall
 }
