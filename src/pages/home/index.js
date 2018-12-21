@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import ApiService from '../../services/api.service';
 import defaultAvatar from '../../images/default-avatar.png';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const mapStateToProps = (state) => {
   return{
@@ -37,7 +38,11 @@ class Home extends Component {
           isSelect: false,
           icon: "users"
         }
-      ]
+      ],
+			dataPosts: [],
+			pages: 10,
+			page: 1,
+			perPage: 10,
     }
   }
 
@@ -48,8 +53,20 @@ class Home extends Component {
 
 
   componentDidMount(){
+		console.log(this.props.profile)
   }
-
+	
+	loadData(page) {
+		this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
+			this.setState ({
+				dataPosts: this.state.dataPosts.concat(res.posts),
+				page: this.state.page + 1,
+				pages: res.total_page,
+			})
+		})
+		
+	}
+		
   handleSelectMenu(index){
     let temp = this.state.sideMenu.concat()
     temp = temp.map((item, key) => {
@@ -65,6 +82,24 @@ class Home extends Component {
   }
 
   render() {
+		const posts = this.state.dataPosts.map(post => {	
+			const postTemplate = {
+				id: post.id,
+				avatar: this.props.profile.avatar,
+				user_id: post.user_id,
+				username: this.props.profile.usernameT,
+				authorize: "Shared publicly",
+				created_on: post.created_at,
+				likes: 100,
+				isLike: false,
+				content: post.content,
+				comments: []
+			}
+			return (
+				<Post key={postTemplate.id} post={postTemplate}/>
+				// <div>abc</div>
+			);
+		});	
     return (
       <Layout>
         <div className={styles.home}>
@@ -115,13 +150,22 @@ class Home extends Component {
                                   return(
                                     <div className="animated fadeIn" key={key}>
                                       <PostBox />
-                                      {!!this.props.posts.length && this.props.posts.map((item) => {
-                                          return(
-                                            <Post key={item.id} post={item}/>
-                                          )
-                                        })
-                                      }
-                                    </div>
+																			<div>
+																				<InfiniteScroll
+																					pageStart={0}
+																					loadMore={this.loadData.bind(this)}
+																					hasMore={this.state.page <= this.state.pages}>
+																						{posts}
+																				</InfiniteScroll>
+																			</div>
+																		</div>
+                                      // {!!this.props.posts.length && this.props.posts.map((item) => {
+                                          // return(
+                                            // ''//<Post key={item.id} post={item}/>
+                                          // )
+                                        // })
+                                      // }
+                                    
                                   )
                                 case 1:
                                   return(

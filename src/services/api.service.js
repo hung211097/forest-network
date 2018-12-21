@@ -137,7 +137,19 @@ export default () => {
       return axiosPost(baseURL + `users/${user_id}/followings/public-key`, {data: arrID}).then((res) => {
         return res.data.pubkeys
       })
-    }
+    },
+    getPostOnHome: (user_id, page, limit, params = {}) => {
+      let url = baseURL + `users/${user_id}/posts-wall?page=${page}&limit=${limit}`
+			if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
   }
 
   return services

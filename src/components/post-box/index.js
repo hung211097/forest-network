@@ -9,6 +9,10 @@ import { Keypair } from 'stellar-base';
 import transaction from '../../lib/transaction';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import PropTypes from 'prop-types'
+import { SecretKey } from '../../constants/crypto';
+import CryptoJS from 'crypto-js';
+import { keyStorage } from '../../constants/localStorage';
+import { loadItem } from '../../services/storage.service';
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -67,7 +71,7 @@ class PostBox extends Component {
 			let tx = {
 				version: 1,
 				account: this.props.profile.public_key,
-				sequence: 10, // this.props.profile.sequence + 1
+				sequence: this.props.profile.sequence + 1,
 				memo: Buffer.alloc(0),
 				operation: "post",
 				params: {
@@ -76,10 +80,12 @@ class PostBox extends Component {
 				},
 				signature: new Buffer(64)
 			}
-			transaction.sign(tx, this.state.privateKey);
+			
+			let temp = loadItem(keyStorage.private_key)
+			let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+			transaction.sign(tx, my_private_key);
 			let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-			console.log(tx)
-			console.log(TxEncode)
+			
 			const consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date());
 			if(consume > this.props.profile.bandwithMax){
         this.setState({
@@ -87,30 +93,32 @@ class PostBox extends Component {
           isShowError: true
         })
       }
-			this.apiService.createPost(TxEncode).then((status) => {
-				if(status === 'success'){
-					let {posts, profile} = this.props
-					let obj = {
-						id: posts[posts.length - 1].id + 1,
-						userID: profile.userID,
-						avatar: profile.avatar,
-						username: profile.username,
-						authorize: "Shared publicly",
-						created_on: new Date().toString(),
-						likes: 0,
-						isLike: false,
-						content: this.state.content,
-						comments: []
+			else {
+				this.apiService.createPost(TxEncode).then((status) => {
+					if(status === 'success'){
+						let {posts, profile} = this.props
+						let obj = {
+							id: posts[posts.length - 1].id + 1,
+							userID: profile.userID,
+							avatar: profile.avatar,
+							username: profile.username,
+							authorize: "Shared publicly",
+							created_on: new Date().toString(),
+							likes: 0,
+							isLike: false,
+							content: this.state.content,
+							comments: []
+						}
+						this.props.createPost && this.props.createPost(obj)
+						this.setState({
+							content: ''
+						})
 					}
-					this.props.createPost && this.props.createPost(obj)
-					this.setState({
-						content: ''
-					})
-				}
-				else{
-					console.log(status)
-				}
-			})
+					else{
+						console.log(status)
+					}
+				})
+			}
     }
   }
 

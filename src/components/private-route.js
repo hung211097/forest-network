@@ -22,25 +22,35 @@ class PrivateRoute extends Component {
     super(props)
     this.apiService = ApiService()
     this.state = {
-      block: true
+      block: true,
+			bandwith: 0
     }
   }
 
   componentDidMount(){
-    this.apiService.getCurrentProfile().then((data) => {
-      if(!data){
-        this.props.history.push('/login')
-      }
-      else{
-        this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-        this.setState({
-          block: false
-        })
-      }
-    })
+		fetch('http://localhost:8888/users/29')
+      .then(res => res.json())
+			.then(dataFetch => {				
+				this.apiService.getCurrentProfile().then((data) => {
+					if(!data){
+						this.props.history.push('/login')
+					}
+					else{
+						this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
+						this.setState({
+							block: false
+						})
+					}
+				})
+        console.log(dataFetch.info_user.bandwith)
+				this.setState({
+					bandwith: dataFetch.info_user.bandwith
+				})
+			});
   }
 
   render() {
+		const a = this.state.bandwith
     if(this.state.block){
       return null
     }
