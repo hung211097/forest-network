@@ -38,11 +38,6 @@ class Home extends Component {
           icon: "users"
         }
       ],
-			dataNewPosts: [],
-			dataPosts: [],
-			pages: 10,
-			page: 1,
-			perPage: 10,
     }
   }
 
@@ -53,25 +48,7 @@ class Home extends Component {
 
 
   componentDidMount(){
-		this.apiService.getPostOnHome(this.props.profile.user_id, 1, this.state.perPage).then((res) => {
-			this.setState ({
-				dataPosts: res.posts,
-				page: 1,
-				pages: res.total_page,
-			})
-		})
   }
-	
-	loadData(page) {
-		this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
-			this.setState ({
-				dataPosts: this.state.dataPosts.concat(res.posts),
-				page: this.state.page + 1,
-				pages: res.total_page,
-			})
-		})
-		
-	}
 		
   handleSelectMenu(index){
     let temp = this.state.sideMenu.concat()

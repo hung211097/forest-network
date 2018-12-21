@@ -74,11 +74,11 @@ class PostBox extends Component {
 						type: 1,
 						text: this.state.content
 					}
-					
+					console.log(data)
 					let tx = {
 						version: 1,
-						account: this.props.profile.public_key,
-						sequence: this.props.profile.sequence + 1,
+						account: data.public_key,
+						sequence: data.sequence + 1,
 						memo: Buffer.alloc(0),
 						operation: "post",
 						params: {
@@ -92,8 +92,8 @@ class PostBox extends Component {
 					transaction.sign(tx, my_private_key);
 					let TxEncode = '0x' + transaction.encode(tx).toString('hex');
 					
-					const consume = calcBandwithConsume(this.props.profile, transaction.encode(tx).toString('base64'), new Date());
-					if(consume > this.props.profile.bandwithMax){
+					const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
+					if(consume > data.bandwithMax){
 						this.setState({
 							error: "You don't have enough OXY to conduct transaction!",
 							isShowError: true
