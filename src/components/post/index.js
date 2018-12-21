@@ -107,7 +107,7 @@ class Post extends Component {
         <div className="box box-widget">
           <div className="box-header with-border">
             <div className="user-block">
-              <img className="img-circle" src={post.avatar} alt="avatar" />
+              <img className="img-circle" src={post.avatar ? post.avatar : defaultAvatar} alt="avatar" />
               <span className="username"><a href="null">{post.username}</a></span>
               <span className="description">{post.authorize} - {fromNowDate(post.created_on)}</span>
             </div>

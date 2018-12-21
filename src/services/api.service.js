@@ -138,9 +138,9 @@ export default () => {
         return res.data.pubkeys
       })
     },
-    getPostOnHome: (user_id, page, limit, params = {}) => {
+    getPostOnHome: (user_id, page = 1, limit = 10, params = {}) => {
       let url = baseURL + `users/${user_id}/posts-wall?page=${page}&limit=${limit}`
-			if(params.order && params.type){
+      if(params.order && params.type){
         url += `&order=${params.order}&type=${params.type}`
       }
       return axiosGet(url).then((res) => {
