@@ -15,7 +15,6 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return{
-    users: state.usersReducer.users,
     profile: state.profileReducer.info,
   }
 }
