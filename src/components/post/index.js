@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {fromNowDate} from '../../services/utils.service';
 import { connect } from 'react-redux'
 import {likePost, createComment} from '../../actions'
 import ReactEmoji from 'react-emoji'
 import defaultAvatar from '../../images/default-avatar.png'
+import { ReactButton } from '../../components'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -26,8 +26,41 @@ class Post extends Component {
     super(props)
     this.state = {
       post: this.props.post,
-      content: ''
+      content: '',
     }
+    this.react = [
+      {
+        type: 1,
+        icon: "thumbs-up",
+        text: "Like"
+      },
+      {
+        type: 2,
+        icon: "heart",
+        text: "Love"
+      },
+      {
+        type: 3,
+        icon: "laugh-beam",
+        text: "Haha"
+      },
+      {
+        type: 4,
+        icon: "surprise",
+        text: "Wow"
+      },
+
+      {
+        type: 5,
+        icon: "sad-tear",
+        text: "Sad"
+      },
+      {
+        type: 6,
+        icon: "angry",
+        text: "Angry"
+      }
+    ]
   }
 
   static propTypes = {
@@ -117,13 +150,15 @@ class Post extends Component {
                 return <p key={key}>{ReactEmoji.emojify(itemChild, {emojiType: "emojione"})}</p>
               })
             }
-            <button type="button" className={post.isLike ? "btn btn-default btn-xs active" : "btn btn-default btn-xs"} onClick={this.handleLike.bind(this, post.id)}>
-              <i><FontAwesomeIcon icon="thumbs-up"/></i> Like
-            </button>
-            <button type="button" className="btn btn-default btn-xs">
-              <i><FontAwesomeIcon icon="share" /></i> Share
-            </button>
-            <span className="float-right text-muted">{post.likes} likes - {post.comments.length} comments</span>
+            <div className="interact-area">
+              {this.react.map((item, key) => {
+                return(
+                    <ReactButton objIcon={item} />
+                  )
+                })
+              }
+              <span className="float-right text-muted">{post.likes} reacts - {post.comments.length} comments</span>
+            </div>
           </div>
           <div className="box-footer box-comments">
             {!!post.comments.length && post.comments.map((item, key) => {
@@ -144,6 +179,7 @@ class Post extends Component {
                 )
               })
             }
+            <span className="load-more">Show more comments</span>
           </div>
           <div className="box-footer">
             <form action="#" method="post">
