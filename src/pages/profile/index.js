@@ -122,8 +122,8 @@ class Profile extends Component {
 												</ul>
 												<div className="tab-content">
 													{(this.state.numNavTag === 1) ? <Timeline /> :
-														(this.state.numNavTag === 2) ? <ListFollowers /> :
-															(this.state.numNavTag === 3) ? <ListFollowing /> :
+														(this.state.numNavTag === 2) ? <ListFollowers idGetListFollow={this.props.profile.user_id}/> :
+															(this.state.numNavTag === 3) ? <ListFollowing idGetListFollow={this.props.profile.user_id}/> :
 																''
 													}
 												</div>

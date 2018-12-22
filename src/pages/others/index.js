@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import defaultAvatar from '../../images/default-avatar.png'
 import ReactDOM from 'react-dom';
 import ApiService from '../../services/api.service'
+import { withRouter } from 'react-router'
 
 const mapStateToProps = (state) => {
     return {
@@ -23,7 +24,8 @@ class Others extends Component {
     static propTypes = {
         numFollowers: PropTypes.number,
         numFollowing: PropTypes.number,
-        profile: PropTypes.object
+        profile: PropTypes.object,
+        idGetListFollow: PropTypes.number
     }
     constructor(props) {
         super(props)
@@ -55,9 +57,19 @@ class Others extends Component {
         })
     }
 
+    UNSAFE_componentWillReceiveProps(props){
+      if(this.props.match.params.id !== props.match.params.id){
+        this.setState({
+          numNavTag: 1
+        })
+      }
+    }
+
     componentDidMount() {
+        if(+this.props.match.params.id === +this.props.profile.user_id){
+          this.props.history.push('/profile')
+        }
         this.apiService.getInfoUser(this.props.match.params.id).then((res) => {
-            console.log(res)
             this.setState({
                 balance: res.info_user.amount,
                 currentEnergy: res.info_user.bandwithMax - res.info_user.bandwith,
@@ -68,7 +80,6 @@ class Others extends Component {
 
     render() {
         let { profile } = this.props
-        console.log(this.state)
         return (
             <Layout>
                 <div className={styles.profile}>
@@ -119,8 +130,8 @@ class Others extends Component {
                                                 </ul>
                                                 <div className="tab-content">
                                                     {(this.state.numNavTag === 1) ? <MyPost /> :
-                                                        (this.state.numNavTag === 2) ? <ListFollowers /> :
-                                                            (this.state.numNavTag === 3) ? <ListFollowing /> :
+                                                        (this.state.numNavTag === 2) ? <ListFollowers idGetListFollow={+this.props.match.params.id} /> :
+                                                            (this.state.numNavTag === 3) ? <ListFollowing idGetListFollow={+this.props.match.params.id} /> :
                                                                 ''
                                                     }
                                                 </div>
@@ -137,4 +148,4 @@ class Others extends Component {
     }
 };
 
-export default connect(mapStateToProps)(Others);
+export default withRouter(connect(mapStateToProps)(Others));

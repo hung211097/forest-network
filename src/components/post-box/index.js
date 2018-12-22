@@ -125,7 +125,7 @@ class PostBox extends Component {
       <div className={styles.postBox}>
         <div className="box profile-info n-border-top">
           <form onSubmit={this.handleSubmit.bind(this)}>
-            <textarea className="form-control input-lg p-text-area" rows={2} placeholder="Whats in your mind today?"
+            <textarea className="form-control input-lg p-text-area" rows={2} placeholder="What's in your mind today?"
               value={this.state.content} onChange={this.handleChangeContent.bind(this)}/>
           </form>
           <div className="box-footer box-form">
