@@ -14,7 +14,7 @@ import ListFollowing from './following'
 import Timeline from './timeline'
 import ScrollToTop from './scroll-to-top'
 import PrivateRoute from './private-route'
-import MyPost from './my-post'
+import OthersPost from './others-post'
 import PostsWall from './posts-wall'
 
 export {
@@ -34,6 +34,6 @@ export {
   ScrollToTop,
   PrivateRoute,
   MayKnowFriendsItem,
-  MyPost,
+  OthersPost,
   PostsWall
 }
