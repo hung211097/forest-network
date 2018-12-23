@@ -95,7 +95,7 @@ class Profile extends Component {
 														<div className="col-12">
 															<Link to='/edit-profile' className="btn btn-azure btn-block">
 																<FontAwesomeIcon icon="edit" /> Edit Profile
-                            </Link>
+                            								</Link>
 														</div>
 													</div>
 												</div>

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { followUser, unFollowUser } from '../../actions';
 import defaultAvatar from '../../images/default-avatar.png';
+import { Link } from 'react-router-dom'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -65,11 +66,11 @@ class UserCard extends Component {
     return (
       <div className={styles.userCard}>
         <div className="contact-box center-version">
-          <a href="null">
+          <Link to={'/user/' + user.user_id}>
             <img alt="avatar" className="img-circle" src={user.avatar ? user.avatar : defaultAvatar}/>
             <h3 className="m-b-xs"><strong>{user.username}</strong></h3>
             <div className="font-bold">@username</div>
-          </a>
+          </Link>
           <div className="contact-box-footer">
             <div className="m-t-xs btn-group">
               {this.state.isFollow ?

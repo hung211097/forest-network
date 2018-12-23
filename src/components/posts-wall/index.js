@@ -28,16 +28,6 @@ class PostsWall extends Component {
     profile: PropTypes.object,
   }
 
-  componentDidMount(){
-    this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
-      this.setState ({
-        dataPosts: res.posts,
-        page: this.state.page + 1,
-        pages: res.total_page,
-      })
-    })
-  }
-
   loadData(page) {
     this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
       this.setState ({

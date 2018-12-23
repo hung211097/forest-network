@@ -4,17 +4,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styles from './index.scss';
 import ApiService from '../../services/api.service'
-import {createPost} from '../../actions'
+import { createPost } from '../../actions'
 import InfiniteScroll from 'react-infinite-scroller'
-import avatar2 from '../../images/guy-5.jpg'
-import avatar3 from '../../images/guy-6.jpg'
-
 
 const mapStateToProps = (state) => {
-  return{
+	return {
 		posts: state.postsReducer.posts,
 		profile: state.profileReducer.info
-  }
+	}
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -24,113 +21,113 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class Timeline extends Component {
-		constructor(props) {
-			super(props)
-			this.apiService = ApiService()
-			this.state = {
-				page: 0,
-				tracks: [],
-				hasMoreItems: true,
-			}
-		}
-
-    static propTypes = {
-      posts: PropTypes.array
-		}
-		
-		// componentDidMount(){
-		// 	this.apiService.getMyPosts(this.props.profile.user_id, 1, 10).then((res) => {
-		// 		console.log(res)
-		// 		res.posts.forEach((element) => {
-		// 			element.comments = [{
-		// 				      avatar: avatar2,
-		// 				      user_id: 3,
-		// 				      username: "Maria Gonzales",
-		// 				      content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-		// 				      created_on: "Sat Dec 01 2018 10:56:49 GMT+0700 (Indochina Time)"
-		// 				    },
-		// 				    {
-		// 				      avatar: avatar3,
-		// 				      user_id: 2,
-		// 				      username: "Luna Stark",
-		// 				      content: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-		// 				      created_on: "Sat Dec 01 2018 11:00:49 GMT+0700 (Indochina Time)"
-		// 						}]
-		// 			element.isLike = false
-		// 			element.likes = 100
-		// 			element.authorize =  "Shared publicly"
-		// 		})
-		// 		res.posts.forEach((element) => {
-		// 			this.props.createPost(element)
-		// 		})
-		// 		console.log(this.props.posts)
-		// 	})
-		// }
-
-	loadItems(page) {
-		console.log(this.props.posts)
-		if (this.props.posts.length > 0) {
-			var tracks = this.state.tracks
-			for (var index = 0; index < this.props.posts.length; index++){
-				if (index === this.state.page) {
-						console.log(index)
-						tracks.push(this.props.posts[index])
-						break
-					}
-			}
-			// this.props.posts.map((track, i) => {
-			// 	if (i === this.state.page) {
-			// 		tracks.push(track)
-			// 		break
-			// 	}
-			// });
-			if (this.state.page < this.props.posts.length) {
-				this.setState({
-					tracks: tracks,
-					page: this.state.page + 1
-				});
-			} else {
-				this.setState({
-					hasMoreItems: false
-				});
-			}
+	constructor(props) {
+		super(props)
+		this.apiService = ApiService()
+		this.state = {
+			page: 1,
+			dataPosts: [],
+			dataNewPosts: [],
+			hasMoreItems: true
 		}
 	}
-	
-    render() {
-				const { tracks } = this.state
-				//console.log(this.state.tracks)
-        return (
-				<div className={styles.timeline}>
-					<div className="tab-pane fade active in" id="timeline">
-						<div className="box profile-info n-border-top animated fadedIn">
-								<PostBox />
-								<InfiniteScroll
-									pageStart={0}
-									loadMore={this.loadItems.bind(this)}
-									hasMore={this.state.hasMoreItems}
-									threshold={100}
-									loader={<div key={0} className="loader">Loading ...</div>}>
-									<div className="tracks">
-										{!!tracks.length && tracks.map((item) => {
-											return (
-													<Post key={item.id} post={item} />
-												)
-											})
+
+	static propTypes = {
+		posts: PropTypes.array
+	}
+
+	loadItems(page) {
+		this.apiService.getMyPosts(this.props.profile.user_id, this.state.page, 10).then((res) => {
+			this.setState({
+				dataPosts: [...this.state.dataPosts, ...res.posts],
+				page: this.state.page + 1,
+				pages: res.total_page,
+			}, () => {
+				if (this.state.page > res.total_page) {
+					this.setState({
+						hasMoreItems: false
+					})
+				}
+			})
+		})
+	}
+
+	handleAddPost(content, createdAt) {
+		const newPost = [{
+			id: this.state.dataNewPosts.length,
+			avatar: this.props.profile.avatar,
+			user_id: this.props.profile.user_id,
+			username: this.props.profile.username,
+			created_at: createdAt,
+			content: content
+		}]
+		this.setState ({
+			dataNewPosts: newPost.concat(this.state.dataNewPosts),
+		})
+	}
+
+	render() {
+		const { dataPosts } = this.state
+		const newPosts = this.state.dataNewPosts.map(post => {
+			const postTemplate = {
+				id: post.id,
+				avatar: post.avatar,
+				user_id: post.user_id,
+				username: post.username,
+				authorize: "Shared publicly",
+				created_on: post.created_at,
+				likes: 100,
+				isLike: false,
+				content: post.content,
+				comments: []
+			}
+			return (
+				<Post key={postTemplate.id} post={postTemplate} />
+			);
+		});
+
+		return (
+			<div className={styles.timeline}>
+				<div className="tab-pane fade active in" id="timeline">
+					<div className="box profile-info n-border-top animated fadedIn">
+						<PostBox handleAdd={this.handleAddPost.bind(this)}/>
+						{newPosts}
+						<InfiniteScroll
+							pageStart={0}
+							loadMore={this.loadItems.bind(this)}
+							hasMore={this.state.hasMoreItems}
+							threshold={100}
+							loader={<div key={0} className="loader">Loading ...</div>}>
+							<div className="tracks">
+                                {dataPosts.length > 0 
+									? 
+                                dataPosts.map((item) => {
+										const postTemplate = {
+											id: item.id,
+											avatar: item.User.avatar,
+											user_id: item.user_id,
+											username: item.User.username,
+											authorize: "Shared publicly",
+											created_on: item.created_at,
+											likes: 100,
+											isLike: false,
+											content: item.content,
+											comments: []
 										}
-									</div>
-								</InfiniteScroll>
-								{/* {!!this.props.posts.length && this.props.posts.map((item) => {
-										return (
-												<Post key={item.id} post={item} />
-										)
-								})
-								} */}
-						</div>
+                                    return (
+                                        <Post key={item.id} post={postTemplate} />
+                                    )
+                                })
+                                 :
+                                 <h2>You don't have any posts</h2>
+                                }
+                            </div>
+						</InfiniteScroll>
 					</div>
 				</div>
-        );
-    }
-  }
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
+			</div>
+		);
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
