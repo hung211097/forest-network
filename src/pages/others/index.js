@@ -3,12 +3,10 @@ import styles from './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Layout } from '../../components'
 import cover from '../../images/cover-image.jpg'
-import { ListFollowers, ListFollowing, MyPost } from '../../components'
+import { ListFollowers, ListFollowing, OthersPost } from '../../components'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import defaultAvatar from '../../images/default-avatar.png'
-import ReactDOM from 'react-dom';
 import ApiService from '../../services/api.service'
 
 const mapStateToProps = (state) => {
@@ -33,7 +31,11 @@ class Others extends Component {
             intervalId: 0,
             balance: 0,
             currentEnergy: 0,
-            consumedEnergy: 0
+            consumedEnergy: 0,
+            avatar: "",
+            username: "",
+            followers: 0,
+            following: 0
         }
     }
 
@@ -57,18 +59,19 @@ class Others extends Component {
 
     componentDidMount() {
         this.apiService.getInfoUser(this.props.match.params.id).then((res) => {
-            console.log(res)
             this.setState({
                 balance: res.info_user.amount,
                 currentEnergy: res.info_user.bandwithMax - res.info_user.bandwith,
-                consumedEnergy: res.info_user.bandwith
+                consumedEnergy: res.info_user.bandwith,
+                avatar: res.info_user.avatar,
+                username: res.info_user.username,
+                followers: res.info_user.follower.length,
+                following: res.info_user.following.length
             })
         })
     }
 
     render() {
-        let { profile } = this.props
-        console.log(this.state)
         return (
             <Layout>
                 <div className={styles.profile}>
@@ -83,8 +86,8 @@ class Others extends Component {
                                         <div className="col-md-4">
                                             <div className="profile-info-left">
                                                 <div className="text-center">
-                                                    <img src={profile.avatar ? profile.avatar : defaultAvatar} alt="Avatar" className="avatar img-circle" />
-                                                    <h2>{profile.username}</h2>
+                                                    <img src={this.state.avatar ? this.state.avatar : defaultAvatar} alt="Avatar" className="avatar img-circle" />
+                                                    <h2>{this.state.username}</h2>
                                                 </div>
                                                 <div className="action-buttons">
                                                     <div className="row">
@@ -104,9 +107,9 @@ class Others extends Component {
                                                 </div>
                                                 <div className="section">
                                                     <h3>Statistics</h3>
-                                                    <p><span className="badge">{332 + this.props.numFollowing}</span> Following</p>
-                                                    <p><span className="badge">{124 + this.props.numFollowers}</span> Followers</p>
-                                                    <p><span className="badge">620</span> Likes</p>
+                                                    <p><span className="badge">{this.state.following}</span> Following</p>
+                                                    <p><span className="badge">{this.state.followers}</span> Followers</p>
+                                                    <p><span className="badge">999</span> Likes</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,7 +121,7 @@ class Others extends Component {
                                                     <li className={(this.state.numNavTag === 3) ? 'active' : ''}><span className="nav-tag" onClick={this.handleFollowing.bind(this)}>Following</span></li>
                                                 </ul>
                                                 <div className="tab-content">
-                                                    {(this.state.numNavTag === 1) ? <MyPost /> :
+                                                    {(this.state.numNavTag === 1) ? <OthersPost user_id={this.props.match.params.id} /> :
                                                         (this.state.numNavTag === 2) ? <ListFollowers /> :
                                                             (this.state.numNavTag === 3) ? <ListFollowing /> :
                                                                 ''

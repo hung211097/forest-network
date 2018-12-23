@@ -17,7 +17,7 @@ import { saveProfileFromApi } from '../../actions';
 const mapDispatchToProps = (dispatch) => {
   return{
     createPost: (post) => {dispatch(createPost(post))},
-		saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
+    saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
   }
 }
 
@@ -36,16 +36,16 @@ class PostBox extends Component {
   static propTypes = {
     createPost: PropTypes.func,
     profile: PropTypes.object,
-		saveProfileFromApi: PropTypes.func
+    saveProfileFromApi: PropTypes.func
   }
 
   constructor(props){
     super(props)
-		this.apiService = ApiService()
+    this.apiService = ApiService()
     this.state = {
       content: '',
       isShowError: false,
-			error: '',
+      error: '',
       isShowSuccess: false
     }
   }
@@ -61,62 +61,57 @@ class PostBox extends Component {
       isShowSuccess: false
     })
   }
-	
+
   handleSubmit(){
-    if(this.state.content){			
-			this.apiService.getCurrentProfile().then((data) => {
-				if(!data){
-					this.props.history.push('/login')
-				}
-				else{
-					this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-					const plainTextContent = {
-						type: 1,
-						text: this.state.content
-					}
-					console.log(data)
-					let tx = {
-						version: 1,
-						account: data.public_key,
-						sequence: data.sequence + 1,
-						memo: Buffer.alloc(0),
-						operation: "post",
-						params: {
-							keys: [],
-							content: plainTextContent,
-						},
-						signature: new Buffer(64)
-					}
-					let temp = loadItem(keyStorage.private_key)
-					let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-					transaction.sign(tx, my_private_key);
-					let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-					
-					const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
-					if(consume > data.bandwithMax){
-						this.setState({
-							error: "You don't have enough OXY to conduct transaction!",
-							isShowError: true
-						})
-					}
-					else {
-						this.apiService.createPost(TxEncode).then((status) => {
-							if(status === 'success'){
-								this.props.handleAdd(this.state.content, new Date())
-								this.setState({
-									content: ''
-								})
-							}
-							else{
-								this.setState({
-									error: "Post failed",
-									isShowError: true
-								})
-							}
-						})
-					}
-				}
-			})			
+    if(this.state.content){
+      this.apiService.getCurrentProfile().then((data) => {
+        this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
+        const plainTextContent = {
+          type: 1,
+          text: this.state.content
+        }
+
+        let tx = {
+          version: 1,
+          account: data.public_key,
+          sequence: data.sequence + 1,
+          memo: Buffer.alloc(0),
+          operation: "post",
+          params: {
+            keys: [],
+            content: plainTextContent,
+          },
+          signature: new Buffer(64)
+        }
+        let temp = loadItem(keyStorage.private_key)
+        let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+
+        const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
+        if(consume > data.bandwithMax){
+          this.setState({
+            error: "You don't have enough OXY to conduct transaction!",
+            isShowError: true
+          })
+        }
+        else {
+          this.apiService.createPost(TxEncode).then((status) => {
+            if(status === 'success'){
+              this.props.handleAdd(this.state.content, new Date())
+              this.setState({
+                content: ''
+              })
+            }
+            else{
+              this.setState({
+                error: "Post failed",
+                isShowError: true
+              })
+            }
+          })
+        }
+      })
     }
   }
 
@@ -140,25 +135,24 @@ class PostBox extends Component {
             </ul>
           </div>
         </div>
-			
-				<SweetAlert
-					error
-					confirmBtnText="OK"
-					confirmBtnBsStyle="danger"
-					title={this.state.error}
-					show={this.state.isShowError}
-					onConfirm={this.hideAlertError.bind(this)}
-					onCancel={this.hideAlertError.bind(this)}>
-				</SweetAlert>
-				<SweetAlert
-					success
-					confirmBtnText="OK"
-					confirmBtnBsStyle="success"
-					title="Successfully!"
-					show={this.state.isShowSuccess}
-					onConfirm={this.hideAlertSuccess.bind(this)}
-					onCancel={this.hideAlertSuccess.bind(this)}>
-				</SweetAlert>
+        <SweetAlert
+          error
+          confirmBtnText="OK"
+          confirmBtnBsStyle="danger"
+          title={this.state.error}
+          show={this.state.isShowError}
+          onConfirm={this.hideAlertError.bind(this)}
+          onCancel={this.hideAlertError.bind(this)}>
+        </SweetAlert>
+        <SweetAlert
+          success
+          confirmBtnText="OK"
+          confirmBtnBsStyle="success"
+          title="Successfully!"
+          show={this.state.isShowSuccess}
+          onConfirm={this.hideAlertSuccess.bind(this)}
+          onCancel={this.hideAlertSuccess.bind(this)}>
+        </SweetAlert>
       </div>
     );
   }
