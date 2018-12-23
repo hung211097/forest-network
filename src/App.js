@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount} from './pages'
+import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, SearchUser} from './pages'
 import  { PrivateRoute } from './components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {  faHome,
@@ -25,7 +25,8 @@ import {  faHome,
           faArrowRight,
           faArrowLeft,
           faArrowDown,
-          faUserMinus} from '@fortawesome/free-solid-svg-icons'
+          faUserMinus,
+					faSearch} from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { ScrollToTop } from './components'
 
@@ -51,7 +52,8 @@ library.add(fab,
             faArrowRight,
             faArrowLeft,
             faArrowDown,
-            faUserMinus)
+            faUserMinus,
+						faSearch)
 
 class App extends Component {
   componentDidMount(){
@@ -72,6 +74,7 @@ class App extends Component {
             <PrivateRoute exact path='/transfer-money' component={TransferMoney} />
             <PrivateRoute exact path='/transaction-history' component={TransactionHistory} />
             <PrivateRoute exact path='/create-account' component={CreateAccount} />
+						<PrivateRoute exact path='/search-user' component={SearchUser} />
             <Route component={ErrorPage} />
           </Switch>
         </ScrollToTop>

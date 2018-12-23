@@ -6,6 +6,7 @@ import EditProfile from './edit-profile'
 import TransferMoney from './transfer-money'
 import TransactionHistory from './transaction-history'
 import CreateAccount from './create-account'
+import SearchUser from './search-user'
 
 export {
   Home,
@@ -15,5 +16,6 @@ export {
   Profile,
   TransferMoney,
   TransactionHistory,
-  CreateAccount
+  CreateAccount,
+	SearchUser
 }

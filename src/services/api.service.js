@@ -150,6 +150,16 @@ export default () => {
         return null
       })
     },
+		getSearchUsers: (type, info) => {
+      let url = baseURL + `users/search?type=${type}&info=${info}`
+      return axiosPost(url).then((res) => {
+				//console.log(res)
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
   }
 
   return services
