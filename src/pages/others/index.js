@@ -12,16 +12,12 @@ import { withRouter } from 'react-router'
 
 const mapStateToProps = (state) => {
     return {
-        numFollowers: state.profileReducer.numFollowers,
-        numFollowing: state.profileReducer.numFollowing,
         profile: state.profileReducer.info
     }
 }
 
 class Others extends Component {
     static propTypes = {
-        numFollowers: PropTypes.number,
-        numFollowing: PropTypes.number,
         profile: PropTypes.object,
         idGetListFollow: PropTypes.number
     }
@@ -37,7 +33,8 @@ class Others extends Component {
             avatar: "",
             username: "",
             followers: 0,
-            following: 0
+            following: 0,
+            sequence: 0
         }
     }
 
@@ -64,24 +61,34 @@ class Others extends Component {
         this.setState({
           numNavTag: 1
         })
+        this.loadInfoUser(props)
       }
     }
 
+    loadInfoUser(props){
+      this.apiService.getInfoUser(props.match.params.id).then((res) => {
+          this.setState({
+              balance: res.info_user.amount,
+              currentEnergy: res.info_user.bandwithMax - res.info_user.bandwith,
+              consumedEnergy: res.info_user.bandwith,
+              avatar: res.info_user.avatar,
+              username: res.info_user.username,
+              followers: res.info_user.follower.length,
+              following: res.info_user.following.length,
+              sequence: res.info_user.sequence
+          })
+      })
+    }
     componentDidMount() {
         if(+this.props.match.params.id === +this.props.profile.user_id){
           this.props.history.push('/profile')
         }
-        this.apiService.getInfoUser(this.props.match.params.id).then((res) => {
-            this.setState({
-                balance: res.info_user.amount,
-                currentEnergy: res.info_user.bandwithMax - res.info_user.bandwith,
-                consumedEnergy: res.info_user.bandwith,
-                avatar: res.info_user.avatar,
-                username: res.info_user.username,
-                followers: res.info_user.follower.length,
-                following: res.info_user.following.length
-            })
-        })
+        this.loadInfoUser(this.props)
+    }
+
+    handleErrorImg(e){
+      e.target.onerror = null;
+      e.target.src = defaultAvatar
     }
 
     render() {
@@ -99,7 +106,9 @@ class Others extends Component {
                                         <div className="col-md-4">
                                             <div className="profile-info-left">
                                                 <div className="text-center">
-                                                    <img src={this.state.avatar ? this.state.avatar : defaultAvatar} alt="Avatar" className="avatar img-circle" />
+                                                    <img src={this.state.avatar ? this.state.avatar : defaultAvatar}
+                                                      alt="Avatar" className="avatar img-circle"
+                                                      onError={this.handleErrorImg.bind(this)}/>
                                                     <h2>{this.state.username}</h2>
                                                 </div>
                                                 <div className="action-buttons">
@@ -112,17 +121,17 @@ class Others extends Component {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="section">
+                                                <div className="section no-margin">
                                                     <h3>Currency, energy</h3>
                                                     <p>Balance: {this.state.balance} Cellulose</p>
                                                     <p>Current Energy: {this.state.currentEnergy} OXY</p>
                                                     <p>Consumed Energy: {this.state.consumedEnergy} OXY</p>
+                                                    <p>Sequence: {this.state.sequence}</p>
                                                 </div>
                                                 <div className="section">
                                                     <h3>Statistics</h3>
                                                     <p><span className="badge">{this.state.following}</span> Following</p>
                                                     <p><span className="badge">{this.state.followers}</span> Followers</p>
-                                                    <p><span className="badge">999</span> Likes</p>
                                                 </div>
                                             </div>
                                         </div>

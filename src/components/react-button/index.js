@@ -18,15 +18,14 @@ const mapStateToProps = (state) => {
 
 class ReactButton extends Component {
   static propTypes = {
-    objIcon: PropTypes.object.isRequired,
+    objIcon: PropTypes.object,
     profile: PropTypes.object,
+    react: PropTypes.bool,
+    onChangeReact: PropTypes.func
   }
 
-  constructor(props){
-    super(props)
-    this.state = {
-      isReact: false
-    }
+  static defaultProps = {
+    react: false
   }
 
   componentDidMount(){
@@ -34,18 +33,22 @@ class ReactButton extends Component {
   }
 
   handleReact(){
-
+    this.props.onChangeReact && this.props.onChangeReact(this.props.objIcon.type)
   }
 
   render() {
     return (
       <div className={styles.react}>
-        <button type="button"
-          className={this.state.isReact ? "btn btn-default btn-xs btn-icon hvr-bounce-in active " + this.props.objIcon.icon : "btn btn-default btn-xs btn-icon hvr-bounce-in " + this.props.objIcon.icon}
-          onClick={this.handleReact.bind(this)}
-          data-tip={this.props.objIcon.text}>
-          <i><FontAwesomeIcon icon={this.props.objIcon.icon}/></i>
-        </button>
+        {this.props.objIcon &&
+          <button type="button"
+            className={this.props.react ?
+            "btn btn-default btn-xs btn-icon hvr-bounce-in active-icon " + this.props.objIcon.icon :
+            "btn btn-default btn-xs btn-icon hvr-bounce-in " + this.props.objIcon.icon}
+            onClick={this.handleReact.bind(this)}
+            data-tip={this.props.objIcon.text}>
+            <i><FontAwesomeIcon icon={this.props.objIcon.icon}/></i>
+          </button>
+        }
       </div>
     );
   }

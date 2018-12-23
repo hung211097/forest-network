@@ -187,8 +187,12 @@ class ListFollowing extends Component {
     })
   }
 
+  handleErrorImg(e){
+    e.target.onerror = null;
+    e.target.src = defaultAvatar
+  }
+
   render() {
-    console.log(this.props.profile);
     let listFollowing = null
     if(+this.props.idGetListFollow !== +this.props.profile.user_id){
       if(!!this.state.users.length){
@@ -197,22 +201,23 @@ class ListFollowing extends Component {
               <div className="media user-follower" key={key}>
                 <Link to={"/user/" + item.user_id}>
                   <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
-                    className="media-object pull-left" />
+                    className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
                 </Link>
                 <div className="media-body">
                   <Link to={"/user/" + item.user_id}>
                     {item.username}<br /><span className="text-muted username">@username</span>
                   </Link>
-                  {item.isFollow ?
+                  {item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
                     <button type="button" className="btn btn-sm btn-toggle-following pull-right"
                       onClick={this.handleChangeFollowV2.bind(this, item)}>
                       <span>Following</span>
                     </button>
-                    :
+                    : !item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
                     <button type="button" className="btn btn-sm btn-default pull-right"
                       onClick={this.handleChangeFollowV2.bind(this, item)}>
                       <FontAwesomeIcon icon="plus" /> Follow
                     </button>
+                    : null
                   }
                 </div>
               </div>
@@ -227,16 +232,18 @@ class ListFollowing extends Component {
               <div className="media user-following" key={key}>
                 <Link to={"/user/" + item.user_id}>
                   <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
-                    className="media-object pull-left" />
+                    className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
                 </Link>
                 <div className="media-body">
                   <Link to={"/user/" + item.user_id}>
                     {item.username}<br /><span className="text-muted username">@username</span>
                   </Link>
-                  <button type="button" className="btn btn-sm btn-danger pull-right"
-                    onClick={this.handleChangeFollow.bind(this, item.user_id)}>
-                    <i className="fa fa-close-round" /> Unfollow
-                  </button>
+                  {item.user_id !== this.props.profile.user_id &&
+                    <button type="button" className="btn btn-sm btn-danger pull-right"
+                      onClick={this.handleChangeFollow.bind(this, item.user_id)}>
+                      <i className="fa fa-close-round" /> Unfollow
+                    </button>
+                  }
                 </div>
               </div>
             )

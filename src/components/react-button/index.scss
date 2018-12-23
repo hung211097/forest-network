@@ -11,9 +11,13 @@
     }
   }
   .thumbs-up{
-    &:active{
+    &.active-icon{
       background: #4080FF;
     }
+    &:active{
+      background: #4080FF !important;
+    }
+    transition: 0.2s ease-in-out;
     background: #AAA;
     padding: 3px 7px !important;
     border: 0;
@@ -31,9 +35,13 @@
     }
   }
   .heart{
-    &:active{
+    &.active-icon{
       background: #F25268;
     }
+    &:active{
+      background: #F25268 !important;
+    }
+    transition: 0.2s ease-in-out;
     background: #AAA;
     border: 0;
     padding: 3px 7px !important;
@@ -54,13 +62,22 @@
     background: transparent;
     padding: 0 !important;
     &:active{
-      color: #AAA;
+      background: none !important;
+      i{
+        color: #FDDA74 !important;
+      }
+    }
+    &.active-icon{
+      i{
+        color: #FDDA74;
+      }
     }
     &:hover{
       text-decoration: none;
       box-shadow: none !important;
     }
     i{
+      transition: 0.2s ease-in-out;
       font-size: 24px;
       color: #AAA;
     }
