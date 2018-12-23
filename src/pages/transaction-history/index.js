@@ -28,10 +28,9 @@ class TransactionHistory extends Component {
         }
     }
 
-    loadData(props) {
+    loadData() {
         var isFirstPage = false
         var isLastPage = false
-        console.log(this.state.page)
         this.apiService.getTransactionsOfUser(this.state.page, 10).then((res) => {
             var numbers = [];
             if (res.total_page > 2) {
@@ -115,16 +114,15 @@ class TransactionHistory extends Component {
     }
 
     handleChangePage(index){
-        console.log(index)
         this.setState({
             page: index
         }, () => {
-            this.loadData(this.props)
+            this.loadData()
         })
     }
-    
-    UNSAFE_componentWillReceiveProps(props){
-        this.loadData(props)
+
+    componentDidMount(){
+        this.loadData()
     }
 
     render() {

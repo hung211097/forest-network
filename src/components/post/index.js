@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import styles from './index.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {fromNowDate} from '../../services/utils.service';
 import { connect } from 'react-redux'
-import {likePost, createComment} from '../../actions'
 import ReactEmoji from 'react-emoji'
 import defaultAvatar from '../../images/default-avatar.png'
+import { ReactButton } from '../../components'
+import { Link } from 'react-router-dom'
+import ApiService from '../../services/api.service'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    likePost: (id) => {dispatch(likePost(id))},
-    createComment: (comment, id) => {dispatch(createComment(comment, id))}
   }
 }
 
@@ -22,35 +21,86 @@ const mapStateToProps = (state) => {
 }
 
 class Post extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      post: this.props.post,
-      content: ''
-    }
-  }
-
   static propTypes = {
     post: PropTypes.object,
     profile: PropTypes.object,
-    likePost: PropTypes.func,
-    createComment: PropTypes.func,
   }
 
-  handleLike(id){
-    let temp = Object.assign({}, this.state.post)
-    temp.isLike = !temp.isLike
-    if(temp.isLike){
-      temp.likes = temp.likes + 1
+  constructor(props){
+    super(props)
+    this.apiService = ApiService()
+    this.state = {
+      post: this.props.post,
+      content: '',
+      comments: [],
+      number_of_comments: 0,
+      number_of_reacts: 0,
+      page: 1,
+      react: 0
     }
-    else{
-      temp.likes = temp.likes - 1
-    }
+    this.react = [
+      null,
+      {
+        type: 1,
+        icon: "thumbs-up",
+        text: "Like"
+      },
+      {
+        type: 2,
+        icon: "heart",
+        text: "Love"
+      },
+      {
+        type: 3,
+        icon: "laugh-beam",
+        text: "Haha"
+      },
+      {
+        type: 4,
+        icon: "surprise",
+        text: "Wow"
+      },
+      {
+        type: 5,
+        icon: "sad-tear",
+        text: "Sad"
+      },
+      {
+        type: 6,
+        icon: "angry",
+        text: "Angry"
+      }
+    ]
+  }
 
+  componentDidMount(){
+    this.loadComments()
+    this.apiService.getPostReacts(this.props.post.id).then((data) => {
+      if(data){
+        this.setState({
+          number_of_reacts: data.total_reacts,
+          react: data.your_react
+        })
+      }
+    })
+  }
+
+  loadComments(){
+    this.apiService.getPostComments(this.props.post.id, this.state.page, 2).then((data) => {
+      if(data){
+        this.setState({
+          comments: [...this.state.comments, ...data.comments],
+          number_of_comments: data.total_page,
+          page: this.state.page + 1
+        })
+      }
+    })
+  }
+
+  handleReact(type){
     this.setState({
-      post: temp
-    }, () => {
-      this.props.likePost && this.props.likePost(id)
+      react: this.state.react === type ? 0 : type,
+      number_of_reacts: this.state.react === type ? this.state.number_of_reacts - 1 : this.state.number_of_reacts + 1
     })
   }
 
@@ -61,19 +111,20 @@ class Post extends Component {
   }
 
   handleOnSubmit(){
-    let {post, profile} = this.props
-    if(this.state.content){
-      this.props.createComment && this.props.createComment({
-        avatar: profile.avatar,
-        user_id: profile.user_id,
-        username: profile.username,
-        content: this.state.content,
-        created_on: new Date().toString()
-      }, post.id)
-      this.setState({
-        content: ''
-      })
-    }
+    console.log("OK");
+    // let {post, profile} = this.props
+    // if(this.state.content){
+    //   this.props.createComment && this.props.createComment({
+    //     avatar: profile.avatar,
+    //     user_id: profile.user_id,
+    //     username: profile.username,
+    //     content: this.state.content,
+    //     created_on: new Date().toString()
+    //   }, post.id)
+    //   this.setState({
+    //     content: ''
+    //   })
+    // }
   }
 
   handleKeyPress(event){
@@ -99,6 +150,15 @@ class Post extends Component {
     }
   }
 
+  handleLoadMore(){
+    this.loadComments()
+  }
+
+  handleErrorImg(e){
+    e.target.onerror = null;
+    e.target.src = defaultAvatar
+  }
+
   render() {
     let {post} = this.state
     let {profile} = this.props
@@ -107,8 +167,14 @@ class Post extends Component {
         <div className="box box-widget">
           <div className="box-header with-border">
             <div className="user-block">
-              <img className="img-circle" src={post.avatar} alt="avatar" />
-              <span className="username"><a href="null">{post.username}</a></span>
+              <Link to={"/user/" + post.user_id}>
+                <img className="img-circle" src={post.avatar ? post.avatar : defaultAvatar} alt="avatar" onError={this.handleErrorImg.bind(this)}/>
+              </Link>
+              <span className="username">
+                <Link to={"/user/" + post.user_id}>
+                  {post.username}
+                </Link>
+              </span>
               <span className="description">{post.authorize} - {fromNowDate(post.created_on)}</span>
             </div>
           </div>
@@ -117,23 +183,33 @@ class Post extends Component {
                 return <p key={key}>{ReactEmoji.emojify(itemChild, {emojiType: "emojione"})}</p>
               })
             }
-            <button type="button" className={post.isLike ? "btn btn-default btn-xs active" : "btn btn-default btn-xs"} onClick={this.handleLike.bind(this, post.id)}>
-              <i><FontAwesomeIcon icon="thumbs-up"/></i> Like
-            </button>
-            <button type="button" className="btn btn-default btn-xs">
-              <i><FontAwesomeIcon icon="share" /></i> Share
-            </button>
-            <span className="float-right text-muted">{post.likes} likes - {post.comments.length} comments</span>
+            <div className="interact-area">
+              {this.react.map((item, key) => {
+                // console.log("REaCT", this.state.react);
+                // console.log("KEY", key + 1);
+                return(
+                    <ReactButton
+                      objIcon={item}
+                      react={this.state.react > 0 && this.state.react === key ? true : false}
+                      key={key}
+                      onChangeReact={this.handleReact.bind(this)}/>
+                  )
+                })
+              }
+              <span className="float-right text-muted">{this.state.number_of_reacts} reacts - {this.state.number_of_comments} comments</span>
+            </div>
           </div>
           <div className="box-footer box-comments">
-            {!!post.comments.length && post.comments.map((item, key) => {
+            {!!this.state.comments.length && this.state.comments.map((item, key) => {
                 return(
                   <div className="box-comment" key={key}>
-                    <img className="img-circle img-sm" src={item.avatar} alt="avatar" />
+                    <Link to={"/user/" + item.User.user_id}>
+                      <img className="img-circle img-sm" src={item.User.avatar} alt="avatar" onError={this.handleErrorImg.bind(this)}/>
+                    </Link>
                     <div className="comment-text">
                       <span className="username">
-                        {item.username}
-                        <span className="text-muted float-right">{fromNowDate(item.created_on)}</span>
+                        <Link to={"/user/" + item.User.user_id}>{item.User.username}</Link>
+                        <span className="text-muted float-right">{fromNowDate(item.created_at)}</span>
                       </span>
                       {item.content.split('\n').map((itemChild, key) => {
                           return <span key={key}>{ReactEmoji.emojify(itemChild, {emojiType: "emojione"})}<br/></span>
@@ -143,6 +219,9 @@ class Post extends Component {
                   </div>
                 )
               })
+            }
+            {this.state.page <= this.state.number_of_comments &&
+              <span className="load-more" onClick={this.handleLoadMore.bind(this)}>Show more comments</span>
             }
           </div>
           <div className="box-footer">

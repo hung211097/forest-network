@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
+import 'hover.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, SearchUser} from './pages'
+import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, SearchUser, Others} from './pages'
 import  { PrivateRoute } from './components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {  faHome,
@@ -26,7 +27,12 @@ import {  faHome,
           faArrowLeft,
           faArrowDown,
           faUserMinus,
-					faSearch} from '@fortawesome/free-solid-svg-icons'
+		  faSearch,
+          faSurprise,
+          faLaughBeam,
+          faSadTear,
+          faAngry,
+          faHeart} from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { ScrollToTop } from './components'
 
@@ -53,7 +59,12 @@ library.add(fab,
             faArrowLeft,
             faArrowDown,
             faUserMinus,
-						faSearch)
+			faSearch,
+            faSurprise,
+            faLaughBeam,
+            faSadTear,
+            faAngry,
+            faHeart)
 
 class App extends Component {
   componentDidMount(){
@@ -70,11 +81,12 @@ class App extends Component {
             <PrivateRoute exact path='/' component={Home} />
             <Route exact path='/login' component={SignInUp} />
             <PrivateRoute exact path='/profile' component={Profile} />
+            <PrivateRoute exact path='/user/:id' component={Others} />
             <PrivateRoute exact path='/edit-profile' component={EditProfile} />
             <PrivateRoute exact path='/transfer-money' component={TransferMoney} />
             <PrivateRoute exact path='/transaction-history' component={TransactionHistory} />
             <PrivateRoute exact path='/create-account' component={CreateAccount} />
-						<PrivateRoute exact path='/search-user' component={SearchUser} />
+			<PrivateRoute exact path='/search-user' component={SearchUser} />
             <Route component={ErrorPage} />
           </Switch>
         </ScrollToTop>

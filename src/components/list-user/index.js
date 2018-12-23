@@ -17,14 +17,12 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 
 const mapStateToProps = (state) => {
   return{
-    users: state.usersReducer.users,
     profile: state.profileReducer.info,
   }
 }
 
 class ListUser extends Component {
   static propTypes = {
-    users: PropTypes.array,
     profile: PropTypes.object,
     saveProfileFromApi: PropTypes.func
   }

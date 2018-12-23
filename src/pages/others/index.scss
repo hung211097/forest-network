@@ -7,7 +7,12 @@
   .user-profile {
     padding-bottom: 30px;
   }
-
+  .section{
+    margin-top: 50px;
+  }
+  .no-margin{
+    margin: 0;
+  }
   .profile-info-left {
     position: relative;
     top: -92px;
@@ -18,8 +23,6 @@
 
     .section {
       /* background-color: #fff; */
-      margin-top: 50px;
-
       h3 {
         font-size: 1.1em;
         font-weight: 700;

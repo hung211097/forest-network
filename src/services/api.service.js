@@ -79,7 +79,7 @@ export default () => {
         return res.data.status
       })
     },
-		createPost: (TxEncode) => {
+	createPost: (TxEncode) => {
       return axiosPost(baseURL + 'posts', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
@@ -138,9 +138,9 @@ export default () => {
         return res.data.pubkeys
       })
     },
-    getPostOnHome: (user_id, page, limit, params = {}) => {
-      let url = baseURL + `users/${user_id}/posts-wall?page=${page}&limit=${limit}`
-			if(params.order && params.type){
+    getMyPosts: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/my-posts?page=${page}&limit=${limit}`
+      if(params.order && params.type){
         url += `&order=${params.order}&type=${params.type}`
       }
       return axiosGet(url).then((res) => {
@@ -150,16 +150,49 @@ export default () => {
         return null
       })
     },
-		getSearchUsers: (type, info) => {
-      let url = baseURL + `users/search?type=${type}&info=${info}`
-      return axiosPost(url).then((res) => {
-				//console.log(res)
+    getPostOnHome: (user_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `users/${user_id}/posts-wall?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
         if(res.data.status === 'success'){
           return res.data
         }
         return null
       })
     },
+	getSearchUsers: (type, info) => {
+      let url = baseURL + `users/search?type=${type}&info=${info}`
+      return axiosPost(url).then((res) => {
+				//console.log(res)
+		if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    }
+    getPostComments: (post_id, page = 1, limit = 5, params = {}) => {
+      let url = baseURL + `posts/${post_id}/comments?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getPostReacts: (post_id) => {
+      let url = baseURL + `posts/${post_id}/reacts`
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    }
   }
 
   return services
