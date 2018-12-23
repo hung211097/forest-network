@@ -120,7 +120,7 @@ class SearchUser extends Component {
                 <div className="info">
                   <h2 className="title">Result User</h2>
 									{this.state.usersResult.length===0 
-									? <div>Didn't find any users</div>
+									? <div>Didn&apos;t find any users</div>
 									: <table>
 											<thead>
 												<tr>
