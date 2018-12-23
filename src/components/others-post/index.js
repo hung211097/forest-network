@@ -6,6 +6,7 @@ import styles from './index.scss';
 import ApiService from '../../services/api.service'
 import { createPost } from '../../actions'
 import InfiniteScroll from 'react-infinite-scroller'
+import loading from '../../images/loading.gif'
 
 const mapStateToProps = (state) => {
     return {
@@ -37,7 +38,6 @@ class OthersPost extends Component {
 
     loadItems(page) {
         this.apiService.getMyPosts(this.props.user_id, this.state.page, 10).then((res) => {
-            console.log(res)
             res.posts.forEach((element) => {
                 element.comments = []
                 element.likes = 100
@@ -68,10 +68,10 @@ class OthersPost extends Component {
                             loadMore={this.loadItems.bind(this)}
                             hasMore={this.state.hasMoreItems}
                             threshold={100}
-                            loader={<div key={0} className="loader">Loading ...</div>}>
+                            loader={<div key={0} className="loader"><img src={loading} alt="loading"/></div>}>
                             <div className="tracks">
-                                {dataPosts.length > 0 
-                                    ? 
+                                {dataPosts.length > 0
+                                    ?
                                 dataPosts.map((item) => {
                                     const postTemplate = {
                                         id: item.id,
@@ -90,7 +90,7 @@ class OthersPost extends Component {
                                     )
                                 })
                                  :
-                                 <h2>They don't have any posts</h2>
+                                 <h2>Don&apos;t have any posts</h2>
                                 }
                             </div>
                         </InfiniteScroll>

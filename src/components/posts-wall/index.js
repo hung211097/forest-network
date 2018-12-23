@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ApiService from '../../services/api.service';
 import InfiniteScroll from 'react-infinite-scroller';
+import loading from '../../images/loading.gif'
 
 const mapStateToProps = (state) => {
   return{
@@ -96,7 +97,8 @@ class PostsWall extends Component {
           <InfiniteScroll
             pageStart={0}
             loadMore={this.loadData.bind(this)}
-            hasMore={this.state.page <= this.state.pages}>
+            hasMore={this.state.page <= this.state.pages}
+            loader={<div key={0} className="loader"><img src={loading} alt="loading"/></div>}>
             {posts}
           </InfiniteScroll>
         </div>

@@ -11,13 +11,15 @@ import base32 from 'base32.js';
 import transaction from '../../lib/transaction';
 import { calcBandwithConsume } from '../../services/utils.service';
 import defaultAvatar from '../../images/default-avatar.png';
-import { unFollowUser } from '../../actions';
+import { unFollowUser, followUser } from '../../actions';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactTooltip from 'react-tooltip';
+import { Link } from 'react-router-dom';
 
 const mapDispatchToProps = (dispatch) => {
   return{
+    followUser: (user_id) => {dispatch(followUser(user_id))},
     unFollowUser: (user_id) => {dispatch(unFollowUser(user_id))},
   }
 }
@@ -33,8 +35,10 @@ class ListFollowing extends Component {
   static propTypes = {
     usersFollowing: PropTypes.array,
     profile: PropTypes.object,
+    followUser: PropTypes.func,
     unFollowUser: PropTypes.func,
-    saveProfileFromApi: PropTypes.func
+    saveProfileFromApi: PropTypes.func,
+    idGetListFollow: PropTypes.number
   }
 
   constructor(props){
@@ -60,7 +64,18 @@ class ListFollowing extends Component {
   }
 
   handleLoadMore(){
-    this.apiService.getFollowing(this.props.profile.user_id, this.state.page, 3).then((data) => {
+    this.apiService.getFollowing(this.props.idGetListFollow, this.state.page, 3).then((data) => {
+      data.followings.forEach((item) => {
+        let temp = this.props.profile.following.find((findItem) => {
+          return findItem === item.user_id
+        })
+        if(temp){
+          item.isFollow = true
+        }
+        else{
+          item.isFollow = false
+        }
+      })
       this.setState({
         users: [...this.state.users, ...data.followings],
         total_page: data.total_page,
@@ -152,27 +167,94 @@ class ListFollowing extends Component {
     })
   }
 
+  handleChangeFollowV2(item){
+    if(item.isFollow){
+      this.props.unFollowUser && this.props.unFollowUser(item.user_id);
+    }
+    else{
+      this.props.followUser && this.props.followUser(item.user_id);
+    }
+    this.handleShowConfirm()
+    let temp = this.state.users.slice()
+    for(let i = 0; i < temp.length; i++){
+      if(temp[i].user_id === item.user_id){
+        temp[i].isFollow = !temp[i].isFollow
+        break
+      }
+    }
+    this.setState({
+      users: temp
+    })
+  }
+
+  handleErrorImg(e){
+    e.target.onerror = null;
+    e.target.src = defaultAvatar
+  }
+
   render() {
-    return (
-      <div className={styles.following}>
-        {/* following */}
-        <div className="tab-pane fade active in" id="following">
-          {!!this.state.users.length && this.state.users.map((item, key) => {
-              return(
-                <div className="media user-following" key={key}>
+    let listFollowing = null
+    if(+this.props.idGetListFollow !== +this.props.profile.user_id){
+      if(!!this.state.users.length){
+        listFollowing = this.state.users.map((item, key) => {
+            return(
+              <div className="media user-follower" key={key}>
+                <Link to={"/user/" + item.user_id}>
                   <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
-                    className="media-object pull-left" />
-                  <div className="media-body">
-                    <a href="null">{item.username}<br /><span className="text-muted username">@username</span></a>
+                    className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
+                </Link>
+                <div className="media-body">
+                  <Link to={"/user/" + item.user_id}>
+                    {item.username}<br /><span className="text-muted username">@username</span>
+                  </Link>
+                  {item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
+                    <button type="button" className="btn btn-sm btn-toggle-following pull-right"
+                      onClick={this.handleChangeFollowV2.bind(this, item)}>
+                      <span>Following</span>
+                    </button>
+                    : !item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
+                    <button type="button" className="btn btn-sm btn-default pull-right"
+                      onClick={this.handleChangeFollowV2.bind(this, item)}>
+                      <FontAwesomeIcon icon="plus" /> Follow
+                    </button>
+                    : null
+                  }
+                </div>
+              </div>
+            )
+          })
+      }
+    }
+    else{
+      if(!!this.state.users.length){
+        listFollowing = this.state.users.map((item, key) => {
+            return(
+              <div className="media user-following" key={key}>
+                <Link to={"/user/" + item.user_id}>
+                  <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
+                    className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
+                </Link>
+                <div className="media-body">
+                  <Link to={"/user/" + item.user_id}>
+                    {item.username}<br /><span className="text-muted username">@username</span>
+                  </Link>
+                  {item.user_id !== this.props.profile.user_id &&
                     <button type="button" className="btn btn-sm btn-danger pull-right"
                       onClick={this.handleChangeFollow.bind(this, item.user_id)}>
                       <i className="fa fa-close-round" /> Unfollow
                     </button>
-                  </div>
+                  }
                 </div>
-              )
-            })
-          }
+              </div>
+            )
+          })
+      }
+    }
+    return (
+      <div className={styles.following}>
+        {/* following */}
+        <div className="tab-pane fade active in" id="following">
+          {listFollowing}
         </div>
         {this.state.page <= this.state.total_page &&
           <div className="load-more">

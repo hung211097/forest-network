@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import 'hover.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, Others} from './pages'
 import  { PrivateRoute } from './components'
@@ -25,7 +26,12 @@ import {  faHome,
           faArrowRight,
           faArrowLeft,
           faArrowDown,
-          faUserMinus} from '@fortawesome/free-solid-svg-icons'
+          faUserMinus,
+          faSurprise,
+          faLaughBeam,
+          faSadTear,
+          faAngry,
+          faHeart} from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { ScrollToTop } from './components'
 
@@ -51,7 +57,12 @@ library.add(fab,
             faArrowRight,
             faArrowLeft,
             faArrowDown,
-            faUserMinus)
+            faUserMinus,
+            faSurprise,
+            faLaughBeam,
+            faSadTear,
+            faAngry,
+            faHeart)
 
 class App extends Component {
   componentDidMount(){

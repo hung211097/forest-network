@@ -16,6 +16,7 @@ import ScrollToTop from './scroll-to-top'
 import PrivateRoute from './private-route'
 import OthersPost from './others-post'
 import PostsWall from './posts-wall'
+import ReactButton from './react-button'
 
 export {
   Header,
@@ -35,5 +36,6 @@ export {
   PrivateRoute,
   MayKnowFriendsItem,
   OthersPost,
-  PostsWall
+  PostsWall,
+  ReactButton
 }

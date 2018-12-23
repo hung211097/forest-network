@@ -102,6 +102,9 @@
               color: #444;
               display: block;
               font-weight: 600;
+              a{
+                color: black;
+              }
             }
             .text-muted {
               font-weight: 400;
@@ -146,5 +149,26 @@
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
+  }
+  .load-more{
+    margin-top: 10px;
+    font-size: 15px;
+    display: block;
+    color: $main-color;
+    cursor: pointer;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+  .interact-area{
+    display: inline-block;
+    width: 100%;
+    padding-top: 10px;
+    position: relative;
+    .text-muted{
+      position: absolute;
+      right: 0;
+      top: 19px;
+    }
   }
 }
