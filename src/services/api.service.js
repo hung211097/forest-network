@@ -171,7 +171,7 @@ export default () => {
         }
         return null
       })
-    }
+    },
     getPostComments: (post_id, page = 1, limit = 5, params = {}) => {
       let url = baseURL + `posts/${post_id}/comments?page=${page}&limit=${limit}`
       if(params.order && params.type){

@@ -65,7 +65,7 @@ class SearchUser extends Component {
   }
 	
 	handleGoToOther(id){
-		this.props.history.push(`/other/${id}`);
+		this.props.history.push(`/user/${id}`);
   }
 
   hideAlert(){
