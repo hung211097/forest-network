@@ -152,9 +152,30 @@ export default () => {
     },
     getPostOnHome: (user_id, page = 1, limit = 10, params = {}) => {
       let url = baseURL + `users/${user_id}/posts-wall?page=${page}&limit=${limit}`
-			if(params.order && params.type){
+      if(params.order && params.type){
         url += `&order=${params.order}&type=${params.type}`
       }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getPostComments: (post_id, page = 1, limit = 5, params = {}) => {
+      let url = baseURL + `posts/${post_id}/comments?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    },
+    getPostReacts: (post_id) => {
+      let url = baseURL + `posts/${post_id}/reacts`
       return axiosGet(url).then((res) => {
         if(res.data.status === 'success'){
           return res.data

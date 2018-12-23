@@ -14,8 +14,9 @@ import ListFollowing from './following'
 import Timeline from './timeline'
 import ScrollToTop from './scroll-to-top'
 import PrivateRoute from './private-route'
-import MyPost from './my-post'
+import OthersPost from './others-post'
 import PostsWall from './posts-wall'
+import ReactButton from './react-button'
 
 export {
   Header,
@@ -34,6 +35,7 @@ export {
   ScrollToTop,
   PrivateRoute,
   MayKnowFriendsItem,
-  MyPost,
-  PostsWall
+  OthersPost,
+  PostsWall,
+  ReactButton
 }
