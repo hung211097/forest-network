@@ -85,7 +85,7 @@ class SearchUser extends Component {
 			return (
 				<tr className="result-users" key={user.id} onClick={this.handleGoToOther.bind(this, user.id)}>					
 					<td>{user.username}</td>
-					<td><img src={user.avatar} alt="Avatar" className="avatar img-circle" /></td>
+					<td><img src={user.avatar} height="60" width="60" alt="Avatar" className="avatar img-circle" /></td>
 					<td>{user.publicKey}</td>
 				</tr>
 			);
