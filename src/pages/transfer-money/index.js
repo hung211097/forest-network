@@ -105,6 +105,8 @@ class TransferMoney extends Component {
 
         if (this.state.your_public_key === profile.public_key) {
           this.setState({
+            your_public_key: '',
+            isSubmit: false,
             error: 'Public key must belong to another!',
             isShowError: true
           })
@@ -116,6 +118,8 @@ class TransferMoney extends Component {
         }
         catch (e) {
           this.setState({
+            your_public_key: '',
+            isSubmit: false,
             error: "Invalid public key!!",
             isShowError: true
           })
@@ -189,18 +193,9 @@ class TransferMoney extends Component {
 
             if (res.user.public_key === profile.public_key) {
               this.setState({
+                your_username: '',
+                isSubmit: false,
                 error: 'Username must have public key belong to another',
-                isShowError: true
-              })
-              return
-            }
-
-            try {
-              transaction.encode(tx).toString('base64')
-            }
-            catch (e) {
-              this.setState({
-                error: "Username has invalid public key!!",
                 isShowError: true
               })
               return
