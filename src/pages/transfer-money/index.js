@@ -32,6 +32,7 @@ class TransferMoney extends Component {
     this.state = {
       memo: '',
       your_public_key: '',
+      your_username: '',
       amount: 0,
       isSubmit: false,
       error: '',
@@ -52,6 +53,12 @@ class TransferMoney extends Component {
     })
   }
 
+  handleChangeYourUsername(e){
+    this.setState({
+      your_username: e.target.value
+    })
+  }
+
   handleChangeMemo(e){
     this.setState({
       memo: e.target.value
@@ -62,7 +69,7 @@ class TransferMoney extends Component {
     if(this.state.amount <= 0){
       return false
     }
-    if(this.state.your_public_key === ''){
+    if(this.state.your_public_key === '' && this.state.your_username === ''){
       return false
     }
     return true
@@ -77,77 +84,161 @@ class TransferMoney extends Component {
       return
     }
 
-
-    this.apiService.getCurrentProfile().then((userProfile) => {
-      const profile = userProfile
-      const tx = {
-        version: 1,
-        sequence: profile.sequence + 1,
-        memo: this.state.memo ? Buffer.from(this.state.memo) : Buffer.alloc(0),
-        account: profile.public_key,
-        operation: "payment",
-        params: {
-          address: this.state.your_public_key,
-          amount: this.state.amount
-        },
-        signature: new Buffer(64)
-      }
-
-      let temp = loadItem(keyStorage.private_key)
-      let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-
-      if(this.state.your_public_key === profile.public_key){
-        this.setState({
-          error: 'Public key must belong to another!',
-          isShowError: true
-        })
-        return
-      }
-
-      try{
-        transaction.encode(tx).toString('base64')
-      }
-      catch(e){
-        this.setState({
-          error: "Invalid public key!!",
-          isShowError: true
-        })
-        return
-      }
-
-      let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
-      if(consume > profile.bandwithMax){
-        this.setState({
-          error: "You don't have enough OXY to conduct transaction!",
-          isShowError: true
-        })
-        return
-      }
-
-      transaction.sign(tx, my_private_key);
-      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-      this.apiService.conductTransaction(TxEncode).then((status) => {
-        if(status === 'success'){
-          this.setState({
-            memo: '',
-            your_public_key: '',
-            amount: 0,
-            isSubmit: false,
-            isShow: true,
-          })
+    if (this.state.your_public_key != '') {
+      this.apiService.getCurrentProfile().then((userProfile) => {
+        const profile = userProfile
+        const tx = {
+          version: 1,
+          sequence: profile.sequence + 1,
+          memo: this.state.memo ? Buffer.from(this.state.memo) : Buffer.alloc(0),
+          account: profile.public_key,
+          operation: "payment",
+          params: {
+            address: this.state.your_public_key,
+            amount: this.state.amount
+          },
+          signature: new Buffer(64)
         }
-        else{
+
+        let temp = loadItem(keyStorage.private_key)
+        let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
+        if (this.state.your_public_key === profile.public_key) {
           this.setState({
-            memo: '',
             your_public_key: '',
-            amount: 0,
             isSubmit: false,
-            isShowError: true,
-            error: 'Fail to conduct transaction!'
+            error: 'Public key must belong to another!',
+            isShowError: true
+          })
+          return
+        }
+
+        try {
+          transaction.encode(tx).toString('base64')
+        }
+        catch (e) {
+          this.setState({
+            your_public_key: '',
+            isSubmit: false,
+            error: "Invalid public key!!",
+            isShowError: true
+          })
+          return
+        }
+
+        let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
+        if (consume > profile.bandwithMax) {
+          this.setState({
+            error: "You don't have enough OXY to conduct transaction!",
+            isShowError: true
+          })
+          return
+        }
+
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+        this.apiService.conductTransaction(TxEncode).then((status) => {
+          if (status === 'success') {
+            this.setState({
+              memo: '',
+              your_public_key: '',
+              your_username: '',
+              amount: 0,
+              isSubmit: false,
+              isShow: true,
+            })
+          }
+          else {
+            this.setState({
+              memo: '',
+              your_public_key: '',
+              your_username: '',
+              amount: 0,
+              isSubmit: false,
+              isShowError: true,
+              error: 'Fail to conduct transaction!'
+            })
+          }
+        })
+      })
+    }
+    else {
+      this.apiService.getUsersByUsername(this.state.your_username).then((res) => {
+        console.log(res)
+        if (!res.user) {
+          this.setState({
+            error: 'Username is not exist!',
+            isShowError: true
+          })
+          return
+        }
+        else {
+          this.apiService.getCurrentProfile().then((userProfile) => {
+            const profile = userProfile
+            const tx = {
+              version: 1,
+              sequence: profile.sequence + 1,
+              memo: this.state.memo ? Buffer.from(this.state.memo) : Buffer.alloc(0),
+              account: profile.public_key,
+              operation: "payment",
+              params: {
+                address: res.user.public_key,
+                amount: this.state.amount
+              },
+              signature: new Buffer(64)
+            }
+
+            let temp = loadItem(keyStorage.private_key)
+            let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+
+            if (res.user.public_key === profile.public_key) {
+              this.setState({
+                your_username: '',
+                isSubmit: false,
+                error: 'Username must have public key belong to another',
+                isShowError: true
+              })
+              return
+            }
+
+            let consume = calcBandwithConsume(profile, transaction.encode(tx).toString('base64'), new Date())
+            if (consume > profile.bandwithMax) {
+              this.setState({
+                error: "You don't have enough OXY to conduct transaction!",
+                isShowError: true
+              })
+              return
+            }
+
+            transaction.sign(tx, my_private_key);
+            let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+            this.apiService.conductTransaction(TxEncode).then((status) => {
+              if (status === 'success') {
+                this.setState({
+                  memo: '',
+                  your_public_key: '',
+                  your_username: '',
+                  amount: 0,
+                  isSubmit: false,
+                  isShow: true,
+                })
+              }
+              else {
+                this.setState({
+                  memo: '',
+                  your_public_key: '',
+                  your_username: '',
+                  amount: 0,
+                  isSubmit: false,
+                  isShowError: true,
+                  error: 'Fail to conduct transaction!'
+                })
+              }
+            })
           })
         }
       })
-    })
+    }
   }
 
   hideAlert(){
@@ -202,10 +293,25 @@ class TransferMoney extends Component {
                       <Input value={this.state.your_public_key} name="public-key"
                         onChange={this.handleChangeYourPublicKey.bind(this)}
                         placeholder="Public key"
-                        invalid={!this.state.your_public_key && this.state.isSubmit ? true : false}/>
+                        invalid={!this.state.your_public_key && this.state.isSubmit && !this.state.your_username ? true : false}
+                        disabled={this.state.your_username != '' ? true : false} />
                     </InputGroup>
-                    <FormFeedback invalid="true" className={!this.state.your_public_key && this.state.isSubmit ? "d-block" : ''}>
+                    <FormFeedback invalid="true" className={!this.state.your_public_key && this.state.isSubmit && !this.state.your_username ? "d-block" : ''}>
                       Public key is empty!
+                    </FormFeedback>
+                  </FormGroup>
+                  <h5 className="title">Choose 1 in 2 method</h5>
+                  <FormGroup>
+                    <InputGroup>
+                      <InputGroupAddon addonType="prepend">Username</InputGroupAddon>
+                      <Input value={this.state.your_username} name="username"
+                        onChange={this.handleChangeYourUsername.bind(this)}
+                        placeholder="Username"
+                        invalid={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? true : false} 
+                        disabled={this.state.your_public_key != '' ? true : false} />
+                    </InputGroup>
+                    <FormFeedback invalid="true" className={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? "d-block" : ''}>
+                      Username is empty!
                     </FormFeedback>
                   </FormGroup>
                 </div>

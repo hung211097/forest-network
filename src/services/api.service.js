@@ -192,6 +192,11 @@ export default () => {
         }
         return null
       })
+    },
+    getUsersByUsername: (username) => {
+      return axiosPost(baseURL + `users/public-key`, {data: username}).then((res) => {
+        return res.data
+      })
     }
   }
 
