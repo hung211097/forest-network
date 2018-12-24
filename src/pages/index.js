@@ -6,6 +6,7 @@ import EditProfile from './edit-profile'
 import TransferMoney from './transfer-money'
 import TransactionHistory from './transaction-history'
 import CreateAccount from './create-account'
+import SearchUser from './search-user'
 import Others from './others'
 
 export {
@@ -17,5 +18,6 @@ export {
   TransferMoney,
   TransactionHistory,
   CreateAccount,
+  SearchUser,
   Others
 }

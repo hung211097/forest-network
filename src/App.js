@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import 'hover.css';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
-import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, Others} from './pages'
+import {Home, SignInUp, ErrorPage, EditProfile, Profile, TransferMoney, TransactionHistory, CreateAccount, SearchUser, Others} from './pages'
 import  { PrivateRoute } from './components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {  faHome,
@@ -27,6 +27,7 @@ import {  faHome,
           faArrowLeft,
           faArrowDown,
           faUserMinus,
+		  faSearch,
           faSurprise,
           faLaughBeam,
           faSadTear,
@@ -58,6 +59,7 @@ library.add(fab,
             faArrowLeft,
             faArrowDown,
             faUserMinus,
+			faSearch,
             faSurprise,
             faLaughBeam,
             faSadTear,
@@ -84,6 +86,7 @@ class App extends Component {
             <PrivateRoute exact path='/transfer-money' component={TransferMoney} />
             <PrivateRoute exact path='/transaction-history' component={TransactionHistory} />
             <PrivateRoute exact path='/create-account' component={CreateAccount} />
+			<PrivateRoute exact path='/search-user' component={SearchUser} />
             <Route component={ErrorPage} />
           </Switch>
         </ScrollToTop>
