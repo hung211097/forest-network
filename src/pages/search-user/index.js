@@ -6,6 +6,7 @@ import { Button, ButtonGroup, InputGroup, Input, FormGroup, } from 'reactstrap';
 import { connect } from 'react-redux'
 import ApiService from '../../services/api.service'
 import SweetAlert from 'react-bootstrap-sweetalert';
+import defaultAvatar from '../../images/default-avatar.png'
 import PropTypes from 'prop-types';
 
 const mapStateToProps = (state) => {
@@ -80,12 +81,17 @@ class SearchUser extends Component {
     })
   }
 
+	handleErrorImg(e){
+    e.target.onerror = null;
+    e.target.src = defaultAvatar
+  }
+	
   render() {
 		const listUsers = this.state.usersResult.map(user => {
 			return (
 				<tr className="result-users" key={user.id} onClick={this.handleGoToOther.bind(this, user.id)}>					
 					<td>{user.username}</td>
-					<td><img src={user.avatar} height="60" width="60" alt="Avatar" className="avatar img-circle" /></td>
+					<td><img src={user.avatar ? user.avatar : defaultAvatar} height="60" width="60" alt="Avatar" className="avatar img-circle" onError={this.handleErrorImg.bind(this)}/></td>
 					<td>{user.publicKey}</td>
 				</tr>
 			);

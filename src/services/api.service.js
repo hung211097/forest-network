@@ -79,7 +79,7 @@ export default () => {
         return res.data.status
       })
     },
-	createPost: (TxEncode) => {
+		createPost: (TxEncode) => {
       return axiosPost(baseURL + 'posts', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
@@ -197,7 +197,17 @@ export default () => {
       return axiosPost(baseURL + `users/public-key`, {data: username}).then((res) => {
         return res.data
       })
-    }
+    },
+		postComment: (TxEncode) => {
+			return axiosPost(baseURL + 'posts/createcomment', {TxEncode: TxEncode}).then((res) => {
+        return res.data.status
+      })
+		},
+		postReact: (TxEncode) => {
+			return axiosPost(baseURL + 'posts/createreact', {TxEncode: TxEncode}).then((res) => {
+        return res.data.status
+      })
+		}
   }
 
   return services
