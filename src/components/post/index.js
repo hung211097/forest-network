@@ -126,7 +126,7 @@ class Post extends Component {
   handleReact(type){
 		this.apiService.getCurrentProfile().then((data) => {
 			this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-			this.apiService.getHashPost(this.state.post.id).then((hash) => {				
+			// this.apiService.getHashPost(this.state.post.id).then((hash) => {				
 				let reactContent = {
 					type: 2,
 					reaction: type
@@ -142,7 +142,7 @@ class Post extends Component {
 					memo: Buffer.alloc(0),
 					operation: "interact",
 					params: {
-						object: hash,
+						object: this.props.post.hash,
 						content: reactContent,
 					},
 					signature: new Buffer(64)
@@ -169,14 +169,14 @@ class Post extends Component {
 						}
 						else{
 							this.setState({
-								error: "Post failed",
+								error: "Fail to react",
 								isShowError: true
 							})
 						}
 					})
 				}
 			})
-		})
+		// })
   }
 
   handleContentChange(e) {
@@ -186,10 +186,11 @@ class Post extends Component {
   }
 
   handleOnSubmit(){
+		// console.log(this.state.post)
     if(this.state.content){
       this.apiService.getCurrentProfile().then((data) => {
         this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-				this.apiService.getHashPost(this.state.post.id).then((hash) => {
+				// this.apiService.getHashPost(this.state.post.id).then((hash) => {
 					const plainTextContent = {
 						type: 1,
 						text: this.state.content
@@ -201,7 +202,7 @@ class Post extends Component {
 						memo: Buffer.alloc(0),
 						operation: "interact",
 						params: {
-							object: hash,
+							object: this.props.post.hash,
 							content: plainTextContent,
 						},
 						signature: new Buffer(64)
@@ -240,14 +241,14 @@ class Post extends Component {
 							}
 							else{
 								this.setState({
-									error: "Post failed",
+									error: "Fail to comment",
 									isShowError: true
 								})
 							}
 						})
 					}
 				})
-      })
+      // })
     }
 		
 		// console.log(tempComment)

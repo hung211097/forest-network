@@ -29,6 +29,14 @@ class PostsWall extends Component {
     profile: PropTypes.object,
   }
 
+	componentDidMount(){
+    this.setState ({
+			dataPosts: [],
+			page: 1,
+			pages: 0,
+		})
+  }
+	
 	loadData(page) {
 		this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
 			this.setState ({
@@ -38,14 +46,15 @@ class PostsWall extends Component {
 			})
 		})		
 	}
-	handleAddPost(content, createdAt) {
+	handleAddPost(content, createdAt, hash) {
 		const newPost = [{
 			id: this.state.dataNewPosts.length,
 			avatar: this.props.profile.avatar,
 			user_id: this.props.profile.user_id,
 			username: this.props.profile.username,
 			created_at: createdAt,
-			content: content
+			content: content,
+			hash: hash
 		}]
 		this.setState ({
 			dataNewPosts: newPost.concat(this.state.dataNewPosts),
@@ -61,10 +70,11 @@ class PostsWall extends Component {
         username: post.username,
         authorize: "Shared publicly",
         created_on: post.created_at,
-        likes: 100,
-        isLike: false,
+        // likes: 100,
+        // isLike: false,
         content: post.content,
-        comments: []
+				hash: post.hash
+        // comments: []
       }
       return (
         <Post key={postTemplate.id} post={postTemplate}/>
@@ -79,10 +89,11 @@ class PostsWall extends Component {
         username: post.User.username,
         authorize: "Shared publicly",
         created_on: post.created_at,
-        likes: 100,
-        isLike: false,
+        // likes: 100,
+        // isLike: false,
         content: post.content,
-        comments: []
+				hash: post.hash
+        // comments: []
       }
       return (
         <Post key={postTemplate.id} post={postTemplate}/>

@@ -98,14 +98,14 @@ class PostBox extends Component {
         else {
           this.apiService.createPost(TxEncode).then((status) => {
             if(status === 'success'){
-              this.props.handleAdd(this.state.content, new Date())
+              this.props.handleAdd(this.state.content, new Date(), transaction.hash(tx))
               this.setState({
                 content: ''
               })
             }
             else{
               this.setState({
-                error: "Post failed",
+                error: "Fail to post",
                 isShowError: true
               })
             }
