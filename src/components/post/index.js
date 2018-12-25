@@ -125,16 +125,72 @@ class Post extends Component {
 	
   handleReact(type){
 		this.apiService.getCurrentProfile().then((data) => {
-			this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-			// this.apiService.getHashPost(this.state.post.id).then((hash) => {				
-				let reactContent = {
-					type: 2,
-					reaction: type
-				}				
-				if (this.state.react === type) {
-					reactContent.reaction = 0
+			this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)			
+			let reactContent = {
+				type: 2,
+				reaction: type
+			}				
+			if (this.state.react === type) {
+				reactContent.reaction = 0
+			}
+			
+			let tx = {
+				version: 1,
+				account: data.public_key,
+				sequence: data.sequence + 1,
+				memo: Buffer.alloc(0),
+				operation: "interact",
+				params: {
+					object: this.props.post.hash,
+					content: reactContent,
+				},
+				signature: new Buffer(64)
+			}
+			let temp = loadItem(keyStorage.private_key)
+			let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+			transaction.sign(tx, my_private_key);
+			let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+
+			const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
+			if(consume > data.bandwithMax){
+				this.setState({
+					error: "You don't have enough OXY to conduct transaction!",
+					isShowError: true
+				})
+			}
+			else {
+				this.apiService.postReact(TxEncode).then((status) => {
+					if(status === 'success'){
+						this.setState({
+							react: this.state.react === type ? 0 : type,
+							number_of_reacts: this.state.react === type ? this.state.number_of_reacts - 1 : this.state.number_of_reacts + 1
+						})
+					}
+					else{
+						this.setState({
+							error: "Fail to react",
+							isShowError: true
+						})
+					}
+				})
+			}
+		})
+  }
+
+  handleContentChange(e) {
+    this.setState({
+      content: e.target.value
+    });
+  }
+
+  handleOnSubmit(){
+    if(this.state.content){
+      this.apiService.getCurrentProfile().then((data) => {
+        this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
+				const plainTextContent = {
+					type: 1,
+					text: this.state.content
 				}
-				
 				let tx = {
 					version: 1,
 					account: data.public_key,
@@ -143,7 +199,7 @@ class Post extends Component {
 					operation: "interact",
 					params: {
 						object: this.props.post.hash,
-						content: reactContent,
+						content: plainTextContent,
 					},
 					signature: new Buffer(64)
 				}
@@ -160,111 +216,35 @@ class Post extends Component {
 					})
 				}
 				else {
-					this.apiService.postReact(TxEncode).then((status) => {
+					this.apiService.postComment(TxEncode).then((status) => {
 						if(status === 'success'){
+							const tempComment = {
+								User: {
+									avatar: this.props.profile.avatar,
+									user_id: this.props.profile.user_id,
+									username: this.props.profile.username
+								},
+								content: this.state.content,
+								created_at: new Date(),
+								post_id: this.props.post.id,
+								user_id: this.props.profile.user_id
+							}
 							this.setState({
-								react: this.state.react === type ? 0 : type,
-								number_of_reacts: this.state.react === type ? this.state.number_of_reacts - 1 : this.state.number_of_reacts + 1
+								content: '',
+								comments: [tempComment, ...this.state.comments],
+								number_of_comments: this.state.number_of_comments + 1,
 							})
 						}
 						else{
 							this.setState({
-								error: "Fail to react",
+								error: "Fail to comment",
 								isShowError: true
 							})
 						}
 					})
 				}
 			})
-		// })
-  }
-
-  handleContentChange(e) {
-    this.setState({
-      content: e.target.value
-    });
-  }
-
-  handleOnSubmit(){
-		// console.log(this.state.post)
-    if(this.state.content){
-      this.apiService.getCurrentProfile().then((data) => {
-        this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-				// this.apiService.getHashPost(this.state.post.id).then((hash) => {
-					const plainTextContent = {
-						type: 1,
-						text: this.state.content
-					}
-					let tx = {
-						version: 1,
-						account: data.public_key,
-						sequence: data.sequence + 1,
-						memo: Buffer.alloc(0),
-						operation: "interact",
-						params: {
-							object: this.props.post.hash,
-							content: plainTextContent,
-						},
-						signature: new Buffer(64)
-					}
-					let temp = loadItem(keyStorage.private_key)
-					let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-					transaction.sign(tx, my_private_key);
-					let TxEncode = '0x' + transaction.encode(tx).toString('hex');
-
-					const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
-					if(consume > data.bandwithMax){
-						this.setState({
-							error: "You don't have enough OXY to conduct transaction!",
-							isShowError: true
-						})
-					}
-					else {
-						this.apiService.postComment(TxEncode).then((status) => {
-							if(status === 'success'){
-								const tempComment = {
-									User: {
-										avatar: this.props.profile.avatar,
-										user_id: this.props.profile.user_id,
-										username: this.props.profile.username
-									},
-									content: this.state.content,
-									created_at: new Date(),
-									post_id: this.props.post.id,
-									user_id: this.props.profile.user_id
-								}
-								this.setState({
-									content: '',
-									comments: [tempComment, ...this.state.comments],
-									number_of_comments: this.state.number_of_comments + 1,
-								})
-							}
-							else{
-								this.setState({
-									error: "Fail to comment",
-									isShowError: true
-								})
-							}
-						})
-					}
-				})
-      // })
     }
-		
-		// console.log(tempComment)
-    // let {post, profile} = this.props
-    // if(this.state.content){
-    //   this.props.createComment && this.props.createComment({
-    //     avatar: profile.avatar,
-    //     user_id: profile.user_id,
-    //     username: profile.username,
-    //     content: this.state.content,
-    //     created_on: new Date().toString()
-    //   }, post.id)
-    //   this.setState({
-    //     content: ''
-    //   })
-    // }
   }
 
   handleKeyPress(event){
@@ -344,7 +324,7 @@ class Post extends Component {
                 return(
                   <div className="box-comment" key={key}>
                     <Link to={"/user/" + item.User.user_id}>
-                      <img className="img-circle img-sm" src={item.User.avatar} alt="avatar" onError={this.handleErrorImg.bind(this)}/>
+                      <img className="img-circle img-sm" src={item.User.avatar ? item.User.avatar : defaultAvatar} alt="avatar" onError={this.handleErrorImg.bind(this)}/>
                     </Link>
                     <div className="comment-text">
                       <span className="username">

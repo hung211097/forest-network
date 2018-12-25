@@ -28,14 +28,6 @@ class PostsWall extends Component {
   static propTypes = {
     profile: PropTypes.object,
   }
-
-	componentDidMount(){
-    this.setState ({
-			dataPosts: [],
-			page: 1,
-			pages: 0,
-		})
-  }
 	
 	loadData(page) {
 		this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
@@ -70,11 +62,8 @@ class PostsWall extends Component {
         username: post.username,
         authorize: "Shared publicly",
         created_on: post.created_at,
-        // likes: 100,
-        // isLike: false,
         content: post.content,
 				hash: post.hash
-        // comments: []
       }
       return (
         <Post key={postTemplate.id} post={postTemplate}/>
@@ -89,11 +78,8 @@ class PostsWall extends Component {
         username: post.User.username,
         authorize: "Shared publicly",
         created_on: post.created_at,
-        // likes: 100,
-        // isLike: false,
         content: post.content,
 				hash: post.hash
-        // comments: []
       }
       return (
         <Post key={postTemplate.id} post={postTemplate}/>

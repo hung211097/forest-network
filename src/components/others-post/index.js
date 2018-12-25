@@ -35,26 +35,12 @@ class OthersPost extends Component {
     static propTypes = {
         posts: PropTypes.array
     }
-
-		componentDidMount(){
-			this.setState ({
-				dataPosts: [],
-				page: 1,
-				hasMoreItems: false
-			})
-		}
 	
     loadItems(page) {
         this.apiService.getMyPosts(this.props.user_id, this.state.page, 10).then((res) => {
-            // res.posts.forEach((element) => {
-                // element.comments = []
-                // element.likes = 100
-                // element.authorize = "Shared publicly"
-            // })
             this.setState ({
               dataPosts: [...this.state.dataPosts, ...res.posts],
               page: this.state.page + 1,
-              //pages: res.total_page,
 						}, () => {
 							if (this.state.page >= res.total_page) {
 								this.setState({hasMoreItems: false})
@@ -87,11 +73,8 @@ class OthersPost extends Component {
                                         username: item.User.username,
                                         authorize: "Shared publicly",
                                         created_on: item.created_at,
-                                        // likes: 100,
-                                        // isLike: false,
                                         content: item.content,
 																				hash: item.hash,
-                                        // comments: []
                                     }
                                     return (
                                         <Post key={item.id} post={postTemplate} />

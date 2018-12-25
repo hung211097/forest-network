@@ -35,14 +35,6 @@ class Timeline extends Component {
   static propTypes = {
     posts: PropTypes.array
   }
-
-	componentDidMount(){
-    this.setState ({
-			dataPosts: [],
-			page: 1,
-      hasMoreItems: false
-		})
-  }
 	
   loadItems(page) {
     this.apiService.getMyPosts(this.props.profile.user_id, this.state.page, 10).then((res) => {
@@ -51,8 +43,7 @@ class Timeline extends Component {
           ...this.state.dataPosts,
           ...res.posts
         ],
-        page: this.state.page + 1,
-        // pages: res.total_page				
+        page: this.state.page + 1,		
       }, () => {
         if (this.state.page >= res.total_page) {
           this.setState({hasMoreItems: false})
@@ -89,11 +80,8 @@ class Timeline extends Component {
         username: post.username,
         authorize: "Shared publicly",
         created_on: post.created_at,
-        // likes: 100,
-        // isLike: false,
         content: post.content,
 				hash: post.hash
-        // comments: []
       }
       return (<Post key={postTemplate.id} post={postTemplate}/>);
     });
@@ -119,11 +107,8 @@ class Timeline extends Component {
                       username: item.User.username,
                       authorize: "Shared publicly",
                       created_on: item.created_at,
-                      // likes: 100,
-                      // isLike: false,
                       content: item.content,
 											hash: item.hash
-                      // comments: []
                     }
                     return (<Post key={item.id} post={postTemplate}/>)
                   })

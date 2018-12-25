@@ -198,14 +198,6 @@ export default () => {
         return res.data
       })
     },
-		getHashPost: (post_id) => {
-      return axiosGet(baseURL + `posts/${post_id}/hash`).then((res) => {
-        if(res.data.status === 'success'){
-          return res.data.hash
-        }
-        return null
-      })
-    },
 		postComment: (TxEncode) => {
 			return axiosPost(baseURL + 'posts/createcomment', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
