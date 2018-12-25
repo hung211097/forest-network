@@ -16,6 +16,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
+import { InputGroup, Input, FormGroup} from 'reactstrap';
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -52,6 +53,7 @@ class ListFollowing extends Component {
       error: '',
       isShowSuccess: false,
       isShowErrorPopup: false,
+      filter: ''
     }
   }
 
@@ -192,11 +194,28 @@ class ListFollowing extends Component {
     e.target.src = defaultAvatar
   }
 
+  handleChangeFilter(e){
+    this.setState({
+      filter: e.target.value
+    })
+  }
+
   render() {
     let listFollowing = null
     if(+this.props.idGetListFollow !== +this.props.profile.user_id){
       if(!!this.state.users.length){
-        listFollowing = this.state.users.map((item, key) => {
+        let filteredListUsers = []
+        if (this.state.filter !== '') {
+          this.state.users.forEach((item) => {
+            if (item.username.toLowerCase().search(this.state.filter.toLowerCase()) >= 0) {
+              filteredListUsers.push(item)
+            }
+          })
+        }
+        else {
+          filteredListUsers = this.state.users
+        }
+        listFollowing = filteredListUsers.map((item, key) => {
             return(
               <div className="media user-follower" key={key}>
                 <Link to={"/user/" + item.user_id}>
@@ -227,7 +246,18 @@ class ListFollowing extends Component {
     }
     else{
       if(!!this.state.users.length){
-        listFollowing = this.state.users.map((item, key) => {
+        let filteredListUsers = []
+        if (this.state.filter !== '') {
+          this.state.users.forEach((item) => {
+            if (item.username.toLowerCase().search(this.state.filter.toLowerCase()) >= 0) {
+              filteredListUsers.push(item)
+            }
+          })
+        }
+        else {
+          filteredListUsers = this.state.users
+        }
+        listFollowing = filteredListUsers.map((item, key) => {
             return(
               <div className="media user-following" key={key}>
                 <Link to={"/user/" + item.user_id}>
@@ -253,6 +283,13 @@ class ListFollowing extends Component {
     return (
       <div className={styles.following}>
         {/* following */}
+        <FormGroup>
+          <InputGroup>
+            <Input value={this.state.filter}
+              placeholder="Username you want to find"
+              onChange={this.handleChangeFilter.bind(this)} />
+          </InputGroup>
+        </FormGroup>
         <div className="tab-pane fade active in" id="following">
           {listFollowing}
         </div>
