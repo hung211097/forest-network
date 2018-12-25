@@ -16,6 +16,7 @@ import { followUser, unFollowUser } from '../../actions';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
+import { InputGroup, Input, FormGroup} from 'reactstrap';
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -51,6 +52,7 @@ class ListFollowers extends Component {
       error: '',
       isShowSuccess: false,
       isShowErrorPopup: false,
+      filter: ''
     }
   }
 
@@ -181,17 +183,42 @@ class ListFollowers extends Component {
     e.target.src = defaultAvatar
   }
 
+  handleChangeFilter(e){
+    this.setState({
+      filter: e.target.value
+    })
+  }
+
   render() {
+    let filteredListUsers = []
+    if(this.state.filter !== ''){
+      this.state.users.forEach((item) => {
+        if(item.username.toLowerCase().search(this.state.filter.toLowerCase()) >= 0){
+          filteredListUsers.push(item)
+        }
+      })
+    }
+    else{
+      filteredListUsers = this.state.users
+    }
     return (
       <div className={styles.followers}>
         {/* followers */}
+        <FormGroup>
+          <InputGroup>
+            <Input value={this.state.filter}
+              placeholder="Username you want to find"
+              onChange={this.handleChangeFilter.bind(this)} />
+          </InputGroup>
+        </FormGroup>
         <div className="tab-pane fade active in" id="followers">
-          {!!this.state.users.length && this.state.users.map((item, key) => {
-              return(
+          {!!filteredListUsers.length &&
+            filteredListUsers.map((item, key) => {
+              return (
                 <div className="media user-follower" key={key}>
                   <Link to={"/user/" + item.user_id}>
                     <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
-                      className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
+                      className="media-object pull-left" onError={this.handleErrorImg.bind(this)} />
                   </Link>
                   <div className="media-body">
                     <Link to={"/user/" + item.user_id}>
@@ -203,11 +230,11 @@ class ListFollowers extends Component {
                         <span>Following</span>
                       </button>
                       : !item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
-                      <button type="button" className="btn btn-sm btn-default pull-right"
-                        onClick={this.handleChangeFollow.bind(this, item)}>
-                        <FontAwesomeIcon icon="plus" /> Follow
+                        <button type="button" className="btn btn-sm btn-default pull-right"
+                          onClick={this.handleChangeFollow.bind(this, item)}>
+                          <FontAwesomeIcon icon="plus" /> Follow
                       </button>
-                      : null
+                        : null
                     }
                   </div>
                 </div>

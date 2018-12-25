@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { followUser, unFollowUser } from '../../actions';
+import { Link } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
   return{
@@ -70,7 +71,9 @@ class MayKnowFriendsItem extends Component {
           </div>
         </div>
         <div className="col-6">
-          {this.props.user.username}
+          <Link to={'/user/' + this.props.user.user_id}>
+            {this.props.user.username}
+          </Link>
         </div>
         <div className="col-3 text-right">
           {this.props.isSuccess && this.state.isFollow ?
