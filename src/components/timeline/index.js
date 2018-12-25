@@ -4,23 +4,25 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import styles from './index.scss';
 import ApiService from '../../services/api.service'
-import {createPost} from '../../actions'
 import InfiniteScroll from 'react-infinite-scroller'
 import loading from '../../images/loading.gif'
 
 const mapStateToProps = (state) => {
   return {
-    posts: state.postsReducer.posts, profile: state.profileReducer.info
+    profile: state.profileReducer.info
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createPost: (post) => dispatch(createPost(post))
   }
 }
 
 class Timeline extends Component {
+  static propTypes = {
+    profile: PropTypes.object,
+  }
+
   constructor(props) {
     super(props)
     this.apiService = ApiService()
@@ -32,10 +34,6 @@ class Timeline extends Component {
     }
   }
 
-  static propTypes = {
-    posts: PropTypes.array
-  }
-	
   loadItems(page) {
     this.apiService.getMyPosts(this.props.profile.user_id, this.state.page, 10).then((res) => {
       this.setState({
@@ -43,12 +41,12 @@ class Timeline extends Component {
           ...this.state.dataPosts,
           ...res.posts
         ],
-        page: this.state.page + 1,		
+        page: this.state.page + 1,
       }, () => {
         if (this.state.page >= res.total_page) {
           this.setState({hasMoreItems: false})
         }
-				else this.setState({hasMoreItems: true})
+        else this.setState({hasMoreItems: true})
       })
     })
   }
@@ -62,7 +60,7 @@ class Timeline extends Component {
         username: this.props.profile.username,
         created_at: createdAt,
         content: content,
-				hash: hash
+        hash: hash
       }
     ]
     this.setState({
@@ -81,7 +79,7 @@ class Timeline extends Component {
         authorize: "Shared publicly",
         created_on: post.created_at,
         content: post.content,
-				hash: post.hash
+        hash: post.hash
       }
       return (<Post key={postTemplate.id} post={postTemplate}/>);
     });
@@ -108,7 +106,7 @@ class Timeline extends Component {
                       authorize: "Shared publicly",
                       created_on: item.created_at,
                       content: item.content,
-											hash: item.hash
+                      hash: item.hash
                     }
                     return (<Post key={item.id} post={postTemplate}/>)
                   })

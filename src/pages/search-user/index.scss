@@ -1,61 +1,71 @@
 @import "../../styles/variables.scss";
 
-:local(.searchUser){
+:local(.searchUser) {
   margin-top: 120px;
-  @media screen and (max-width: 576px){
-    padding: 0px 20px;
+  @media screen and (max-width: 576px) {
+    padding: 0 20px;
   }
-  .page-title{
+
+  .page-title {
     font-weight: bold;
     margin-bottom: 40px;
   }
-  .row{
+
+  .row {
     margin: 0 !important;
     justify-content: center;
   }
-  .title{
+
+  .title {
     margin-bottom: 1.5rem;
     font-weight: bold;
   }
-  .arrow{
+
+  .arrow {
     font-size: 2.5rem;
     text-align: center;
     margin-top: 15px;
-    @media screen and (max-width: 576px){
+    @media screen and (max-width: 576px) {
       margin: 30px 0;
     }
   }
-  .info-account, .result-account{
+
+  .info-account,
+  .result-account {
     padding: 15px 25px 25px;
     background: white;
     border-radius: 15px;
   }
 
-	.result-account{				
+  .result-account {
     margin-top: 20px;
     margin-bottom: 105px;
-	}
+  }
 
-  .btn-search{
-		margin-left: 10px;
+  .btn-search {
+    margin-left: 10px;
     padding: 5px 45px;
     font-weight: bold;
   }
-	
-	table {
-		border-collapse: collapse;
-		width: 100%;
-	}
 
-	th, td {
-		padding: 8px;
-		text-align: center;
-		border-bottom: 1px solid #ddd;
-	}
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
 
-	tr.result-users:hover {cursor:pointer;background-color:#f5f5f5;}
-	
-	img.avatar {
-		border: 2px solid #fff;
-	}
+  td,
+  th {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+
+  tr.result-users:hover {
+    cursor: pointer;
+    background-color: #f5f5f5;
+  }
+
+  img.avatar {
+    border: 2px solid #fff;
+  }
 }

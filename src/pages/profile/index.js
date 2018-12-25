@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import defaultAvatar from '../../images/default-avatar.png'
 import ApiService from '../../services/api.service'
+import { fromNowDate } from '../../services/utils.service';
 
 const mapStateToProps = (state) => {
   return {
@@ -93,6 +94,7 @@ class Profile extends Component {
                           <p>Current Energy: {profile.bandwithMax - profile.bandwith} OXY</p>
                           <p>Consumed Energy: {profile.bandwith} OXY</p>
                           <p>Sequence: {profile.sequence}</p>
+                          <p>Last transaction: {fromNowDate(profile.bandwithTime)}</p>
                         </div>
                         <div className="section">
                           <h3>Statistics</h3>

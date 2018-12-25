@@ -25,13 +25,13 @@ class SearchUser extends Component {
     super(props)
     this.apiService = ApiService()
     this.state = {
-			rSelected: 'PublicKey',
+      rSelected: 'PublicKey',
       inputSearch: '',
       isSubmit: false,
       error: '',
       isShowError: false,
       isShow: false,
-			usersResult: []
+      usersResult: []
     }
   }
 
@@ -41,32 +41,27 @@ class SearchUser extends Component {
     })
   }
 
-	onRadioBtnClick(rSelected) {
+  onRadioBtnClick(rSelected) {
     this.setState({ rSelected });
   }
 
-  handleSubmit(e){
-		e.preventDefault(0)
-		this.setState({
-			usersResult: []
-		})
-		
-		this.apiService.getSearchUsers(this.state.rSelected, this.state.inputSearch).then((res) => {
-			res.users.map(user => {
-				return(this.setState ({
-					usersResult: this.state.usersResult.concat({
-						id: user.user_id,
-						publicKey: user.public_key,
-						avatar:user.avatar,
-						username: user.username
-					})
-				}))
-			})		
-		})
+  handleSubmit(e) {
+    e.preventDefault(0)
+    this.setState({
+      usersResult: []
+    })
+
+    this.apiService.getSearchUsers(this.state.rSelected, this.state.inputSearch).then((res) => {
+      res.users.map(user => {
+        return (this.setState({
+          usersResult: this.state.usersResult.concat({id: user.user_id, publicKey: user.public_key, avatar: user.avatar, username: user.username})
+        }))
+      })
+    })
   }
-	
-	handleGoToOther(id){
-		this.props.history.push(`/user/${id}`);
+
+  handleGoToOther(id) {
+    this.props.history.push(`/user/${id}`);
   }
 
   hideAlert(){
@@ -85,18 +80,18 @@ class SearchUser extends Component {
     e.target.onerror = null;
     e.target.src = defaultAvatar
   }
-	
+
   render() {
-		const listUsers = this.state.usersResult.map(user => {
-			return (
-				<tr className="result-users" key={user.id} onClick={this.handleGoToOther.bind(this, user.id)}>					
-					<td>{user.username}</td>
-					<td><img src={user.avatar ? user.avatar : defaultAvatar} height="60" width="60" alt="Avatar" className="avatar img-circle" onError={this.handleErrorImg.bind(this)}/></td>
-					<td>{user.publicKey}</td>
-				</tr>
-			);
-		})
-		
+    const listUsers = this.state.usersResult.map(user => {
+      return (
+        <tr className="result-users" key={user.id} onClick={this.handleGoToOther.bind(this, user.id)}>
+          <td>{user.username}</td>
+          <td><img src={user.avatar ? user.avatar : defaultAvatar} height="60" width="60" alt="Avatar" className="avatar img-circle" onError={this.handleErrorImg.bind(this)}/></td>
+          <td>{user.publicKey}</td>
+        </tr>
+      );
+    })
+
     return (
       <Layout>
         <div className={styles.searchUser}>
@@ -104,42 +99,42 @@ class SearchUser extends Component {
           <form onSubmit={this.handleSubmit.bind(this)}>
               <div className="info-account container">
                 <div className="info">
-									<h2 className="title">Info User</h2>
+                  <h2 className="title">Info User</h2>
                   <FormGroup>
                     <ButtonGroup>
-											<Button color="primary" onClick={() => this.onRadioBtnClick('PublicKey')} active={this.state.rSelected === 'PublicKey'}>Public Key</Button>
-											<Button color="primary" onClick={() => this.onRadioBtnClick('Username')} active={this.state.rSelected === 'Username'}>Username</Button>
-										</ButtonGroup>                    
+                      <Button color="primary" onClick={() => this.onRadioBtnClick('PublicKey')} active={this.state.rSelected === 'PublicKey'}>Public Key</Button>
+                      <Button color="primary" onClick={() => this.onRadioBtnClick('Username')} active={this.state.rSelected === 'Username'}>Username</Button>
+                    </ButtonGroup>
                   </FormGroup>
                   <InputGroup>
-										<Input value={this.state.your_public_key} name="input-search"
-											onChange={this.handleChangeInputSearch.bind(this)}
-											placeholder={this.state.rSelected}/>
-										<button type="button" className="btn btn-azure btn-search" onClick={this.handleSubmit.bind(this)}>Search</button>
-									</InputGroup>									
+                    <Input value={this.state.your_public_key} name="input-search"
+                      onChange={this.handleChangeInputSearch.bind(this)}
+                      placeholder={this.state.rSelected}/>
+                    <button type="button" className="btn btn-azure btn-search" onClick={this.handleSubmit.bind(this)}>Search</button>
+                  </InputGroup>
                 </div>
               </div>
-							<div className="arrow">
+              <div className="arrow">
                 <i className="d-sm-block d-none"><FontAwesomeIcon icon="arrow-down"/></i>
               </div>
               <div className="result-account container">
                 <div className="info">
                   <h2 className="title">Result User</h2>
-									{this.state.usersResult.length===0 
-									? <div>Didn&apos;t find any users</div>
-									: <table>
-											<thead>
-												<tr>
-													<th>Username</th>
-													<th>Avatar</th>
-													<th>Public key</th>
-												</tr>
-											</thead>
-											<tbody>
-											{listUsers}
-											</tbody>
-										</table>
-									}
+                  {this.state.usersResult.length===0
+                    ? <div>Didn&apos;t find any users</div>
+                    : <table>
+                    <thead>
+                      <tr>
+                        <th>Username</th>
+                        <th>Avatar</th>
+                        <th>Public key</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {listUsers}
+                    </tbody>
+                  </table>
+                }
                 </div>
               </div>
           </form>

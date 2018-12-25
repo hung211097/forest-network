@@ -201,85 +201,18 @@ class ListFollowing extends Component {
   }
 
   render() {
-    let listFollowing = null
-    if(+this.props.idGetListFollow !== +this.props.profile.user_id){
-      if(!!this.state.users.length){
-        let filteredListUsers = []
-        if (this.state.filter !== '') {
-          this.state.users.forEach((item) => {
-            if (item.username.toLowerCase().search(this.state.filter.toLowerCase()) >= 0) {
-              filteredListUsers.push(item)
-            }
-          })
+    let filteredListUsers = []
+    if(this.state.filter !== ''){
+      this.state.users.forEach((item) => {
+        if(item.username.toLowerCase().search(this.state.filter.toLowerCase()) >= 0){
+          filteredListUsers.push(item)
         }
-        else {
-          filteredListUsers = this.state.users
-        }
-        listFollowing = filteredListUsers.map((item, key) => {
-            return(
-              <div className="media user-follower" key={key}>
-                <Link to={"/user/" + item.user_id}>
-                  <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
-                    className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
-                </Link>
-                <div className="media-body">
-                  <Link to={"/user/" + item.user_id}>
-                    {item.username}<br /><span className="text-muted username">@username</span>
-                  </Link>
-                  {item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
-                    <button type="button" className="btn btn-sm btn-toggle-following pull-right"
-                      onClick={this.handleChangeFollowV2.bind(this, item)}>
-                      <span>Following</span>
-                    </button>
-                    : !item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
-                    <button type="button" className="btn btn-sm btn-default pull-right"
-                      onClick={this.handleChangeFollowV2.bind(this, item)}>
-                      <FontAwesomeIcon icon="plus" /> Follow
-                    </button>
-                    : null
-                  }
-                </div>
-              </div>
-            )
-          })
-      }
+      })
     }
     else{
-      if(!!this.state.users.length){
-        let filteredListUsers = []
-        if (this.state.filter !== '') {
-          this.state.users.forEach((item) => {
-            if (item.username.toLowerCase().search(this.state.filter.toLowerCase()) >= 0) {
-              filteredListUsers.push(item)
-            }
-          })
-        }
-        else {
-          filteredListUsers = this.state.users
-        }
-        listFollowing = filteredListUsers.map((item, key) => {
-            return(
-              <div className="media user-following" key={key}>
-                <Link to={"/user/" + item.user_id}>
-                  <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
-                    className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
-                </Link>
-                <div className="media-body">
-                  <Link to={"/user/" + item.user_id}>
-                    {item.username}<br /><span className="text-muted username">@username</span>
-                  </Link>
-                  {item.user_id !== this.props.profile.user_id &&
-                    <button type="button" className="btn btn-sm btn-danger pull-right"
-                      onClick={this.handleChangeFollow.bind(this, item.user_id)}>
-                      <i className="fa fa-close-round" /> Unfollow
-                    </button>
-                  }
-                </div>
-              </div>
-            )
-          })
-      }
+      filteredListUsers = this.state.users
     }
+
     return (
       <div className={styles.following}>
         {/* following */}
@@ -290,9 +223,63 @@ class ListFollowing extends Component {
               onChange={this.handleChangeFilter.bind(this)} />
           </InputGroup>
         </FormGroup>
-        <div className="tab-pane fade active in" id="following">
-          {listFollowing}
-        </div>
+        {+this.props.idGetListFollow !== +this.props.profile.user_id ?
+          <div className="tab-pane fade active in" id="following">
+              {!!filteredListUsers.length && filteredListUsers.map((item, key) => {
+                  return(
+                    <div className="media user-follower" key={key}>
+                      <Link to={"/user/" + item.user_id}>
+                        <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
+                          className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
+                      </Link>
+                      <div className="media-body">
+                        <Link to={"/user/" + item.user_id}>
+                          {item.username}<br /><span className="text-muted username">@username</span>
+                        </Link>
+                        {item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
+                          <button type="button" className="btn btn-sm btn-toggle-following pull-right"
+                            onClick={this.handleChangeFollowV2.bind(this, item)}>
+                            <span>Following</span>
+                          </button>
+                          : !item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
+                          <button type="button" className="btn btn-sm btn-default pull-right"
+                            onClick={this.handleChangeFollowV2.bind(this, item)}>
+                            <FontAwesomeIcon icon="plus" /> Follow
+                          </button>
+                          : null
+                        }
+                      </div>
+                    </div>
+                  )
+                })
+              }
+          </div>
+          :
+          <div className="tab-pane fade active in" id="following">
+              {!!filteredListUsers.length && filteredListUsers.map((item, key) => {
+                  return(
+                    <div className="media user-following" key={key}>
+                      <Link to={"/user/" + item.user_id}>
+                        <img src={item.avatar ? item.avatar : defaultAvatar} alt="User Avatar"
+                          className="media-object pull-left" onError={this.handleErrorImg.bind(this)}/>
+                      </Link>
+                      <div className="media-body">
+                        <Link to={"/user/" + item.user_id}>
+                          {item.username}<br /><span className="text-muted username">@username</span>
+                        </Link>
+                        {item.user_id !== this.props.profile.user_id &&
+                          <button type="button" className="btn btn-sm btn-danger pull-right"
+                            onClick={this.handleChangeFollow.bind(this, item.user_id)}>
+                            <i className="fa fa-close-round" /> Unfollow
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  )
+                })
+              }
+          </div>
+        }
         {this.state.page <= this.state.total_page &&
           <div className="load-more">
             <button className="btn btn-more" onClick={this.handleLoadMore.bind(this)}>LOAD MORE</button>

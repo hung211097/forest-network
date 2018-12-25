@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styles from'./index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
-import { createPost } from '../../actions';
 import ApiService from '../../services/api.service'
 import {calcBandwithConsume} from '../../services/utils.service'
 import transaction from '../../lib/transaction';
@@ -16,25 +15,18 @@ import { saveProfileFromApi } from '../../actions';
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    createPost: (post) => {dispatch(createPost(post))},
     saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
   }
 }
 
 const mapStateToProps = (state) => {
-  let temp = state.postsReducer.posts.concat()
-  temp.sort((a, b) => {
-    return a.id - b.id
-  })
   return{
     profile: state.profileReducer.info,
-    posts: temp
   }
 }
 
 class PostBox extends Component {
   static propTypes = {
-    createPost: PropTypes.func,
     profile: PropTypes.object,
     saveProfileFromApi: PropTypes.func
   }

@@ -28,30 +28,32 @@ class PostsWall extends Component {
   static propTypes = {
     profile: PropTypes.object,
   }
-	
+
 	loadData(page) {
-		this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
-			this.setState ({
-				dataPosts: this.state.dataPosts.concat(res.posts),
-				page: this.state.page + 1,
-				pages: res.total_page,
-			})
-		})		
-	}
-	handleAddPost(content, createdAt, hash) {
-		const newPost = [{
-			id: this.state.dataNewPosts.length,
-			avatar: this.props.profile.avatar,
-			user_id: this.props.profile.user_id,
-			username: this.props.profile.username,
-			created_at: createdAt,
-			content: content,
-			hash: hash
-		}]
-		this.setState ({
-			dataNewPosts: newPost.concat(this.state.dataNewPosts),
-		})
-	}
+    this.apiService.getPostOnHome(this.props.profile.user_id, this.state.page, this.state.perPage).then((res) => {
+      this.setState({
+        dataPosts: this.state.dataPosts.concat(res.posts),
+        page: this.state.page + 1,
+        pages: res.total_page
+      })
+    })
+  }
+  handleAddPost(content, createdAt, hash) {
+    const newPost = [
+      {
+        id: this.state.dataNewPosts.length,
+        avatar: this.props.profile.avatar,
+        user_id: this.props.profile.user_id,
+        username: this.props.profile.username,
+        created_at: createdAt,
+        content: content,
+        hash: hash
+      }
+    ]
+    this.setState({
+      dataNewPosts: newPost.concat(this.state.dataNewPosts)
+    })
+  }
 
   render() {
     const newPosts = this.state.dataNewPosts.map(post => {
@@ -63,7 +65,7 @@ class PostsWall extends Component {
         authorize: "Shared publicly",
         created_on: post.created_at,
         content: post.content,
-				hash: post.hash
+        hash: post.hash
       }
       return (
         <Post key={postTemplate.id} post={postTemplate}/>
@@ -79,7 +81,7 @@ class PostsWall extends Component {
         authorize: "Shared publicly",
         created_on: post.created_at,
         content: post.content,
-				hash: post.hash
+        hash: post.hash
       }
       return (
         <Post key={postTemplate.id} post={postTemplate}/>
