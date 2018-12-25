@@ -4,20 +4,17 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styles from './index.scss';
 import ApiService from '../../services/api.service'
-import { createPost } from '../../actions'
 import InfiniteScroll from 'react-infinite-scroller'
 import loading from '../../images/loading.gif'
 
 const mapStateToProps = (state) => {
     return {
-        posts: state.postsReducer.posts,
         profile: state.profileReducer.info
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createPost: (post) => dispatch(createPost(post))
     }
 }
 
@@ -33,20 +30,21 @@ class OthersPost extends Component {
     }
 
     static propTypes = {
-        posts: PropTypes.array
+        posts: PropTypes.array,
+        profile: PropTypes.object
     }
-	
+
     loadItems(page) {
         this.apiService.getMyPosts(this.props.user_id, this.state.page, 10).then((res) => {
             this.setState ({
               dataPosts: [...this.state.dataPosts, ...res.posts],
               page: this.state.page + 1,
-						}, () => {
-							if (this.state.page >= res.total_page) {
-								this.setState({hasMoreItems: false})
-							}
-							else this.setState({hasMoreItems: true})
-						})
+            }, () => {
+              if (this.state.page >= res.total_page) {
+                this.setState({hasMoreItems: false})
+              }
+              else this.setState({hasMoreItems: true})
+            })
           })
     }
 

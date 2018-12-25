@@ -47,7 +47,7 @@ class MayKnowFriendsItem extends Component {
       })
     }
   }
-  
+
   handleFollow(){
     this.setState({
       isFollow: !this.state.isFollow
@@ -67,7 +67,9 @@ class MayKnowFriendsItem extends Component {
       <div className="row">
         <div className="col-3">
           <div className="avatar">
-            <img src={this.props.user.avatar ? this.props.user.avatar : defaultAvatar} alt="avatar" className="img-circle img-no-padding img-responsive" />
+            <Link to={'/user/' + this.props.user.user_id}>
+              <img src={this.props.user.avatar ? this.props.user.avatar : defaultAvatar} alt="avatar" className="img-circle img-no-padding img-responsive" />
+            </Link>
           </div>
         </div>
         <div className="col-6">

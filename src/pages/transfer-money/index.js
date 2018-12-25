@@ -164,7 +164,6 @@ class TransferMoney extends Component {
     }
     else {
       this.apiService.getUsersByUsername(this.state.your_username).then((res) => {
-        console.log(res)
         if (!res.user) {
           this.setState({
             error: 'Username is not exist!',
@@ -307,7 +306,7 @@ class TransferMoney extends Component {
                       <Input value={this.state.your_username} name="username"
                         onChange={this.handleChangeYourUsername.bind(this)}
                         placeholder="Username"
-                        invalid={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? true : false} 
+                        invalid={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? true : false}
                         disabled={this.state.your_public_key !== '' ? true : false} />
                     </InputGroup>
                     <FormFeedback invalid="true" className={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? "d-block" : ''}>

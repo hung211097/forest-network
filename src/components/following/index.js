@@ -201,7 +201,6 @@ class ListFollowing extends Component {
   }
 
   render() {
-    let listFollowing = null
     let filteredListUsers = []
     if(this.state.filter !== ''){
       this.state.users.forEach((item) => {
@@ -213,7 +212,7 @@ class ListFollowing extends Component {
     else{
       filteredListUsers = this.state.users
     }
-    
+
     return (
       <div className={styles.following}>
         {/* following */}

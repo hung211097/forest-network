@@ -17,7 +17,7 @@ import transaction from '../../lib/transaction'
 import SweetAlert from 'react-bootstrap-sweetalert'
 
 const mapDispatchToProps = (dispatch) => {
-  return{		
+  return{
     saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))}
   }
 }
@@ -122,59 +122,55 @@ class Post extends Component {
       isShowSuccess: false
     })
   }
-	
-  handleReact(type){
-		this.apiService.getCurrentProfile().then((data) => {
-			this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)			
-			let reactContent = {
-				type: 2,
-				reaction: type
-			}				
-			if (this.state.react === type) {
-				reactContent.reaction = 0
-			}
-			
-			let tx = {
-				version: 1,
-				account: data.public_key,
-				sequence: data.sequence + 1,
-				memo: Buffer.alloc(0),
-				operation: "interact",
-				params: {
-					object: this.props.post.hash,
-					content: reactContent,
-				},
-				signature: new Buffer(64)
-			}
-			let temp = loadItem(keyStorage.private_key)
-			let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-			transaction.sign(tx, my_private_key);
-			let TxEncode = '0x' + transaction.encode(tx).toString('hex');
 
-			const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
-			if(consume > data.bandwithMax){
-				this.setState({
-					error: "You don't have enough OXY to conduct transaction!",
-					isShowError: true
-				})
-			}
-			else {
-				this.apiService.postReact(TxEncode).then((status) => {
-					if(status === 'success'){
-						this.setState({
-							react: this.state.react === type ? 0 : type,
-							number_of_reacts: this.state.react === type ? this.state.number_of_reacts - 1 : this.state.number_of_reacts + 1
-						})
-					}
-					else{
-						this.setState({
-							error: "Fail to react",
-							isShowError: true
-						})
-					}
-				})
-			}
-		})
+  handleReact(type){
+    this.apiService.getCurrentProfile().then((data) => {
+      this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
+      let reactContent = {
+        type: 2,
+        reaction: type
+      }
+      if (this.state.react === type) {
+        reactContent.reaction = 0
+      }
+
+      let tx = {
+        version: 1,
+        account: data.public_key,
+        sequence: data.sequence + 1,
+        memo: Buffer.alloc(0),
+        operation: "interact",
+        params: {
+          object: this.props.post.hash,
+          content: reactContent
+        },
+        signature: new Buffer(64)
+      }
+      let temp = loadItem(keyStorage.private_key)
+      let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+      transaction.sign(tx, my_private_key);
+      let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+
+      const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
+      if (consume > data.bandwithMax) {
+        this.setState({error: "You don't have enough OXY to conduct transaction!", isShowError: true})
+      } else {
+        this.apiService.postReact(TxEncode).then((status) => {
+          if (status === 'success') {
+            this.setState({
+              react: this.state.react === type
+                ? 0
+                : type,
+              number_of_reacts: this.state.react === type
+                ? this.state.number_of_reacts - 1
+                : this.state.number_of_reacts + 1
+            })
+          } else {
+            this.setState({error: "Fail to react", isShowError: true})
+          }
+        })
+      }
+    })
   }
 
   handleContentChange(e) {
@@ -187,63 +183,57 @@ class Post extends Component {
     if(this.state.content){
       this.apiService.getCurrentProfile().then((data) => {
         this.props.saveProfileFromApi && this.props.saveProfileFromApi(data)
-				const plainTextContent = {
-					type: 1,
-					text: this.state.content
-				}
-				let tx = {
-					version: 1,
-					account: data.public_key,
-					sequence: data.sequence + 1,
-					memo: Buffer.alloc(0),
-					operation: "interact",
-					params: {
-						object: this.props.post.hash,
-						content: plainTextContent,
-					},
-					signature: new Buffer(64)
-				}
-				let temp = loadItem(keyStorage.private_key)
-				let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
-				transaction.sign(tx, my_private_key);
-				let TxEncode = '0x' + transaction.encode(tx).toString('hex');
+        const plainTextContent = {
+          type: 1,
+          text: this.state.content
+        }
+        let tx = {
+          version: 1,
+          account: data.public_key,
+          sequence: data.sequence + 1,
+          memo: Buffer.alloc(0),
+          operation: "interact",
+          params: {
+            object: this.props.post.hash,
+            content: plainTextContent
+          },
+          signature: new Buffer(64)
+        }
+        let temp = loadItem(keyStorage.private_key)
+        let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+        transaction.sign(tx, my_private_key);
+        let TxEncode = '0x' + transaction.encode(tx).toString('hex');
 
-				const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
-				if(consume > data.bandwithMax){
-					this.setState({
-						error: "You don't have enough OXY to conduct transaction!",
-						isShowError: true
-					})
-				}
-				else {
-					this.apiService.postComment(TxEncode).then((status) => {
-						if(status === 'success'){
-							const tempComment = {
-								User: {
-									avatar: this.props.profile.avatar,
-									user_id: this.props.profile.user_id,
-									username: this.props.profile.username
-								},
-								content: this.state.content,
-								created_at: new Date(),
-								post_id: this.props.post.id,
-								user_id: this.props.profile.user_id
-							}
-							this.setState({
-								content: '',
-								comments: [tempComment, ...this.state.comments],
-								number_of_comments: this.state.number_of_comments + 1,
-							})
-						}
-						else{
-							this.setState({
-								error: "Fail to comment",
-								isShowError: true
-							})
-						}
-					})
-				}
-			})
+        const consume = calcBandwithConsume(data, transaction.encode(tx).toString('base64'), new Date());
+        if (consume > data.bandwithMax) {
+          this.setState({error: "You don't have enough OXY to conduct transaction!", isShowError: true})
+        } else {
+          this.apiService.postComment(TxEncode).then((status) => {
+            if (status === 'success') {
+              const tempComment = {
+                User: {
+                  avatar: this.props.profile.avatar,
+                  user_id: this.props.profile.user_id,
+                  username: this.props.profile.username
+                },
+                content: this.state.content,
+                created_at: new Date(),
+                post_id: this.props.post.id,
+                user_id: this.props.profile.user_id
+              }
+              this.setState({
+                content: '',
+                comments: [
+                  tempComment, ...this.state.comments
+                ],
+                number_of_comments: this.state.number_of_comments + 1
+              })
+            } else {
+              this.setState({error: "Fail to comment", isShowError: true})
+            }
+          })
+        }
+        })
     }
   }
 
@@ -305,8 +295,6 @@ class Post extends Component {
             }
             <div className="interact-area">
               {this.react.map((item, key) => {
-                // console.log("REaCT", this.state.react);
-                // console.log("KEY", key + 1);
                 return(
                     <ReactButton
                       objIcon={item}
@@ -355,7 +343,7 @@ class Post extends Component {
               </div>
             </form>
           </div>
-        </div>				
+        </div>
         <SweetAlert
           error
           confirmBtnText="OK"

@@ -12,11 +12,14 @@ import defaultAvatar from '../../images/default-avatar.png';
 const mapStateToProps = (state) => {
   return{
     profile: state.profileReducer.info,
-    posts: state.postsReducer.posts
   }
 }
 
 class Home extends Component {
+  static propTypes = {
+    profile: PropTypes.object,
+  }
+
   constructor(props){
     super(props)
     this.apiService = ApiService()
@@ -41,15 +44,6 @@ class Home extends Component {
     }
   }
 
-  static propTypes = {
-    profile: PropTypes.object,
-    posts: PropTypes.array
-  }
-
-
-  componentDidMount(){
-  }
-		
   handleSelectMenu(index){
     let temp = this.state.sideMenu.concat()
     temp = temp.map((item, key) => {
@@ -113,7 +107,7 @@ class Home extends Component {
                               switch(key){
                                 case 0:
                                   return(
-                                    <PostsWall key={key}/>                                  
+                                    <PostsWall key={key}/>
                                   )
                                 case 1:
                                   return(
