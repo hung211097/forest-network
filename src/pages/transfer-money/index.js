@@ -84,7 +84,7 @@ class TransferMoney extends Component {
       return
     }
 
-    if (this.state.your_public_key != '') {
+    if (this.state.your_public_key !== '') {
       this.apiService.getCurrentProfile().then((userProfile) => {
         const profile = userProfile
         const tx = {
@@ -294,7 +294,7 @@ class TransferMoney extends Component {
                         onChange={this.handleChangeYourPublicKey.bind(this)}
                         placeholder="Public key"
                         invalid={!this.state.your_public_key && this.state.isSubmit && !this.state.your_username ? true : false}
-                        disabled={this.state.your_username != '' ? true : false} />
+                        disabled={this.state.your_username !== '' ? true : false} />
                     </InputGroup>
                     <FormFeedback invalid="true" className={!this.state.your_public_key && this.state.isSubmit && !this.state.your_username ? "d-block" : ''}>
                       Public key is empty!
@@ -308,7 +308,7 @@ class TransferMoney extends Component {
                         onChange={this.handleChangeYourUsername.bind(this)}
                         placeholder="Username"
                         invalid={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? true : false} 
-                        disabled={this.state.your_public_key != '' ? true : false} />
+                        disabled={this.state.your_public_key !== '' ? true : false} />
                     </InputGroup>
                     <FormFeedback invalid="true" className={!this.state.your_username && this.state.isSubmit && !this.state.your_public_key ? "d-block" : ''}>
                       Username is empty!
