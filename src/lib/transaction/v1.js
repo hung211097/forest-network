@@ -103,7 +103,6 @@ function encode(tx) {
 
     case 'update_account':
       if(tx.params.key === 'followings'){
-        console.log("OK");
         params = UpdateAccountParams.encode({
           ...tx.params,
           value: Followings.encode(tx.params.value)

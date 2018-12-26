@@ -17,6 +17,8 @@ import PrivateRoute from './private-route'
 import OthersPost from './others-post'
 import PostsWall from './posts-wall'
 import ReactButton from './react-button'
+import ReactUsersPopup from './react-users-popup'
+import ReactUsersItem from './react-users-item'
 
 export {
   Header,
@@ -37,5 +39,7 @@ export {
   MayKnowFriendsItem,
   OthersPost,
   PostsWall,
-  ReactButton
+  ReactButton,
+  ReactUsersPopup,
+  ReactUsersItem
 }

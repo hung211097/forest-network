@@ -40,3 +40,16 @@ export const unFollowUser = (user_id) => {
     id: user_id
   }
 }
+
+export const showPopup = (post_id) => {
+  return{
+    type: actionTypes.SHOW_POPUP,
+    post_id: post_id
+  }
+}
+
+export const closePopup = () => {
+  return{
+    type: actionTypes.CLOSE_POPUP
+  }
+}

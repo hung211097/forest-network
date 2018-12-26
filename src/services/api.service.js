@@ -206,6 +206,19 @@ export default () => {
       return axiosPost(baseURL + 'posts/createreact', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
+    },
+    getReactUsers: (post_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `posts/${post_id}/react-users?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        console.log(res);
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
     }
   }
 
