@@ -80,7 +80,8 @@ class Others extends Component {
     UNSAFE_componentWillReceiveProps(props) {
         if (this.props.match.params.id !== props.match.params.id) {
             this.setState({
-                numNavTag: 1
+                numNavTag: 1,
+                isFollowed: false
             })
             this.loadInfoUser(props)
         }
@@ -99,19 +100,19 @@ class Others extends Component {
                 sequence: res.info_user.sequence
             })
         })
+        props.profile.following.forEach(element => {
+            if (element === +props.match.params.id) {
+                this.setState({
+                    isFollowed: true
+                })
+            }
+        });
     }
     componentDidMount() {
         if (+this.props.match.params.id === +this.props.profile.user_id) {
             this.props.history.push('/profile')
         }
         this.loadInfoUser(this.props)
-        this.props.profile.following.forEach(element => {
-            if (element === +this.props.match.params.id) {
-                this.setState({
-                    isFollowed: true
-                })
-            }
-        });
     }
 
     handleErrorImg(e) {
@@ -119,11 +120,22 @@ class Others extends Component {
         e.target.src = defaultAvatar
     }
 
-    handleSubmit() {
+    handleSubmit(newId, isFollow) {
         let temp = loadItem(keyStorage.private_key)
         let my_private_key = CryptoJS.AES.decrypt(temp, SecretKey).toString(CryptoJS.enc.Utf8)
+        let arrFollows = this.props.profile.following
+        if(isFollow){
+          arrFollows.push(newId)
+          this.props.followUser && this.props.followUser(newId);
+        }
+        else{
+          arrFollows = arrFollows.filter((item) => {
+            return item !== newId
+          })
+          this.props.unFollowUser && this.props.unFollowUser(newId);
+        }
 
-        this.apiService.getPubkeysFollowing(this.props.profile.public_key, this.props.profile.following).then((data) => {
+        this.apiService.getPubkeysFollowing(this.props.profile.public_key, arrFollows).then((data) => {
             let listPubkey = {
                 addresses: []
             }
@@ -168,6 +180,7 @@ class Others extends Component {
                     }
                     else {
                         this.setState({
+                            error: "Fail to update list follow!",
                             isShowErrorPopup: true,
                         })
                     }
@@ -178,12 +191,10 @@ class Others extends Component {
 
     handleChangeFollow() {
         if (this.state.isFollowed) {
-            this.props.unFollowUser && this.props.unFollowUser(+this.props.match.params.id);
-            this.handleSubmit()
+            this.handleSubmit(+this.props.match.params.id, false)
         }
         else {
-            this.props.followUser && this.props.followUser(+this.props.match.params.id);
-            this.handleSubmit()
+            this.handleSubmit(+this.props.match.params.id, true)
         }
     }
 
@@ -220,7 +231,14 @@ class Others extends Component {
                                                 </div>
                                                 <div className="action-buttons">
                                                     <div className="row">
-                                                        <button className="btn btn-azure btn-block" onClick={this.handleChangeFollow.bind(this)}>{this.state.isFollowed ? null : <FontAwesomeIcon icon="user-plus" />}{this.state.isFollowed ? "Following" : "Follow"}</button>
+                                                      <div className="col-12">
+                                                        <button className="btn btn-azure btn-block"
+                                                          onClick={this.handleChangeFollow.bind(this)}>
+                                                          {this.state.isFollowed ? null : <FontAwesomeIcon icon="user-plus" />}&nbsp;
+                                                          {this.state.isFollowed ? "Followed" : "Follow"}&nbsp;
+                                                          {this.state.isFollowed ? <FontAwesomeIcon icon="check" /> : null}
+                                                        </button>
+                                                      </div>
                                                     </div>
                                                 </div>
                                                 <div className="section no-margin">

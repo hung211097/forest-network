@@ -171,4 +171,10 @@
       top: 19px;
     }
   }
+  .react-popup{
+    color: #6c757d;
+    &:hover{
+      text-decoration: underline !important;
+    }
+  }
 }

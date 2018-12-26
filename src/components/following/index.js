@@ -236,12 +236,12 @@ class ListFollowing extends Component {
                         <Link to={"/user/" + item.user_id}>
                           {item.username}<br /><span className="text-muted username">@username</span>
                         </Link>
-                        {item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
+                        {item.isFollow && item.user_id !== this.props.profile.user_id ?
                           <button type="button" className="btn btn-sm btn-toggle-following pull-right"
                             onClick={this.handleChangeFollowV2.bind(this, item)}>
                             <span>Following</span>
                           </button>
-                          : !item.isFollow && item.user_id !== +this.props.idGetListFollow && item.user_id !== this.props.profile.user_id ?
+                          : !item.isFollow && item.user_id !== this.props.profile.user_id ?
                           <button type="button" className="btn btn-sm btn-default pull-right"
                             onClick={this.handleChangeFollowV2.bind(this, item)}>
                             <FontAwesomeIcon icon="plus" /> Follow

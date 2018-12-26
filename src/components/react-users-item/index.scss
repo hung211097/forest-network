@@ -1,0 +1,84 @@
+@import "../../styles/variables.scss";
+
+:local(.reactUserItem){
+  .card-user{
+    border-bottom: 1px solid #c8c8c8;
+    padding: 10px;
+    img{
+      padding: 15px;
+    }
+    .username{
+      display: flex;
+      align-items: center;
+      a{
+        color: black;
+      }
+    }
+    .follow-btn{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .error{
+    color: red;
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+
+  .btn {
+    min-width: 92px;
+    &:focus{
+      box-shadow: none;
+    }
+  }
+
+  .btn-toggle-following {
+    background-color: #7bae16;
+    color: #fff;
+
+    &:hover {
+      background-color: #ef2020;
+      color: #fff;
+
+      span {
+        display: none;
+      }
+
+      &:after {
+        content: 'Unfollow';
+        display: inline;
+      }
+
+      i:before {
+        content: '\f129';
+      }
+    }
+  }
+  .btn-sm {
+    font-size: 12px;
+    padding: 4px 9px;
+    line-height: 1.39;
+  }
+
+  .btn-default {
+    color: #444 !important;
+    background-color: #fff;
+    border-color: #ccc;
+
+    &:focus {
+      color: #444;
+      background-color: #fff;
+      border-color: #ccc;
+    }
+
+    &:hover {
+      color: #444;
+      border-color: #b8b8b8;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+      background-color: #e6e6e6;
+    }
+  }
+}

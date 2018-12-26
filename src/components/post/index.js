@@ -12,13 +12,14 @@ import { SecretKey } from '../../constants/crypto'
 import CryptoJS from 'crypto-js'
 import { keyStorage } from '../../constants/localStorage'
 import { loadItem } from '../../services/storage.service'
-import { saveProfileFromApi } from '../../actions'
+import { saveProfileFromApi, showPopup } from '../../actions'
 import transaction from '../../lib/transaction'
 import SweetAlert from 'react-bootstrap-sweetalert'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))}
+    saveProfileFromApi: (info) => {dispatch(saveProfileFromApi(info))},
+    showPopup: (post_id) => {dispatch(showPopup(post_id))},
   }
 }
 
@@ -32,7 +33,8 @@ class Post extends Component {
   static propTypes = {
     post: PropTypes.object,
     profile: PropTypes.object,
-    saveProfileFromApi: PropTypes.func
+    saveProfileFromApi: PropTypes.func,
+    showPopup: PropTypes.func,
   }
 
   constructor(props){
@@ -45,7 +47,7 @@ class Post extends Component {
       number_of_comments: 0,
       number_of_reacts: 0,
       page: 1,
-			total_page: 0,
+      total_page: 0,
       react: 0,
       isShowError: false,
       error: '',
@@ -105,7 +107,7 @@ class Post extends Component {
           comments: [...this.state.comments, ...data.comments],
           number_of_comments: data.total_item,
           page: this.state.page + 1,
-					total_page: data.total_page
+          total_page: data.total_page
         })
       }
     })
@@ -269,6 +271,11 @@ class Post extends Component {
     e.target.src = defaultAvatar
   }
 
+  handleShowReactUserPopup(e){
+    e.preventDefault()
+    this.props.showPopup && this.props.showPopup(this.props.post.id)
+  }
+
   render() {
     let {post} = this.state
     let {profile} = this.props
@@ -304,7 +311,15 @@ class Post extends Component {
                   )
                 })
               }
-              <span className="float-right text-muted">{this.state.number_of_reacts} reacts - {this.state.number_of_comments} comments</span>
+              <span className="float-right text-muted">
+                <span>
+                  <a className="react-popup" onClick={this.handleShowReactUserPopup.bind(this)} href="null">
+                    {this.state.number_of_reacts} reacts
+                  </a>
+                </span>
+                &nbsp;-&nbsp;
+                <span>{this.state.number_of_comments} comments</span>
+              </span>
             </div>
           </div>
           <div className="box-footer box-comments">

@@ -56,7 +56,7 @@ class PostsWall extends Component {
   }
 
   render() {
-    const newPosts = this.state.dataNewPosts.map(post => {
+    const newPosts = this.state.dataNewPosts.map((post, key) => {
       const postTemplate = {
         id: post.id,
         avatar: post.avatar,
@@ -68,11 +68,11 @@ class PostsWall extends Component {
         hash: post.hash
       }
       return (
-        <Post key={postTemplate.id} post={postTemplate}/>
+        <Post key={key} post={postTemplate}/>
       );
     });
 
-    const posts = this.state.dataPosts.map(post => {
+    const posts = this.state.dataPosts.map((post, key) => {
       const postTemplate = {
         id: post.id,
         avatar: post.User.avatar,
@@ -84,7 +84,7 @@ class PostsWall extends Component {
         hash: post.hash
       }
       return (
-        <Post key={postTemplate.id} post={postTemplate}/>
+        <Post key={key} post={postTemplate}/>
       );
     });
     return (

@@ -79,7 +79,7 @@ export default () => {
         return res.data.status
       })
     },
-		createPost: (TxEncode) => {
+    createPost: (TxEncode) => {
       return axiosPost(baseURL + 'posts', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
@@ -165,8 +165,7 @@ export default () => {
 	getSearchUsers: (type, info) => {
       let url = baseURL + `users/search?type=${type}&info=${info}`
       return axiosPost(url).then((res) => {
-				//console.log(res)
-		if(res.data.status === 'success'){
+        if(res.data.status === 'success'){
           return res.data
         }
         return null
@@ -198,16 +197,29 @@ export default () => {
         return res.data
       })
     },
-		postComment: (TxEncode) => {
-			return axiosPost(baseURL + 'posts/createcomment', {TxEncode: TxEncode}).then((res) => {
+    postComment: (TxEncode) => {
+      return axiosPost(baseURL + 'posts/createcomment', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
-		},
-		postReact: (TxEncode) => {
-			return axiosPost(baseURL + 'posts/createreact', {TxEncode: TxEncode}).then((res) => {
+    },
+    postReact: (TxEncode) => {
+      return axiosPost(baseURL + 'posts/createreact', {TxEncode: TxEncode}).then((res) => {
         return res.data.status
       })
-		}
+    },
+    getReactUsers: (post_id, page = 1, limit = 10, params = {}) => {
+      let url = baseURL + `posts/${post_id}/react-users?page=${page}&limit=${limit}`
+      if(params.order && params.type){
+        url += `&order=${params.order}&type=${params.type}`
+      }
+      return axiosGet(url).then((res) => {
+        console.log(res);
+        if(res.data.status === 'success'){
+          return res.data
+        }
+        return null
+      })
+    }
   }
 
   return services
