@@ -59,7 +59,7 @@ class OthersPost extends Component {
                             loadMore={this.loadItems.bind(this)}
                             hasMore={this.state.hasMoreItems}
                             threshold={100}
-                            loader={<div key={0} className="loader"><img src={loading} alt="loading"/></div>}>
+                            loader={<div className="loader"><img src={loading} alt="loading"/></div>}>
                             <div className="tracks">
                                 {dataPosts.length > 0
                                     ?
