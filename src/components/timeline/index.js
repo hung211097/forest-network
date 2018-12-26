@@ -87,7 +87,8 @@ class Timeline extends Component {
     return (<div className={styles.timeline}>
       <div className="tab-pane fade active in" id="timeline">
         <div className="box profile-info n-border-top animated fadedIn">
-          <PostBox handleAdd={this.handleAddPost.bind(this)}/> {newPosts}
+          <PostBox handleAdd={this.handleAddPost.bind(this)}/>
+          {newPosts}
           <InfiniteScroll
             pageStart={0}
             loadMore={this.loadItems.bind(this)}
@@ -97,7 +98,7 @@ class Timeline extends Component {
             <div className="tracks">
               {
                 dataPosts.length > 0
-                  ? dataPosts.map((item) => {
+                  ? dataPosts.map((item, key) => {
                     const postTemplate = {
                       id: item.id,
                       avatar: item.User.avatar,
@@ -108,7 +109,7 @@ class Timeline extends Component {
                       content: item.content,
                       hash: item.hash
                     }
-                    return (<Post key={item.id} post={postTemplate}/>)
+                    return (<Post key={key} post={postTemplate}/>)
                   })
                   : <h2>You don&apos;t have any posts</h2>
               }

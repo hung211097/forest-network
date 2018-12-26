@@ -63,7 +63,7 @@ class OthersPost extends Component {
                             <div className="tracks">
                                 {dataPosts.length > 0
                                     ?
-                                dataPosts.map((item) => {
+                                dataPosts.map((item, key) => {
                                     const postTemplate = {
                                         id: item.id,
                                         avatar: item.User.avatar,
@@ -75,7 +75,7 @@ class OthersPost extends Component {
 																				hash: item.hash,
                                     }
                                     return (
-                                        <Post key={item.id} post={postTemplate} />
+                                        <Post key={key} post={postTemplate} />
                                     )
                                 })
                                  :

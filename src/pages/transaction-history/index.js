@@ -151,6 +151,10 @@ class TransactionHistory extends Component {
                                         accessor: "public_key_received"
                                     },
                                     {
+                                        Header: "Object",
+                                        accessor: "object",
+                                    },
+                                    {
                                         Header: "Operation",
                                         accessor: "operation",
                                     },
@@ -164,7 +168,7 @@ class TransactionHistory extends Component {
                                     },
                                     {
                                         Header: "Created At",
-                                        id: "created_at",   
+                                        id: "created_at",
                                         accessor: d => timeStamp2Date(d.created_at),
                                     }
                                 ]
